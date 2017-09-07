@@ -1,3 +1,11 @@
+#Map functional orthologies, i.e. enzymes, based on compounds and their rxns in KEGG database
+#data is a metabolomics count data frame with a column of KEGG compound numbers
+#sig_threshold is an optional significance threshold to be used as a validation
+#ortho_hierarchy is a path to the csv file of the KEGG brite hierarchy of orthologies
+
+
+
+
 Orthology_Mapping <- function(data, sig_threshold, KEGG_key, ortho_map){
 OG_data = data
 if (missing(sig_threshold)){
@@ -6,101 +14,97 @@ if (missing(sig_threshold)){
     data = data[which(data$padj <= sig_threshold ), ]
     data$Val <- if_else(data$log2FoldChange > 0, 'Increase', 'Decrease')}
 
-
-Rxn_Path <- function(data){
-
-
+#First need to get reaction numbers from KEGG API
+Map_Rxns <- function(data){
+  #create a nested list of KEGG numbers, ten elements each due to server side limitations of API
   Vector <- as.data.frame(data$KEGG)
   colnames(Vector)[1] <- "KEGG"
   Vector2 = as.vector(Vector[ grep("nan", Vector$KEGG, invert = TRUE) , ])
   Vector_Split  <- split(Vector2,  ceiling(seq_along(Vector2)/10))
   Vector_Split2 = llply(Vector_Split, as.list)
-  
-  
-  
-  KEGG_to_Path <- llply(Vector_Split2, function(x)keggGet(x))
-  Unlist_Pathway_Map <- unlist(KEGG_to_Path, recursive = F)
-  
-  Pathway_DF_Rxn <- lapply(Unlist_Pathway_Map, '[', c("ENTRY","REACTION"))
-  
-  n_obs_Rxn <- sapply(Pathway_DF_Rxn, length)
+  #Send nested list of Cpd numbers to KEGG API
+  Cpd_to_Rxn <- llply(Vector_Split2, function(x)keggGet(x))
+  Unlist_Rxn <- unlist(Cpd_to_Rxn, recursive = F)
+  #Pull out Rxn and Cpd numbers
+  Rxn_DF <- lapply(Unlist_Rxn, '[', c("ENTRY","REACTION"))
+  #Convert data into list of character vectors that can be added to an R data frame object
+  #Note that character vectors 
+  n_obs_Rxn <- sapply(Rxn_DF, length)
   seq_max_Rxn <- seq_len(max(n_obs_Rxn))
-  Pathway_Matrix_Rxn <- t(sapply(Pathway_DF_Rxn, '[', i = seq_max_Rxn))
-  colnames(Pathway_Matrix_Rxn)[1] <- "KEGG"
-  Pathway_Matrix_Rxn = as.data.frame(Pathway_Matrix_Rxn)
-  data$Rxn = Pathway_Matrix_Rxn$REACTION[match(data$KEGG, Pathway_Matrix_Rxn$KEGG)]
-  
-  
-  RXN = data
+  Rxn_Matrix <- t(sapply(Rxn_DF, '[', i = seq_max_Rxn))
+  colnames(Rxn_Matrix)[1] <- "KEGG"
+  Rxn_Matrix = as.data.frame(Rxn_Matrix)
+  data$Rxn = Rxn_Matrix$REACTION[match(data$KEGG, Rxn_Matrix$KEGG)]
   
   
   
-  RXN <- RXN[complete.cases(RXN$KEGG),]
-  RXN$Rxn = as.character(RXN$Rxn)
-  RXN <- RXN[complete.cases(RXN$Rxn),]
+  #For unidentified compounds, Null values need to be accounted for and changed to NA
+  data <- data[complete.cases(data$KEGG),]
+  data$Rxn = as.character(data$Rxn)
+  data <- data[complete.cases(data$Rxn),]
   
-  RXN[RXN == "NULL"] <- NA
-  RXN[RXN == "NA"] <- NA
-  RXN <- RXN[complete.cases(RXN$Rxn),]
+  data[data == "NULL"] <- NA
+  data[data == "NA"] <- NA
+  data <- data[complete.cases(RXN$Rxn),]
   
   
   
-  Rxn_Vect = RXN[, c("KEGG", "Rxn", "Val", "log2FoldChange")]
-  Rxn_Vect$Rxn = gsub("\\c\\("," \\[",Rxn_Vect$Rxn)
-  Rxn_Vect$Rxn = gsub("[[:punct:]]", "", Rxn_Vect$Rxn)
-  Rxn_Vect$Rxn = gsub("\\s+", ",", gsub("^\\s+|\\s+$", "",Rxn_Vect$Rxn))
+  #Use REGEX to remove special characters except for commas, and using commas create individual rows for each Rxn
+  #This will duplicate the data in other rows that was associated with those character vectors for each Rxn number
+  data$Rxn = gsub("\\c\\("," \\[",data$Rxn)
+  data$Rxn = gsub("[[:punct:]]", "", data$Rxn)
+  data$Rxn = gsub("\\s+", ",", gsub("^\\s+|\\s+$", "",data$Rxn))
   
-  lst <- strsplit(as.character(Rxn_Vect$Rxn), ",")
-  DF4 <- transform(Rxn_Vect[rep(1:nrow(Rxn_Vect), lengths(lst)),-5], Rxn= unlist(lst))
+  lst <- strsplit(as.character(data$Rxn), ",")
+  DF <- transform(data[rep(1:nrow(data), lengths(lst)),-5], Rxn= unlist(lst))
   
-  return(DF4)
+  return(DF)
 }
 
 data_rxn <- Rxn_Path(data)
 
 
-
+#Use Rxn numbers to get KO numbers from the KEGG API. Same concept as above
 Rxn_to_Orthology <- function(data){
   
-  DKEGG = as.list(data$KEGG)
+  #Create nested list of Rxn numbers with 10 elements each
   DRxn = as.list(data$Rxn)
-  DVal = as.list(data$Val)
-  DKEGG <- split(DKEGG,  ceiling(seq_along(DKEGG)/10))
   DRxn <- split(DRxn,  ceiling(seq_along(DRxn)/10))
-  DVal <- split(DVal,  ceiling(seq_along(DVal)/10))
-  K_Key = data
   
+  K_Key = data
+  #Send to API, pull out desired data
   KO <- llply(DRxn, function(x)keggGet(x))
   RX_KO <- as.data.frame(cbind(DRxn, KO))
-  KO1 = unlist(KO, recursive = F)
-  KO1 <- lapply(KO1, '[', c("ENTRY", "ORTHOLOGY"))
+  KO = unlist(KO, recursive = F)
+  KO <- lapply(KO, '[', c("ENTRY", "ORTHOLOGY"))
   
-  n_obs_KO <- sapply(KO1, length)
+  n_obs_KO <- sapply(KO, length)
   seq_max_KO <- seq_len(max(n_obs_KO))
-  Pathway_Matrix_KO <- t(sapply(KO1, '[', i = seq_max_KO))
+  KO_Matrix <- t(sapply(KO, '[', i = seq_max_KO))
   
-  TKO = as.data.frame(unlist(Pathway_Matrix_KO[,2], recursive = F))
-  TKO = rownames_to_column(df = TKO, var = "Orthology_number")
-  TKO$Orthology_number = gsub("^.*?.",".",TKO$Orthology_number)
-  TKO$Orthology_number = gsub("[[:punct:]]", "", TKO$Orthology_number)
-  TKO$Orthology_number = gsub("^.*?K","K",TKO$Orthology_number)
-  colnames(TKO)[2] <- "TKO"
+  DKO = as.data.frame(unlist(KO_Matrix[,2], recursive = F))
+  DKO = rownames_to_column(df = DKO, var = "Orthology_number")
+  colnames(DKO)[2] <- "KO"
+  data_rxn$Orthology_number <- DKO$Orthology_number[match(data_rxn$Rxn, DKO$ENTRY)]
+  data_rxn$Orthology_number = gsub("^.*?.",".",data_rxn$Orthology_number)
+  data_rxn$Orthology_number = gsub("[[:punct:]]", "", data_rxn$Orthology_number)
+  data_rxn$Orthology_number = gsub("^.*?K","K",data_rxn$Orthology_number)
   
   
-  Pathway_Matrix_KO = Pathway_Matrix_KO[,c(1,2)]
-  colnames(Pathway_Matrix_KO)[1] <- "Rxn" 
-  colnames(Pathway_Matrix_KO)[2] <- "KO"
-  Pathway_Matrix_KO = as.data.frame(Pathway_Matrix_KO)
   
-  Pathway_Matrix_KO$Rxn = unlist(Pathway_Matrix_KO$Rxn)
-  Unlist_PKO <- data.frame(Rxn = rep(Pathway_Matrix_KO$Rxn, sapply(Pathway_Matrix_KO$KO, length)), KO = TKO$TKO) 
+  #KO_Matrix = KO_Matrix[,c(1,2)]
+  #colnames(KO_Matrix)[1] <- "Rxn" 
+  #colnames(KO_Matrix)[2] <- "KO"
+  #KO_DF = as.data.frame(KO_Matrix)
   
-  Unlist_PKO$KEGG <- K_Key$KEGG[match(Unlist_PKO$Rxn, K_Key$Rxn)]
-  Unlist_PKO$Val <- K_Key$Val[match(Unlist_PKO$Rxn, K_Key$Rxn)]
-  Unlist_PKO$log2FoldChange <- K_Key$log2FoldChange[match(Unlist_PKO$Rxn, K_Key$Rxn)]
-  D = Unlist_PKO
-  D$Orthology_number <- TKO$Orthology_number[match(D$KO, TKO$TKO)]
-  return(D)
+  #KO_DF$Rxn = unlist(KO_DF$Rxn)
+  data_rxn_KO <- data.frame(Rxn = rep(data_rxn$Rxn, sapply(data_rxn$KO, length)), KO = DKO$KO) 
+  
+  #Unlist_KO$KEGG <- data$KEGG[match(Unlist_KO$Rxn, data$Rxn)]
+  #Unlist_KO$Val <- data$Val[match(Unlist_KO$Rxn, data$Rxn)]
+  #Unlist_KO$log2FoldChange <- data$log2FoldChange[match(Unlist_KO$Rxn, data$Rxn)]
+  #Unlist_KO$Orthology_number <- KO$Orthology_number[match(Unlist_KO$KO, KO$KO)]
+  return(data_rxn)
 }
 
 data_ortho <- Rxn_to_Orthology(data_rxn)
