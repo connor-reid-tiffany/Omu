@@ -71,20 +71,8 @@ DF_Complete = DF_Complete[ , -which(names(DF_Complete) %in% c("Gene_number"))]
 #Assign Organism hierarchy. KEGG BRITE db is a little complicated due to bacterial strains, serovars, and different clinical isolates                           
 data = Get_Genes(data)
 Organism_Hierarchy <- function(data, Organism_map){
-  data$Org = as.factor(data$Org)
-  data$Domain <- Organism_map$Domain[match(data$Org, Organism_map$Org)]
-  data$Kingdom <- Organism_map$Kingdom[match(data$Org, Organism_map$Org)]
-  data$Group <- Organism_map$Group[match(data$Org, Organism_map$Org)]
-  data$Subgroup_1 <- Organism_map$Subgroup_1[match(data$Org, Organism_map$Org)]
-  data$Genus <- Organism_map$Genus[match(data$Org, Organism_map$Org)]
-  data$Species <- Organism_map$Species[match(data$Org, Organism_map$Org)]
-  data$Meta1 <- Organism_map$Meta1[match(data$Org, Organism_map$Org)]
-  data$Meta2 <- Organism_map$Meta2[match(data$Org, Organism_map$Org)]
-  data$Meta3 <- Organism_map$Meta3[match(data$Org, Organism_map$Org)]
-  data$Meta4 <- Organism_map$Meta4[match(data$Org, Organism_map$Org)]
-  data$Meta5 <- Organism_map$Meta5[match(data$Org, Organism_map$Org)]
-  data$Meta6 <- Organism_map$Meta6[match(data$Org, Organism_map$Org)]
-  return(data)
+  DF <- left_join(data, Organism_map, by = "KEGG)
+  return(DF)
 }
 
 data = Organism_Hierarchy(data, Organism_map)  
