@@ -75,6 +75,7 @@ SE_t = rownames_to_column(SE_t, response_variable)
 #Merge metabo_path metadata, means & fold change, and t test results by metabolite name
 colnames(results)[1] <- response_variable
 results$padj = p.adjust(results$pval, method = "BH")
+data = rownames_to_column(data, var = 'Metabolite')                                
 results = merge(results, data, by = response_variable, all = TRUE)
 results = merge(Means_T, results, by = response_variable, all.y = TRUE)
 results = merge(SE_t, results, by = response_variable, all.y = TRUE)
