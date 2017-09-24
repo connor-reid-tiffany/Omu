@@ -61,7 +61,7 @@ Map_Rxns <- function(data){
   return(DF)
 }
 
-data_rxn <- Rxn_Path(data)
+data_rxn <- Map_Rxns(data)
 
 
 #Use Rxn numbers to get KO numbers from the KEGG API. Same concept as above
@@ -108,21 +108,17 @@ Rxn_to_Orthology <- function(data){
 }
 
 data_ortho <- Rxn_to_Orthology(data_rxn)
-
-Metabo_Path <- function(data, KEGG_key){
-  data$Class = KEGG_key$Class[match(data$KEGG, KEGG_key$KEGG)]
-  data$Subclass_1 = KEGG_key$Subclass_1[match(data$KEGG, KEGG_key$KEGG)]
-  data$Subclass_2 = KEGG_key$Subclass_2[match(data$KEGG, KEGG_key$KEGG)]
-  data$Subclass_3 = KEGG_key$Subclass_3[match(data$KEGG, KEGG_key$KEGG)]
-  data$Subclass_4 = KEGG_key$Subclass_4[match(data$KEGG, KEGG_key$KEGG)]
-  data$Metabolite = OG_data$Metabolite[match(data$KEGG, OG_data$KEGG)]
-  return(data)
+#Join data frames by Rxn number
+Join_data <- function (data, original_data){
+    joined_data <- inner_join(data, original_data, by = 'Rxn')
+    return(joined_data)
   
 }
-data_ortho = Metabo_Path(data = data_ortho, KEGG_key = KEGG_key)
 
+data_joined = Join_data(data = data_ortho, original_data = data)
 
-Orthology_hierarchy <- function(data, ortho_map){
+#Match Orthology Hierarchy to joined data by orthology number
+Orthology_hierarchy <- function(data, Orthology_Hierarchy){
   
   data$KO_Class <- ortho_map$KO_Class[match(data$Orthology_number, ortho_map$Orthology_number)]
   data$KO_Sub_class1 <- ortho_map$KO_Sub_class1[match(data$Orthology_number, ortho_map$Orthology_number)]
@@ -138,32 +134,8 @@ data_ortho = data_ortho[, Order]
 return(data_ortho)
 }
 
-Orthology_Counts <- function(data, level){
-  data_pos = data[data$Val %in% "Increase",]
-  data_neg = data[data$Val %in% "Decrease",]
-  
-  data_pos_table = as.data.frame(table(data_pos[, level]))
-  colnames(data_pos_table)[1] <- level
-  colnames(data_pos_table)[2] <- "Significant_Changes"
-  
-  data_neg_table = as.data.frame(table(data_neg[,level]))
-  colnames(data_neg_table)[1] <- level
-  colnames(data_neg_table)[2] <- "Significant_Changes"
-  
-  data_pos_table = data_pos_table[apply(data_pos_table[2],1,function(z) !any(z==0)),]
-  
-  data_neg_table = data_neg_table[apply(data_neg_table[2],1,function(z) !any(z==0)),]
-  
-  data_neg_table[2] = data_neg_table[2] * -1
-  
-  
-  data_counts = rbind(data_pos_table, data_neg_table)
-  
-  data_counts$Val = ifelse(data_counts$Significant_Changes < 0, "Decrease","Increase")
-  
-  return(data_counts)
 }
-
+#If a Count table of significant changes by Orthology Hierarchy meta is required
 Count_Changes <- function(data, ..., column, alpha){
   
   data = data %>% group_by_(...) %>%
