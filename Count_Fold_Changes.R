@@ -10,11 +10,11 @@
 #'@examples Count_Fold_Changes(data = data, "Class", column = "Class", alpha = 0.05)
 #'Count_Fold_Changes()
 Count_Fold_Changes <- function(data, ..., column, alpha){
-data = data[which(data$padj < alpha), ]
+  data = data[which(data$padj < alpha), ]
   data = data %>% group_by_(...) %>%
     mutate(Significant_Changes = sum(log2FoldChange>0),
            neg = sum(log2FoldChange<0))
-data = data[,c(column, "Significant_Changes", "neg")]
+  data = data[,c(column, "Significant_Changes", "neg")]
   data$neg <- data$neg * -1
   output <- subset(data, select = c(1,3))
   colnames(output)[2] <- "Significant_Changes"
@@ -22,6 +22,8 @@ data = data[,c(column, "Significant_Changes", "neg")]
   data = subset(data, select = -neg)
   
   data$colour = ifelse(data$Significant_Changes < 0, "Decrease","Increase")
+  
+  data = data[apply(data[2],1,function(z) !any(z==0)),]
   unique(data[])
 }
 
