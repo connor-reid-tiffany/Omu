@@ -1,12 +1,14 @@
-#Map functional orthologies, i.e. enzymes, based on compounds and their rxns in KEGG database
-#data is a metabolomics count data frame with a column of KEGG compound numbers
-#sig_threshold is an optional significance threshold to be used as a validation
-#ortho_hierarchy is a path to the csv file of the KEGG brite hierarchy of orthologies
+#'Map_Orthology
+#'Map functional orthologies, i.e. enzymes, based on compounds and their rxns in KEGG database
+#'@param data is a metabolomics count data frame with a column of KEGG compound numbers
+#'@param sig_threshold is an optional significance threshold to be used as a validation step
+#'@param ortho_hierarchy is a path to the csv file of the KEGG brite hierarchy of orthologies
+#'@export
+#'@example Map_Orthology(data = yourdataframe, sig_threshold = 0.05, Metabolite_Hierarchy = Metabolite_Hierarchy, Orthology_Hierarchy = Orthology_Hierarchy)
 
 
 
-
-Orthology_Mapping <- function(data, sig_threshold, KEGG_key, ortho_map){
+Map_Orthology <- function(data, sig_threshold, Metabolite_Hierarchy, Orthology_Hierarchy){
 OG_data = data
 if (missing(sig_threshold)){
     data$Val <- if_else(data$log2FoldChange > 0, 'Increase', 'Decrease')
@@ -45,7 +47,7 @@ Map_Rxns <- function(data){
   
   data[data == "NULL"] <- NA
   data[data == "NA"] <- NA
-  data <- data[complete.cases(RXN$Rxn),]
+  data <- data[complete.cases(data$Rxn),]
   
   
   
