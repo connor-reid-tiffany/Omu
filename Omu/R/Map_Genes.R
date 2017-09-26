@@ -1,11 +1,17 @@
-#Function for assigning genes associated with functional orthologies
-#data is a data table that has undergone KO mapping
-#Organism map is an organism hierarchy file that must be downloaded to 
-#assign an Organism hierarchy to the genes
+#' Map_Genes
+#'Function for assigning genes associated with functional orthologies
+#'data is a data table that has undergone KO mapping
+#'Organism map is an organism hierarchy file that must be downloaded to 
+#'assign an Organism hierarchy to the genes
+#'@param data Data that has been assigned functional Orthologies
+#'@param Organism_Hierarchy A dataframe of Organism_Hierarchies
+#'@export
+#'@examples Map_Genes(data = yourdata, Organism_Hierarchy = Organism_Hierarchy_dataframe)
+#'Map_Genes()
 
 
 
-Map_Genes <- function(data, Organism_map){
+Map_Genes <- function(data, Organism_Hierarchy){
 
 #Create a nested list of Orthology numbers that can be sent to the KEGG API
 Get_Genes <- function(data){
@@ -70,12 +76,12 @@ DF_Complete = DF_Complete[ , -which(names(DF_Complete) %in% c("Gene_number"))]
 
 #Assign Organism hierarchy. KEGG BRITE db is a little complicated due to bacterial strains, serovars, and different clinical isolates                           
 data = Get_Genes(data)
-Organism_Hierarchy <- function(data, Organism_map){
-  DF <- inner_join(data, Organism_map, by = "KEGG)
+Organism_Hierarchy <- function(data, Organism_Hierarchy){
+  DF <- inner_join(data, Organism_Hierarchy, by = "KEGG)
   return(DF)
 }
 
-data = Organism_Hierarchy(data, Organism_map)  
+data = Organism_Hierarchy(data, Organism_Hierarchy)  
 return(data)
 }
 
