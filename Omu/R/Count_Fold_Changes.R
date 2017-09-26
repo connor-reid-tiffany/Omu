@@ -1,6 +1,7 @@
 #'Count Fold Changes
 #'
-#'This function takes an input data frame from Clean_DESeq_results and returns the number of compounds that significantly changed in each metabolite Class or Subclass.
+#'This function takes an input data frame that has been run in a statistical modeling function 
+#'and returns the number of compounds that significantly changed in each metabolite Class or Subclass.
 #'@param data Output dataframe from the Clean_DESeq_results function
 #'@param ... Either a Class or Subclass column listed in paretheses, i.e. "Class
 #'@param column The same value entered for the ... parameter, i.e. column = "Class
