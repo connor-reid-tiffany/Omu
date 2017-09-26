@@ -1,11 +1,15 @@
-#Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
-#Data should be a metabolomics count data frame
-#colData is meta data
-#Numerator is the variable you wish to compare against the denominator, in quotes
-#Denominator:see above, in quotes
-#The order effects the fold change values
-#response_variable is the name of the column with your response variables, in quotes
-#Factor is the column header that contains your numerator and denominator, in quotes
+#'
+#'Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
+#'The order effects the fold change values
+#'@param data should be a metabolomics count data frame
+#'@param colData is meta data
+#'@param numerator is the variable you wish to compare against the denominator, in quotes
+#'@param denominator:see above, in quotes
+#'@param response_variable the name of the column with your response variables
+#'@param Factor the column name for your independent variables
+#'export
+#'example T_Test(data = yourdata, colData = yourmeta_data, numerator = "Mock", denominator = "Infected", response_variable = "Metabolite", Factor = "Treatment_group")
+
 
 T_Test <- function(data, colData, numerator, denominator, response_variable, Factor){
 
