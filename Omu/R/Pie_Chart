@@ -1,5 +1,14 @@
-pie_chart <- function(data, type, subplot){
-  
+#' Pie Chart
+#'Convenience wrapper for the pie chart function in plotly
+#'@param data Datframe output from Count_Fold_Changes
+#'@param type string value of either "Increase", "ALL" or "Decrease"
+#'@param subplot Boolean of TRUE or FALSE. FALSE produces one pie chart of type,
+#'TRUE produces 3 pie charts of "All", "Increase", "Decrease
+#'export
+#'example Pie_Chart(data = your_fold_change_counts, type = "Decrease", subplot = FALSE)
+
+Pie_Chart <- function(data, type, subplot){
+  #Create percent tables for Inc, Dec, and All
   colnames(data)[1] <- "Pathway"  
   if(subplot==TRUE){
     Dec = "Decrease"
@@ -21,7 +30,7 @@ pie_chart <- function(data, type, subplot){
     data = ddply(data, "Pathway", numcolwise(sum)) 
     data$Significant_Changes = prop.table(data$Significant_Changes)
     data$Significant_Changes = data$Significant_Changes * 100
-    
+    #Make pie charts
     pie <- plot_ly() %>%
       add_pie(data = data_dec, labels = ~Pathway, values = ~Significant_Changes,
               name = "Decrease",domain = list(x = c(0, 0.4), y = c(0.4, 1)), 
