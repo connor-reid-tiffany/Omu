@@ -21,10 +21,10 @@
 
 
 
-Plot_Volcano <- function(data, factor, columns, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
+Plot_Volcano <- function(data, columns, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
   if (missing(sig_threshold)) sig_threshold = 0.05
   else sig_threshold = sig_threshold
-  if (missing(factor)){
+  if (missing(strpattern)){
     data[, "Color"] <- NA
     data$Color = data$padj <= sig_threshold
       ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) + 
@@ -36,12 +36,13 @@ Plot_Volcano <- function(data, factor, columns, strpattern, fill_list, sig_thres
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed")
   }else{
     data[, columns] <- sapply(data[, columns], as.character)
-    factor<- str_match(pattern = strpattern, string = factor)
-    factor = str_replace_na(factor, replacement = "NA")
+    Vector = data[,columns]
+    Match <- str_match(pattern = strpattern, string = Vector)
+    Match = str_replace_na(Match, replacement = "NA")
     data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)], 
                                                as.factor)
     ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) + 
-        geom_point(size = 3.5, aes(fill = factor(factor), alpha = factor(factor), shape = factor(factor))) + 
+        geom_point(size = 3.5, aes(fill = factor(Match), alpha = factor(Match), shape = factor(Match))) + 
         scale_fill_manual(values = fill_list) + 
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed") + 
         scale_alpha_manual(values = alpha_list) + 
