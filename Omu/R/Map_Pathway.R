@@ -4,11 +4,11 @@
 #'@param sig_threshold is an optional significance threshold to be used as a validation step
 #'@param ortho_hierarchy is a path to the csv file of the KEGG brite hierarchy of orthologies
 #'@export
-#'@example Map_Orthology(data = yourdataframe, sig_threshold = 0.05, Metabolite_Hierarchy = Metabolite_Hierarchy, Orthology_Hierarchy = Orthology_Hierarchy)
+#'@example Map_Orthology(data = yourdataframe, sig_threshold = 0.05, Orthology_Hierarchy = Orthology_Hierarchy)
 
 
 
-Map_Orthology <- function(data, sig_threshold, Metabolite_Hierarchy, Orthology_Hierarchy){
+Map_Orthology <- function(data, sig_threshold, Orthology_Hierarchy){
 OG_data = data
 if (missing(sig_threshold)){
     data$Val <- if_else(data$log2FoldChange > 0, 'Increase', 'Decrease')
