@@ -18,6 +18,13 @@ if (missing(sig_threshold)){
   req_name = "REACTION"
   appended_col = "Rxn"
 
+  #print patience snail into terminal =)
+  Text_Art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      /  ___  \\",
+                 "|    |     /  /   \\  \\", "|    |_____\\  \\_  /  /", " \\          \\____/  /_____",
+                 "  \\ _______________/______\\................please be patient =)"
+  )
+  cat(Text_Art, sep = "\n")
+
   #Send identifier data to KEGG API
   Matrix <- Make_Omelette(countDF = countDF, column = column, Reqs = Reqs)
 
@@ -28,8 +35,8 @@ if (missing(sig_threshold)){
   #Assign rxn class to data.frame
   class(countDF) <- append(class(countDF), "rxn")
 
-  #Call function from method Clean_Up to make data human readable
-  countDF = Clean_Up(countDF)
+  #Call function from method Do_Dishes to make data human readable
+  countDF = Do_Dishes(countDF)
 
   #We want Orthologies, so need to run new DF through KEGG_Gather again
 
@@ -46,6 +53,15 @@ KEGG_Gather.rxn <- function(countDF){
 Reqs = c("ENTRY","ORTHOLOGY")
 column = "Rxn"
 req_name = "Rxn"
+
+
+#print patience snail into terminal =)
+Text_Art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      /  ___  \\",
+               "|    |     /  /   \\  \\", "|    |_____\\  \\_  /  /", " \\          \\____/  /_____",
+               "  \\ _______________/______\\................please be patient =)"
+)
+cat(Text_Art, sep = "\n")
+
 
 #Send indentifier data to KEGG API
 Matrix <- Make_Omelette(countDF = countDF, column = column, Reqs = Reqs)
@@ -86,18 +102,28 @@ column = "KO_Number"
 req_name = "GENES"
 appended_col = "Genes"
 
+
+#print patience snail into terminal =)
+Text_Art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      /  ___  \\",
+               "|    |     /  /   \\  \\", "|    |_____\\  \\_  /  /", " \\          \\____/  /_____",
+               "  \\ _______________/______\\................please be patient =)"
+)
+cat(Text_Art, sep = "\n")
+
+
 #Send indentifier to KEGG API
 Matrix <- Make_Omelette(countDF = countDF, column = column, Reqs = Reqs)
 DF = as.data.frame(Matrix)
-#append class "genes"
 
+#append class "genes"
 class(countDF) <- append(class(countDF), "genes")
+
 #append columns
 countDF[,appended_col] = DF[,req_name][match(countDF[, column], DF[, column])]
 countDF$GeneOperon = DF$NAME[match(DF[, column], DF[, column])]
 
-#Call Clean_Up to make it human readable
-countDF = Clean_Up(countDF = countDF)
+#Call Do_Dishes to make it human readable
+countDF = Do_Dishes(countDF = countDF)
 
 return(countDF)
 }

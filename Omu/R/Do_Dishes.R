@@ -15,7 +15,7 @@ countDF$Rxn = gsub("\\s+", ",", gsub("^\\s+|\\s+$", "",countDF$Rxn))
 lst <- strsplit(as.character(countDF$Rxn), ",")
 Split_DF <- transform(countDF[rep(1:nrow(countDF),
 lengths(lst)),-5], Rxn= unlist(lst))
-class(DF_gathered) <- append(class(DF_gathered), "rxn")
+
 return(Split_DF}
 }
 
@@ -32,6 +32,8 @@ DF <- as.data.frame(sapply(DF, function(x) gsub("\"", "", x)))
 DF$Gene_number <- DF$Genes
 DF2 <- str_split_fixed(DF$Genes, ":", 2)
 DF2 = as.data.frame(DF2)
+
+#Create organism identifier
 colnames(DF2)[1] <- "Org"
 DF_Complete <- data.frame(do.call('rbind', strsplit(as.character(DF2$Org),':',fixed=TRUE)))
 DF_Complete = as.data.frame(cbind(DF, DF_Complete))

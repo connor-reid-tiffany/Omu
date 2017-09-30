@@ -8,7 +8,7 @@ Make_Omelette <- function(countDF, column, Reqs){
   Input_Split = llply(Input_Split, as.list)
 
   #Send nested list of Cpd numbers to KEGG API
-  Output <- llply(Input_Split, function(x)keggGet(x))
+  Output <- llply(Input_Split, function(x)keggGet(x), .progress = "text")
   Unlist_Output <- unlist(Output, recursive = F)
 
   #Pull out Rxn and Cpd numbers
