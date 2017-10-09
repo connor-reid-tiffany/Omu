@@ -50,7 +50,7 @@ DF_Complete = DF_Complete[ , -which(names(DF_Complete) %in% c("Gene_number"))]
 return(DF_Complete)
 }
 
-Plate_Omelette.rxnKO <- function(countDF, Matrix){
+Plate_Omelette.rxnKO <- function(countDF, ...){
 
 DF = as.data.frame(unlist(Matrix[,2], recursive = F))
 DF = rownames_to_column(DF, "KO_Number")
