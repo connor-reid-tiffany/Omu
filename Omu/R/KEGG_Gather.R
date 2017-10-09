@@ -69,7 +69,7 @@ Matrix <- Make_Omelette(countDF = countDF, column = column, Reqs = Reqs)
 class(Matrix) <- append(class(Matrix), "rxnKO")
 class(countDF)[2] <- "rxnKO"
 #Call Plate_Omelette method to clean data up
-countDF = Plate_Omelette(countDF,Matrix)
+countDF = Plate_Omelette(countDF = countDF,... = Matrix)
 
 #append KO class in case user wishes to KEGG_Gather genes
 class(countDF) <- append(class(countDF), "KO")
