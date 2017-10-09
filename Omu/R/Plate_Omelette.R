@@ -3,7 +3,7 @@
 
 
 
-Plate_Omelette <- function(countDF) UseMethod("Plate_Omelette", countDF)
+Plate_Omelette <- function(countDF, Matrix) UseMethod("Plate_Omelette")
 
 Plate_Omelette.rxn <- function(countDF){
 
@@ -50,7 +50,7 @@ DF_Complete = DF_Complete[ , -which(names(DF_Complete) %in% c("Gene_number"))]
 return(DF_Complete)
 }
 
-Plate_Omelette.rxnKO <- function(countDF, ...){
+Plate_Omelette.rxnKO <- function(countDF, Matrix){
 
 DF = as.data.frame(unlist(Matrix[,2], recursive = F))
 DF = rownames_to_column(DF, "KO_Number")
