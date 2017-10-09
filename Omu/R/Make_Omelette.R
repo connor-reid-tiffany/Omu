@@ -1,8 +1,11 @@
+#Internal Function for method KEGG_Gather
+#'@export
+
 
 Make_Omelette <- function(countDF, column, Reqs){
 
   #Create input of nested lists of length 10 and feed to KEGG API
-  Input <- data.frame(i = test_metabo[, column])
+  Input <- data.frame(i = countDF[, column])
   Input = as.vector(Input[rowSums(is.na(Input)) != ncol(Input),])
   Input_Split  <- split(Input,  ceiling(seq_along(Input)/10))
   Input_Split = llply(Input_Split, as.list)
@@ -14,11 +17,12 @@ Make_Omelette <- function(countDF, column, Reqs){
   #Pull out Rxn and Cpd numbers
   Extract_reqs <- lapply(Unlist_Output, '[', Reqs)
 
-  #Convert data into list of character vectors that can be added to an R data frame object
-  #Note that character vectors
+  #Convert data into list of character vectors that can be added to
+  #an R data frame object
+
   n_obs <- sapply(Extract_reqs, length)
   seq_max <- seq_len(max(n_obs))
-  Matrix <- t(sapply(Extract_reqs, '[', i = seq_max)
+  Matrix <- t(sapply(Extract_reqs, '[', i = seq_max))
 
   return(Matrix)
 

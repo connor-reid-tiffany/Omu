@@ -7,7 +7,7 @@
 #'@param denominator:see above, in quotes
 #'@param response_variable the name of the column with your response variables
 #'@param Factor the column name for your independent variables
-#'export
+#'@export
 #'example T_Test(data = yourdata, colData = yourmeta_data, numerator = "Mock", denominator = "Infected", response_variable = "Metabolite", Factor = "Treatment_group")
 
 
@@ -83,6 +83,8 @@ data = rownames_to_column(data, "Metabolite")
 results = merge(results, data, by = response_variable, all = TRUE)
 results = merge(Means_T, results, by = response_variable, all.y = TRUE)
 results = merge(SE_t, results, by = response_variable, all.y = TRUE)
+
+class(results) = append(class(results), "cpd")
 
 return(results)
 }

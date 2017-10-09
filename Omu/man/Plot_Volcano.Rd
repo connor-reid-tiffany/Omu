@@ -4,13 +4,11 @@
 \alias{Plot_Volcano}
 \title{Plot_Volcano}
 \usage{
-Plot_Volcano(data, factor, columns, strpattern, fill_list, sig_threshold,
-  alpha_list, shape_list, color_list)
+Plot_Volcano(data, columns, strpattern, fill_list, sig_threshold, alpha_list,
+  shape_list, color_list)
 }
 \arguments{
 \item{data}{The output file from the Clean_DESeq_results() function.}
-
-\item{factor}{A column of metadata from the data file, i.e. data$Class. If you provide the function with a factor parameter, every other parameter except sig_threshold is required. Choosing no factor parameter will produce a volcano plot with significant points in red, and not significant points in black.}
 
 \item{columns}{The factor as a list, i.e. columns = c("Class")}
 
@@ -25,6 +23,8 @@ Plot_Volcano(data, factor, columns, strpattern, fill_list, sig_threshold,
 \item{shape_list}{A list for setting the shapes for your factor levels. See ggplot2 for an index of shapes}
 
 \item{color_list}{A list of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.}
+
+\item{factor}{A column of metadata from the data file, i.e. data$Class. If you provide the function with a factor parameter, every other parameter except sig_threshold is required. Choosing no factor parameter will produce a volcano plot with significant points in red, and not significant points in black.}
 }
 \description{
 This function takes an input data frame from Clean_DESeq_results and creates a Volcano Plot as a ggplot2 graphical object.

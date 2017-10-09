@@ -1,5 +1,5 @@
 #Method for gathering metadata from KEGG API
-
+#'@export
 
 KEGG_Gather <- function(countDF, sig_threshold) UseMethod("KEGG_Gather", countDF)
 
@@ -7,16 +7,15 @@ KEGG_Gather.cpd <- function(countDF, sig_threshold){
 
 #create value column, subset data based on significance
 if (missing(sig_threshold)){
-    data$Val <- if_else(data$log2FoldChange > 0, 'Increase', 'Decrease')
+    countDF$Val <- if_else(countDF$log2FoldChange > 0, 'Increase', 'Decrease')
   }else {
-    data = data[which(data$padj <= sig_threshold ), ]
-    data$Val <- if_else(data$log2FoldChange > 0, 'Increase', 'Decrease')}
+    countDF = countDF[which(countDF['padj'] <= sig_threshold), ]
+    countDF$Val <- if_else(countDF["log2FoldChange"] > 0, 'Increase', 'Decrease')}
 
   #Set variables
   Reqs = c('ENTRY', 'REACTION')
   column = "KEGG"
   req_name = "REACTION"
-  appended_col = "Rxn"
 
   #print patience snail into terminal =)
   Text_Art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      /  ___  \\",
@@ -25,18 +24,18 @@ if (missing(sig_threshold)){
   )
   cat(Text_Art, sep = "\n")
 
-  #Send identifier data to KEGG API
+  #Send identifier countDF to KEGG API
   Matrix <- Make_Omelette(countDF = countDF, column = column, Reqs = Reqs)
 
   #Convert to data.frame and append acquired data
   DF = as.data.frame(Matrix)
-  countDF[,appended_col] = DF[,req_name][match(countDF[, column], DF[, column])]
+  countDF$Rxn = DF[,req_name][match(countDF[, column], DF[, 'ENTRY'])]
 
   #Assign rxn class to data.frame
-  class(countDF) <- append(class(countDF), "rxn")
+  class(countDF)[2] <- "rxn"
 
-  #Call function from method Do_Dishes to make data human readable
-  countDF = Do_Dishes(countDF)
+  #Call function from method Plate_Omelette to make data human readable
+  countDF = Plate_Omelette(countDF)
 
   #We want Orthologies, so need to run new DF through KEGG_Gather again
 
@@ -66,30 +65,16 @@ cat(Text_Art, sep = "\n")
 #Send indentifier data to KEGG API
 Matrix <- Make_Omelette(countDF = countDF, column = column, Reqs = Reqs)
 
-#Extract Element_number and KO_Number from rownames and put into 2 columns
-DF = as.data.frame(unlist(Matrix[,2], recursive = F))
-DF = rownames_to_column(KO_df, "KO_Number")  DF = with(DF, cbind(DF[,2],
-colsplit(DF$KO_Number, pattern = "\\.",
-names = c('Element_number', 'KO_Number'))))
-colnames(DF)[1] <- "KO"
+#append rxnKO class for calling Plate_Omelette
+class(Matrix) <- append(class(Matrix), "rxnKO")
+class(countDF)[2] <- "rxnKO"
+#Call Plate_Omelette method to clean data up
+countDF = Plate_Omelette(countDF,Matrix)
 
-#Do the above but for Rxn numbers this time
-Rxn_df = as.data.frame(unlist(Matrix[,1], recursive = F))
-Rxn_df = rownames_to_column(Rxn_df, "Element_number")
-Rxn_df = with(Rxn_df, cbind(Rxn_df[,2],
-  colsplit(Rxn_df$Element_number, pattern = "\\.",
-  names = c('Element_number', 'remove'))))
-colnames(Rxn_df)[1] <- "Rxn"
-Rxn_df = Rxn_df[,1:2]
+#append KO class in case user wishes to KEGG_Gather genes
+class(countDF) <- append(class(countDF), "KO")
 
-#Join origianl dataframe to dataframe with KO by Rxn number
-KO_with_Rxn <- left_join(DF, Rxn_df, by = "Element_number")
-data = left_join(KO_with_Rxn, data, by = "Rxn")
-
-#Drop the element number column as it is no longer needed
-data = data[ , !(names(data) %in% "Element_number")]
-
-return(data)
+return(countDF)
 }
 
 
@@ -100,8 +85,6 @@ KEGG_Gather.KO <- function(countDF){
 Reqs = c("NAME", "ENTRY","DEFINITION", "GENES")
 column = "KO_Number"
 req_name = "GENES"
-appended_col = "Genes"
-
 
 #print patience snail into terminal =)
 Text_Art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      /  ___  \\",
@@ -109,7 +92,6 @@ Text_Art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      
                "  \\ _______________/______\\................please be patient =)"
 )
 cat(Text_Art, sep = "\n")
-
 
 #Send indentifier to KEGG API
 Matrix <- Make_Omelette(countDF = countDF, column = column, Reqs = Reqs)
@@ -119,11 +101,11 @@ DF = as.data.frame(Matrix)
 class(countDF) <- append(class(countDF), "genes")
 
 #append columns
-countDF[,appended_col] = DF[,req_name][match(countDF[, column], DF[, column])]
-countDF$GeneOperon = DF$NAME[match(DF[, column], DF[, column])]
+countDF$Genes = DF[,req_name][match(countDF[, column], DF$ENTRY)]
+countDF$GeneOperon = DF$NAME[match(countDF[, column], DF$ENTRY)]
 
-#Call Do_Dishes to make it human readable
-countDF = Do_Dishes(countDF = countDF)
+#Call Plate_Omelette to make it human readable
+countDF = Plate_Omelette(countDF = countDF)
 
 return(countDF)
 }

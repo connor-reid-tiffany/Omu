@@ -16,7 +16,8 @@ Count_Fold_Changes(data, ..., column, alpha)
 \item{alpha}{Significance threshold, i.e. alpha = 0.05}
 }
 \description{
-This function takes an input data frame from Clean_DESeq_results and returns the number of compounds that significantly changed in each metabolite Class or Subclass.
+This function takes an input data frame that has been run in a statistical modeling function 
+and returns the number of compounds that significantly changed in each metabolite Class or Subclass.
 }
 \examples{
 Count_Fold_Changes(data = data, "Class", column = "Class", alpha = 0.05)
