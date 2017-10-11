@@ -1,10 +1,10 @@
 Package: Omu
-Title: Metabolomics Hierarchy Analysis in Conjunction with DESeq.
+Title: Metabolomics Analysis using KEGG hierarchy data.
 Version: 0.9.1
 Authors@R: person("Connor", "Tiffany", email = "crtiffany@ucdavis.edu", role = c("aut", "cre"))
-Description: This package visualizes metabolomics data that has been analyzed using two programs; the Omu python module for metabolite hierarchy annotation, and the R package DESeq2. 
-Depends: R (>= 3.3.2) 
-Imports: dplyr, ggplot2, stringr
+Description: This package visualizes metabolomics data that has been analyzed using two programs; the Omu python module for metabolite hierarchy annotation, and the R package DESeq2.
+Depends: R (>= 3.3.2), plyr, tidyverse, stringr, KEGGREST
+Imports: 
 License: MIT
 Encoding: UTF-8
 LazyData: true
