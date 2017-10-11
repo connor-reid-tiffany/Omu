@@ -5,7 +5,7 @@ Authors@R: person("Connor", "Tiffany", email = "crtiffany@ucdavis.edu", role = c
 Description: This package visualizes metabolomics data that has been analyzed using two programs; the Omu python module for metabolite hierarchy annotation, and the R package DESeq2. 
 Depends: R (>= 3.3.2) 
 Imports: dplyr, ggplot2, stringr
-License: CC0
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1.9000
