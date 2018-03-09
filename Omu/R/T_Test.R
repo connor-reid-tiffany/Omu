@@ -1,4 +1,4 @@
-#'
+#'t_test
 #'Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
 #'The order effects the fold change values
 #'@param data should be a metabolomics count data frame
@@ -8,10 +8,10 @@
 #'@param response_variable the name of the column with your response variables
 #'@param Factor the column name for your independent variables
 #'@export
-#'example T_Test(data = yourdata, colData = yourmeta_data, numerator = "Mock", denominator = "Infected", response_variable = "Metabolite", Factor = "Treatment_group")
+#'example t_test(data = yourdata, colData = yourmeta_data, numerator = "Mock", denominator = "Infected", response_variable = "Metabolite", Factor = "Treatment_group")
+#'t_test()
 
-
-T_Test <- function(data, colData, numerator, denominator, response_variable, Factor){
+t_test <- function(data, colData, numerator, denominator, response_variable, Factor){
 
 
 #Temporarily separate meta data from counts and store in other object
