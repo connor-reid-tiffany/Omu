@@ -1,74 +1,23 @@
-#' Pie Chart
-#'Convenience wrapper for the pie chart function in plotly
-#'@param data Datframe output from Count_Fold_Changes
-#'@param type string value of either "Increase", "ALL" or "Decrease"
-#'@param subplot Boolean of TRUE or FALSE. FALSE produces one pie chart of type,
-#'TRUE produces 3 pie charts of "All", "Increase", "Decrease
-#'export
-#'example Pie_Chart(data = your_fold_change_counts, type = "Decrease", subplot = FALSE)
+#'pie_chart
+#'Makes pie chart as ggplot2 object from ra_table function output
+#'@param data a dataframe object of percents. output from ra_table function
+#'@param variable The meta data variable you are measuring, i.e. data$Class
+#'@param column either data$Increase, data$Decrease, or data$Significant_Changes
+#'@param string denoting color for outline. use NA for no outline
+#'@export
+#'@example pie_chart(data = ra_table, variable = ra_table$Increase,
+#'column = ra_table$Class, color = "black")
+#'pie_chart()
 
-Pie_Chart <- function(data, type, subplot){
-  #Create percent tables for Inc, Dec, and All
-  colnames(data)[1] <- "Pathway"  
-  if(subplot==TRUE){
-    Dec = "Decrease"
-    Inc = "Increase"
-    
-    data_dec = data[data$colour %in% Dec,]
-    data_dec$Significant_Changes = abs(data_dec$Significant_Changes)
-    data_dec = data_dec[,c(1,2)]
-    data_dec$Significant_Changes = prop.table(data_dec$Significant_Changes)
-    data_dec$Significant_Changes = data_dec$Significant_Changes * 100
-    
-    data_inc = data[data$colour %in% Inc,]
-    data_inc = data_inc[,c(1,2)]
-    data_inc$Significant_Changes = prop.table(data_inc$Significant_Changes)
-    data_inc$Significant_Changes = data_inc$Significant_Changes * 100
-    
-    data$Significant_Changes = abs(data$Significant_Changes)
-    data = data[,c(1,2)]
-    data = ddply(data, "Pathway", numcolwise(sum)) 
-    data$Significant_Changes = prop.table(data$Significant_Changes)
-    data$Significant_Changes = data$Significant_Changes * 100
-    #Make pie charts
-    pie <- plot_ly() %>%
-      add_pie(data = data_dec, labels = ~Pathway, values = ~Significant_Changes,
-              name = "Decrease",domain = list(x = c(0, 0.4), y = c(0.4, 1)), 
-              textposition = 'inside', textinfo = 'percent', 
-              insidetextfont = list(color = '#FFFFFF', size = 14)) %>%
-      
-      
-      add_pie(data = data_inc, labels = ~Pathway, values = ~Significant_Changes,
-              name = "Increase", domain = list(x = c(0.6, 1), y = c(0.4, 1)), 
-              textposition = 'inside', textinfo = 'percent', 
-              insidetextfont = list(color = '#FFFFFF', size = 14)) %>%
-      
-      add_pie(data = data, labels = ~Pathway, values = ~Significant_Changes,
-              name = "All", domain = list(x = c(0.25, 0.75), y = c(0, 0.6)), 
-              textposition = 'inside', textinfo = 'percent', 
-              insidetextfont = list(color = '#FFFFFF', size = 14)) %>%
-      
-      layout(title = "Abundance", showlegend = F,
-             xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-             yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)) 
-    return(pie)
-    
-  }else{if(subplot==FALSE){
-    
-    if(!missing(type)){
-      Subset = type
-      data = data[data$colour %in% Subset,]
-    }else{data = data}
-    
-    data$Significant_Changes = abs(data$Significant_Changes)
-    data = data[,c(1,2)]
-    data = ddply(data, "Pathway", numcolwise(sum)) 
-    data$Significant_Changes = prop.table(data$Significant_Changes)
-    data$Significant_Changes = data$Significant_Changes * 100
-    pie <- plot_ly(data = data, labels = data[,1], values = ~Significant_Changes, type = 'pie',textposition = 'inside', textinfo = 'percent', 
-                   insidetextfont = list(color = '#FFFFFF', size = 14))
-    return(pie)
-    
-    }
-  }
+pie_chart <- function(data,variable, column, color){
+  variable <- reorder(variable, column)
+  bar<- ggplot(data)+
+    geom_bar(width = 1,aes(x="", y=column, fill=variable),
+             stat = "identity", color = color)
+  pie <- bar + coord_polar("y", start=0) +
+    theme_bw() + theme(panel.border = element_blank()) +
+    theme(panel.grid = element_blank()) +
+    theme(axis.text = element_blank()) +
+    theme(axis.title = element_blank()) +
+    theme(axis.ticks = element_blank())
 }

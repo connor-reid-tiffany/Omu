@@ -1,5 +1,14 @@
 #' assign_hierarchy
-#' @export
+#' 
+#' This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.
+#' It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
+#' @param data a metabolomics count matrix with either a KEGG compound, orthology, or gene identifier
+#' @param file_path a file path to either the metabolite hierarchy, orthology hierarchy, or organism hierarchy
+#' @param keep_unknowns a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds, FALSE prunes them
+#' @param identifier a string that is either "KEGG" for metabolite classification, "KO_Number" 
+#' for orthology classification, or "Org" for organism classification
+#' @example assign_hierarchy(data = yourmetabolomicsdata, file_path = "~/Desktop/Metabolite_Hierarchy.csv", keep_unknowns = TRUE, identifier = "KEGG")
+#' @export 
 
 
 
@@ -30,14 +39,9 @@ if (identifier == "KEGG"){
 
     return(data)
   } else if (identifier == "Org"){
-
-    data$Kingdom <- hierarchy$Kingdom[match(data$Org, hierarchy$Org)]
-    data$Supergroup <- hierarchy$Supergroup[match(data$Org, hierarchy$Org)]
-    data$Supergroup <- hierarchy$Supergroup[match(data$Org, hierarchy$Org)]
-    data$Genus <- hierarchy$Genus[match(data$Org, hierarchy$Org)]
-    data$Species <- hierarchy$Species[match(data$Org, hierarchy$Org)]
-    data$Additional_metadata <- hierarchy$Additional_metadata[match(data$Org,
-      hierarchy$Org)]
+    data <- inner_join(data, hierarchy, by = identifier)
+    return(data)
+    
 
     return(data)
   }

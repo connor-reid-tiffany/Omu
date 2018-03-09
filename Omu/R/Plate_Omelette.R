@@ -3,9 +3,9 @@
 
 
 
-Plate_Omelette <- function(countDF, Matrix) UseMethod("Plate_Omelette")
+plate_omelette <- function(countDF, Matrix) UseMethod("plate_omelette")
 
-Plate_Omelette.rxn <- function(countDF){
+plate_omelette.rxn <- function(countDF){
 
 #Clean up using regex
 countDF$Rxn = gsub("\\c\\("," \\[",countDF$Rxn)
@@ -24,7 +24,7 @@ class(Split_DF) <- append(class(Split_DF), "rxn")
 return(Split_DF)
 }
 
-Plate_Omelette.genes <- function(countDF){
+plate_omelette.genes <- function(countDF){
 
 #Clean up using regex
 countDF$Genes = gsub("\\c\\("," \\[",countDF$Genes)
@@ -50,7 +50,7 @@ DF_Complete = DF_Complete[ , -which(names(DF_Complete) %in% c("Gene_number"))]
 return(DF_Complete)
 }
 
-Plate_Omelette.rxnKO <- function(countDF, Matrix){
+plate_omelette.rxnKO <- function(countDF, Matrix){
 
 DF = as.data.frame(unlist(Matrix[,2], recursive = F))
 DF = rownames_to_column(DF, "KO_Number")

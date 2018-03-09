@@ -1,4 +1,4 @@
-#' Make_Omelette
+#' make_omelette
 #' Internal function for KEGG_Gather
 #'@export
 
