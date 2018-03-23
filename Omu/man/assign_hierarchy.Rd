@@ -4,17 +4,15 @@
 \alias{assign_hierarchy}
 \title{assign_hierarchy}
 \usage{
-assign_hierarchy(data, file_path, keep_unknowns, identifier)
+assign_hierarchy(data, keep_unknowns, identifier)
 }
 \arguments{
 \item{data}{a metabolomics count matrix with either a KEGG compound, orthology, or gene identifier}
 
-\item{file_path}{a file path to either the metabolite hierarchy, orthology hierarchy, or organism hierarchy}
-
 \item{keep_unknowns}{a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds, FALSE prunes them}
 
-\item{identifier}{a string that is either "KEGG" for metabolite classification, "KO_Number" 
-for orthology classification, or "Org" for organism classification}
+\item{identifier}{a string that is either "KEGG" for metabolite, "KO_Number"
+for orthology,"Prokaryote" for organism, or "Eukaryote" for organism cl}
 }
 \description{
 This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.

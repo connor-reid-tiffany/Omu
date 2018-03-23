@@ -1,9 +1,10 @@
-#Method for gathering metadata from KEGG API
+#'KEGG_gather()
+#'Method for gathering metadata from KEGG API
 #'@param countDF A metabolmics count dataframe with a KEGG identifier columns
 #'@param sig_threshold Numeric. A significance threshold to prune out metabolites
 #'@export
 #'@example KEGG_gather(countDF = countDF, sig_threshold = 0.05)
-#'KEGG_gather()
+
 
 KEGG_gather <- function(countDF, sig_threshold) UseMethod("KEGG_gather", countDF)
 

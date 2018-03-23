@@ -2,10 +2,12 @@
 % Please edit documentation in R/T_Test.R
 \name{T_Test}
 \alias{T_Test}
-\title{Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
+\title{T_Test
+Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
 The order effects the fold change values}
 \usage{
-T_Test(data, colData, numerator, denominator, response_variable, Factor)
+T_Test(data, colData, numerator, denominator, response_variable, Factor,
+  log_transform)
 }
 \arguments{
 \item{data}{should be a metabolomics count data frame}
@@ -21,6 +23,7 @@ T_Test(data, colData, numerator, denominator, response_variable, Factor)
 \item{denominator:see}{above, in quotes}
 }
 \description{
+T_Test
 Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
 The order effects the fold change values
 }

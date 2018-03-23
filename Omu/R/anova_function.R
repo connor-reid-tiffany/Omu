@@ -7,18 +7,18 @@
 #'@param response_variable String of the column header for the response variables, usually "Metabolite"
 #'@param Var1 String of the first independent variable you wish to test
 #'@param Var2 String of the second independent variable you wish to test. Optional parameter
-#'@param interaction Boolean of TRUE or FALSE for whether or not you wish to model an interaction between 
+#'@param interaction Boolean of TRUE or FALSE for whether or not you wish to model an interaction between
 #'independent variables. Optional parameter
 #'@param log_transform Boolean of TRUE or FALSE for whether or not you wish to log transform your counts
 #'@examples anova_function(data = metabolomics_counts, colData = metadata, response_variable = "Metabolite", Var1 = "Treatment", log_transform = TRUE)
-#'anova_function()
+
 
 anova_function <- function(data, colData, response_variable, Var1, Var2, interaction, log_transform){
 
 data = column_to_rownames(df = data, var = response_variable)
 data_Int <- data[sapply(data, function(x) is.numeric(x))]
 
-#Transform for 'normalization' 
+#Transform for 'normalization'
 data_Transpose <- as.data.frame(t(data_Int))
 data_Transpose <- as.data.frame(cbind(Sample = rownames(data_Transpose), data_Transpose))
 data_Transpose = as.data.frame(cbind(data_Transpose, colData))
@@ -37,7 +37,7 @@ data_Num <- as.data.frame(cbind(Sample = rownames(data_Num), data_Num))
 data_Num = merge(data_Num, data_Fact, by = 'Sample')
 data_Num <- data_Num[, !names(data_Num) %in% c('Sample', 'Sample.1')]
 
-#Create arguments 
+#Create arguments
 if(log_transform==FALSE){
 data_mod = data_Num
 } else if (log_transform==TRUE){
@@ -79,7 +79,7 @@ return(results)
     })
   names(results) <- Vect
   results <- lapply(results, anova)
-  
+
   results <- sapply(results, cbind)
   results <- t(results)
   results <- as.data.frame(results[,"Pr(>F)"])
@@ -87,14 +87,14 @@ return(results)
   results <- results[,1:2]
   colnames(results)[1] <- "Var1 pval"
   colnames(results)[2] <- "Var2 pval"
-  
+
   #Merge metadata, means & fold change, and t test results by metabolite name
   results = rownames_to_column(results, "Metabolite")
   data = rownames_to_column(data, "Metabolite")
   results$padj = p.adjust(results$`Var2 pval`, method = "BH")
   results = left_join(results, data, by = "Metabolite")
   return(results)
-  
+
 } else if(!missing(interaction) & !missing(Var2)){
   Var1 = colData[, Var1]
   Var2 = colData[, Var2]
@@ -104,7 +104,7 @@ return(results)
     })
   names(results) <- Vect
   results <- lapply(results, anova)
-  
+
   results <- sapply(results, cbind)
   results <- t(results)
   results <- as.data.frame(results[,"Pr(>F)"])
@@ -113,7 +113,7 @@ return(results)
   colnames(results)[1] <- "Var1 pval"
   colnames(results)[2] <- "Var2 pval"
   colnames(results)[3] <- "Interaction pval"
-  
+
   #Merge metadata, means & fold change, and t test results by metabolite name
   results = rownames_to_column(results, "Metabolite")
   data = rownames_to_column(data, "Metabolite")
@@ -122,6 +122,3 @@ return(results)
   return(results)
 }
 }
-
-
-

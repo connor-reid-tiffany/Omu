@@ -5,10 +5,10 @@
 \title{Principle component analysis plot
 internally performs and ordination and outputs a PCA plot}
 \usage{
-PCA_plot(countData, colData, variable, color, response_variable)
+PCA_plot(data, colData, variable, color, response_variable)
 }
 \arguments{
-\item{countData}{Metabolomics count data}
+\item{data}{Metabolomics count data}
 
 \item{colData}{Metabolomics meta data}
 

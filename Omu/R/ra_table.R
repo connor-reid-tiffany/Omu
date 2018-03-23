@@ -6,6 +6,7 @@
 #'@export
 #'@example ra_table(data = count_fold_changes_output, variable = "Class")
 
+
 ra_table <- function(data,variable){
 
     #Make decrease table
@@ -33,4 +34,3 @@ ra_table <- function(data,variable){
     data_join <- left_join(data_total, data_dec, variable)
     data_join = left_join(data_join, data_inc, variable)
 }
-

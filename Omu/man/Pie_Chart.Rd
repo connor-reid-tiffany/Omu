@@ -10,9 +10,9 @@ pie_chart(data, variable, column, color)
 \arguments{
 \item{data}{a dataframe object of percents. output from ra_table function}
 
-\item{variable}{The meta data variable you are measuring, i.e. data$Class}
+\item{variable}{The meta data variable you are measuring, i.e. "Class"}
 
-\item{column}{either data$Increase, data$Decrease, or data$Significant_Changes}
+\item{column}{either "Increase", "Decrease", or "Significant_Changes"}
 
 \item{string}{denoting color for outline. use NA for no outline}
 }

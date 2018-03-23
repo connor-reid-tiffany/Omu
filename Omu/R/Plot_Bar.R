@@ -1,9 +1,9 @@
 #' plot_bar
 #' Creates a ggplot2 object using the output file from the Count_Fold_Changes function
 #'@param data The output file from Count_Fold_Changes
-#'@param fill A list of length 2 containing colors for filling the bars, Factors are alphanumeric, so the first color is for the "Decrease" bar while the second is for "Increase"
-#'@param color A list of length 2 containing colors for the bar outlines
-#'@param size A list of 2 numbers for the size of the bar outlines.
+#'@param fill A character vector of length 2 containing colors for filling the bars, Factors are alphanumeric, so the first color is for the "Decrease" bar while the second is for "Increase"
+#'@param color A character vector of length 2 containing colors for the bar outlines
+#'@param size A character vector of 2 numbers for the size of the bar outlines.
 #'@keywords metabo
 #'@export
 #'@examples plot_bar(data = data, fill = levels, color = levels, size = levels)
