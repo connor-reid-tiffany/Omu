@@ -11,10 +11,8 @@ assign_hierarchy(data, keep_unknowns, identifier)
 
 \item{keep_unknowns}{a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds, FALSE prunes them}
 
-\item{identifier}{a string that is either "KEGG" for metabolite, "KO_Number"
-for orthology,"Prokaryote" for organism, or "Eukaryote" for organism cl}
+\item{identifier}{a string that is either "KEGG" for metabolite, "KO_Number" for orthology,"Prokaryote" for organism, or "Eukaryote" for organism}
 }
 \description{
-This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.
-It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
+This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers. It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
 }

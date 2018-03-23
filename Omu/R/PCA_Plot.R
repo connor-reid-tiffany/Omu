@@ -1,13 +1,13 @@
-#'Principle component analysis plot
-#'internally performs and ordination and outputs a PCA plot
+#'PCA_plot
+
+#'Performs an ordination and outputs a PCA plot
 #'@param data Metabolomics count data
 #'@param colData Metabolomics meta data
 #'@param variable The independent variable you wish to compare and contrast
 #'@param color String of what you want to color by. usually should be the same as variable
 #'@param response_variable String of the response_variable, usually should be "Metabolite"
-#'@export
 #'@example PCA_plot(data = Metabolomciscoubts, colData = "Metabolomicsmeta",variable = "Treatment", color = "Treatment", response_variable = "Metabolite)
-#'PCA_plot()
+#'@export
 
 PCA_plot <- function(data, colData, variable, color, response_variable){
 

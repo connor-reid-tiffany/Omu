@@ -14,7 +14,7 @@ pie_chart(data, variable, column, color)
 
 \item{column}{either "Increase", "Decrease", or "Significant_Changes"}
 
-\item{string}{denoting color for outline. use NA for no outline}
+\item{color}{string denoting color for outline. use NA for no outline}
 }
 \description{
 pie_chart

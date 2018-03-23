@@ -27,9 +27,4 @@ plot_volcano(data, column, strpattern, fill, sig_threshold, alpha, shape, color)
 }
 \description{
 This function takes a data frame from T_Test and creates a Volcano Plot as a ggplot2 graphical object.
-The output is compatible with any ggplot2 layers or themes that are applicable to geom_point graphs.
-}
-\examples{
-plot_volcano(data = data, column = "Subclass_2", strpattern = c("SugaralcoholsFig", "SugaracidsFig"),fill = c("black", "hotpink", "cyan"), sig_threshold = 1.301029996, alpha = c(0.25, 1, 1), shape = c(1, 24, 22),color = c("black", "black", "black"))
-plot_volcano(data)
 }

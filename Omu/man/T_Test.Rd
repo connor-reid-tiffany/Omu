@@ -3,8 +3,7 @@
 \name{T_Test}
 \alias{T_Test}
 \title{T_Test
-Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
-The order effects the fold change values}
+Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange. The order effects the fold change values}
 \usage{
 T_Test(data, colData, numerator, denominator, response_variable, Factor,
   log_transform)
@@ -16,14 +15,15 @@ T_Test(data, colData, numerator, denominator, response_variable, Factor,
 
 \item{numerator}{is the variable you wish to compare against the denominator, in quotes}
 
+\item{denominator}{see above, in quotes}
+
 \item{response_variable}{the name of the column with your response variables}
 
 \item{Factor}{the column name for your independent variables}
 
-\item{denominator:see}{above, in quotes}
+\item{log_transform}{TRUE or FALSE value for whether or not log transformation of data is performed before the t test}
 }
 \description{
 T_Test
-Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange
-The order effects the fold change values
+Performs T_Test, Standard Error, FDR correction, Fold Change, log2FoldChange. The order effects the fold change values
 }

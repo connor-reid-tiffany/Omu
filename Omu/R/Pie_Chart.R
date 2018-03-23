@@ -3,10 +3,9 @@
 #'@param data a dataframe object of percents. output from ra_table function
 #'@param variable The meta data variable you are measuring, i.e. "Class"
 #'@param column either "Increase", "Decrease", or "Significant_Changes"
-#'@param string denoting color for outline. use NA for no outline
+#'@param color string denoting color for outline. use NA for no outline
+#'@example pie_chart(data = ra_table, variable = "Increase",column = "Class", color = "black")
 #'@export
-#'@example pie_chart(data = ra_table, variable = ra_table$Increase,column = ra_table$Class, color = "black")
-
 
 pie_chart <- function(data,variable, column, color){
   variable <- reorder(variable, column)

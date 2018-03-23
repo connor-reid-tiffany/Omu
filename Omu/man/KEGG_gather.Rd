@@ -2,7 +2,7 @@
 % Please edit documentation in R/KEGG_Gather.R
 \name{KEGG_gather}
 \alias{KEGG_gather}
-\title{KEGG_gather()
+\title{KEGG_gather
 Method for gathering metadata from KEGG API}
 \usage{
 KEGG_gather(countDF, sig_threshold)
@@ -13,6 +13,6 @@ KEGG_gather(countDF, sig_threshold)
 \item{sig_threshold}{Numeric. A significance threshold to prune out metabolites}
 }
 \description{
-KEGG_gather()
+KEGG_gather
 Method for gathering metadata from KEGG API
 }

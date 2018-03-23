@@ -2,7 +2,7 @@
 % Please edit documentation in R/Count_Fold_Changes.R
 \name{count_fold_changes}
 \alias{count_fold_changes}
-\title{count fold changes}
+\title{count_fold_changes}
 \usage{
 count_fold_changes(data, ..., column, sig_threshold)
 }

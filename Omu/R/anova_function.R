@@ -1,17 +1,14 @@
 #'anova_function
-#'Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent
-#'variables individually, or on the interaction between two independent variables
-#'@export
+#'Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent variables individually, or on the interaction between two independent variables
 #'@param data A metabolomics count data frame
 #'@param colData Meta data dataframe for the metabolomics count data frame
 #'@param response_variable String of the column header for the response variables, usually "Metabolite"
 #'@param Var1 String of the first independent variable you wish to test
 #'@param Var2 String of the second independent variable you wish to test. Optional parameter
-#'@param interaction Boolean of TRUE or FALSE for whether or not you wish to model an interaction between
-#'independent variables. Optional parameter
+#'@param interaction Boolean of TRUE or FALSE for whether or not you wish to model an interaction betweenindependent variables. Optional parameter
 #'@param log_transform Boolean of TRUE or FALSE for whether or not you wish to log transform your counts
-#'@examples anova_function(data = metabolomics_counts, colData = metadata, response_variable = "Metabolite", Var1 = "Treatment", log_transform = TRUE)
-
+#'@example anova_function(data = metabolomics_counts, colData = metadata, response_variable = "Metabolite", Var1 = "Treatment", log_transform = TRUE)
+#'@export
 
 anova_function <- function(data, colData, response_variable, Var1, Var2, interaction, log_transform){
 

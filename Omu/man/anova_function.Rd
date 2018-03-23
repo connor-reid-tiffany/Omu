@@ -3,8 +3,7 @@
 \name{anova_function}
 \alias{anova_function}
 \title{anova_function
-Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent
-variables individually, or on the interaction between two independent variables}
+Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent variables individually, or on the interaction between two independent variables}
 \usage{
 anova_function(data, colData, response_variable, Var1, Var2, interaction,
   log_transform)
@@ -20,16 +19,11 @@ anova_function(data, colData, response_variable, Var1, Var2, interaction,
 
 \item{Var2}{String of the second independent variable you wish to test. Optional parameter}
 
-\item{interaction}{Boolean of TRUE or FALSE for whether or not you wish to model an interaction between
-independent variables. Optional parameter}
+\item{interaction}{Boolean of TRUE or FALSE for whether or not you wish to model an interaction betweenindependent variables. Optional parameter}
 
 \item{log_transform}{Boolean of TRUE or FALSE for whether or not you wish to log transform your counts}
 }
 \description{
 anova_function
-Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent
-variables individually, or on the interaction between two independent variables
-}
-\examples{
-anova_function(data = metabolomics_counts, colData = metadata, response_variable = "Metabolite", Var1 = "Treatment", log_transform = TRUE)
+Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent variables individually, or on the interaction between two independent variables
 }

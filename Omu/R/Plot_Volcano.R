@@ -1,8 +1,6 @@
 #'plot_volcano
 #'
 #'This function takes a data frame from T_Test and creates a Volcano Plot as a ggplot2 graphical object.
-#'The output is compatible with any ggplot2 layers or themes that are applicable to geom_point graphs.
-#'
 #'@param data The output file from the T_Test().
 #'@param factor A column of metadata from the data file, i.e. data$Class. If you provide the function with a factor parameter, every other parameter except sig_threshold is required. Choosing no factor parameter will produce a volcano plot with significant points in red, and not significant points in black.
 #'@param column A character vector, i.e. column = c("Class")
@@ -12,9 +10,8 @@
 #'@param alpha A character vector for setting transparency of factor levels. i.e. alpha = (1, 0.5, 1)
 #'@param shape A character vector for setting the shapes for your factor levels. See ggplot2 for an index of shapes
 #'@param color A character vector of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.
+#'@example plot_volcano(data = data, column = "Subclass_2", strpattern = c("SugaralcoholsFig", "SugaracidsFig"),fill = c("black", "hotpink", "cyan"), sig_threshold = 1.301029996, alpha = c(0.25, 1, 1), shape = c(1, 24, 22),color = c("black", "black", "black"))
 #'@export
-#'@examples plot_volcano(data = data, column = "Subclass_2", strpattern = c("SugaralcoholsFig", "SugaracidsFig"),fill = c("black", "hotpink", "cyan"), sig_threshold = 1.301029996, alpha = c(0.25, 1, 1), shape = c(1, 24, 22),color = c("black", "black", "black"))
-#'@examples plot_volcano(data)
 
 
 

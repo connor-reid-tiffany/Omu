@@ -3,7 +3,7 @@
 \name{plot_bar}
 \alias{plot_bar}
 \title{plot_bar
-Creates a ggplot2 object using the output file from the Count_Fold_Changes function}
+Creates a ggplot2 object using the output file from the count_fold_changes function}
 \usage{
 plot_bar(data, fill, size, color)
 }
@@ -18,9 +18,5 @@ plot_bar(data, fill, size, color)
 }
 \description{
 plot_bar
-Creates a ggplot2 object using the output file from the Count_Fold_Changes function
+Creates a ggplot2 object using the output file from the count_fold_changes function
 }
-\examples{
-plot_bar(data = data, fill = levels, color = levels, size = levels)
-}
-\keyword{metabo}

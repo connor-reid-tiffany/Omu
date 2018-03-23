@@ -3,9 +3,8 @@
 #'Make a relative abundance table from the count_fold_changes function output. For making pie charts
 #'@param data data frame object from the count_fold_changes function
 #'@param variable meta data from count_fold_changes, i.e. "Class"
-#'@export
 #'@example ra_table(data = count_fold_changes_output, variable = "Class")
-
+#'@export
 
 ra_table <- function(data,variable){
 

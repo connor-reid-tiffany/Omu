@@ -1,14 +1,11 @@
 #' assign_hierarchy
 #'
-#' This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.
-#' It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
+#' This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers. It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
 #' @param data a metabolomics count matrix with either a KEGG compound, orthology, or gene identifier
 #' @param keep_unknowns a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds, FALSE prunes them
-#' @param identifier a string that is either "KEGG" for metabolite, "KO_Number"
-#' for orthology,"Prokaryote" for organism, or "Eukaryote" for organism cl
-#' @export
+#' @param identifier a string that is either "KEGG" for metabolite, "KO_Number" for orthology,"Prokaryote" for organism, or "Eukaryote" for organism
 #' @example assign_hierarchy(data = yourmetabolomicsdata, file_path = "~/Desktop/Metabolite_Hierarchy.csv", keep_unknowns = TRUE, identifier = "KEGG")
-
+#' @export
 
 assign_hierarchy <- function(data, keep_unknowns, identifier){
 

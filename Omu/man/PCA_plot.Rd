@@ -2,7 +2,8 @@
 % Please edit documentation in R/PCA_Plot.R
 \name{PCA_plot}
 \alias{PCA_plot}
-\title{Principle component analysis plot
+\title{PCA_plot
+Principle component analysis plot
 internally performs and ordination and outputs a PCA plot}
 \usage{
 PCA_plot(data, colData, variable, color, response_variable)
@@ -19,6 +20,7 @@ PCA_plot(data, colData, variable, color, response_variable)
 \item{response_variable}{String of the response_variable, usually should be "Metabolite"}
 }
 \description{
+PCA_plot
 Principle component analysis plot
 internally performs and ordination and outputs a PCA plot
 }

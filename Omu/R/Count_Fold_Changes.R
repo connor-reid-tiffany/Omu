@@ -1,4 +1,4 @@
-#'count fold changes
+#'count_fold_changes
 #'
 #'This function takes an input data frame that has been run in a statistical modeling function
 #'and returns the number of compounds that significantly changed in each metabolite Class or Subclass.
