@@ -3,24 +3,20 @@
 \name{plot_bar}
 \alias{plot_bar}
 \title{plot_bar
-Creates a ggplot2 object using the output file from the Count_Fold_Changes function}
+Creates a ggplot2 object using the output file from the count_fold_changes function}
 \usage{
 plot_bar(data, fill, size, color)
 }
 \arguments{
 \item{data}{The output file from Count_Fold_Changes}
 
-\item{fill}{A list of length 2 containing colors for filling the bars, Factors are alphanumeric, so the first color is for the "Decrease" bar while the second is for "Increase"}
+\item{fill}{A character vector of length 2 containing colors for filling the bars, Factors are alphanumeric, so the first color is for the "Decrease" bar while the second is for "Increase"}
 
-\item{size}{A list of 2 numbers for the size of the bar outlines.}
+\item{size}{A character vector of 2 numbers for the size of the bar outlines.}
 
-\item{color}{A list of length 2 containing colors for the bar outlines}
+\item{color}{A character vector of length 2 containing colors for the bar outlines}
 }
 \description{
 plot_bar
-Creates a ggplot2 object using the output file from the Count_Fold_Changes function
+Creates a ggplot2 object using the output file from the count_fold_changes function
 }
-\examples{
-plot_bar(data = data, fill = levels, color = levels, size = levels)
-}
-\keyword{metabo}

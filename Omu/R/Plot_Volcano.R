@@ -1,8 +1,6 @@
 #'plot_volcano
 #'
-#'This function takes an input data frame from Clean_DESeq_results and creates a Volcano Plot as a ggplot2 graphical object.
-#'The output is compatible with any ggplot2 layers or themes that are applicable to geom_point graphs.
-#'
+#'This function takes an input data frame from T_Test and creates a volcano plot as a ggplot2 object.
 #'@param data The output file from the Clean_DESeq_results() function.
 #'@param factor A column of metadata from the data file, i.e. data$Class. If you provide the function with a factor parameter, every other parameter except sig_threshold is required. Choosing no factor parameter will produce a volcano plot with significant points in red, and not significant points in black.
 #'@param columns The factor as a list, i.e. columns = c("Class")
@@ -21,10 +19,10 @@
 
 
 
-plot_volcano <- function(data, columns, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
+plot_volcano <- function(data, factor, columns, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
   if (missing(sig_threshold)) sig_threshold = 0.05
   else sig_threshold = sig_threshold
-  if (missing(strpattern)){
+  if (missing(factor)){
     data[, "Color"] <- NA
     data$Color = data$padj <= sig_threshold
       ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
@@ -36,13 +34,12 @@ plot_volcano <- function(data, columns, strpattern, fill_list, sig_threshold,  a
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed")
   }else{
     data[, columns] <- sapply(data[, columns], as.character)
-    Vector = data[,columns]
-    Match <- str_match(pattern = strpattern, string = Vector)
-    Match = str_replace_na(Match, replacement = "NA")
+    factor<- str_match(pattern = strpattern, string = factor)
+    factor = str_replace_na(factor, replacement = "NA")
     data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)],
                                                as.factor)
     ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
-        geom_point(size = 3.5, aes(fill = factor(Match), alpha = factor(Match), shape = factor(Match))) +
+        geom_point(size = 3.5, aes(fill = factor(factor), alpha = factor(factor), shape = factor(factor))) +
         scale_fill_manual(values = fill_list) +
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed") +
         scale_alpha_manual(values = alpha_list) +

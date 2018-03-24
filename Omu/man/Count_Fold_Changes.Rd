@@ -2,9 +2,9 @@
 % Please edit documentation in R/Count_Fold_Changes.R
 \name{count_fold_changes}
 \alias{count_fold_changes}
-\title{count fold changes}
+\title{count_fold_changes}
 \usage{
-count_fold_changes(data, ..., column, alpha)
+count_fold_changes(data, ..., column, sig_threshold)
 }
 \arguments{
 \item{data}{Output dataframe from the Clean_DESeq_results function}
@@ -21,6 +21,5 @@ and returns the number of compounds that significantly changed in each metabolit
 }
 \examples{
 count_fold_changes(data = data, "Class", column = "Class", alpha = 0.05)
-count_fold_changes()
 }
 \keyword{metabo}

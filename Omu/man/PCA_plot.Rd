@@ -2,13 +2,13 @@
 % Please edit documentation in R/PCA_Plot.R
 \name{PCA_plot}
 \alias{PCA_plot}
-\title{Principle component analysis plot
-internally performs and ordination and outputs a PCA plot}
+\title{PCA_plot
+Performs an ordination and outputs a PCA plot}
 \usage{
-PCA_plot(countData, colData, variable, color, response_variable)
+PCA_plot(data, colData, variable, color, response_variable)
 }
 \arguments{
-\item{countData}{Metabolomics count data}
+\item{data}{Metabolomics count data}
 
 \item{colData}{Metabolomics meta data}
 
@@ -19,6 +19,6 @@ PCA_plot(countData, colData, variable, color, response_variable)
 \item{response_variable}{String of the response_variable, usually should be "Metabolite"}
 }
 \description{
-Principle component analysis plot
-internally performs and ordination and outputs a PCA plot
+PCA_plot
+Performs an ordination and outputs a PCA plot
 }

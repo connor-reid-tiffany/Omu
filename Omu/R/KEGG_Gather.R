@@ -1,12 +1,14 @@
-#Method for gathering metadata from KEGG API
+#'KEGG_gather
+#'Method for gathering metadata from KEGG API
 #'@param countDF A metabolmics count dataframe with a KEGG identifier columns
 #'@param sig_threshold Numeric. A significance threshold to prune out metabolites
-#'@export
 #'@example KEGG_gather(countDF = countDF, sig_threshold = 0.05)
-#'KEGG_gather()
+#'@export
 
 KEGG_gather <- function(countDF, sig_threshold) UseMethod("KEGG_gather", countDF)
 
+#' @rdname KEGG_gather
+#' @export
 KEGG_gather.cpd <- function(countDF, sig_threshold){
 
 #create value column, subset data based on significance
@@ -29,7 +31,7 @@ if (missing(sig_threshold)){
   cat(text_art, sep = "\n")
 
   #Send identifier countDF to KEGG API
-  matrix <- Make_Omelette(countDF = countDF, column = column, req = req)
+  matrix <- make_omelette(countDF = countDF, column = column, req = req)
 
   #Convert to data.frame and append acquired data
   df = as.data.frame(matrix)
@@ -49,7 +51,8 @@ if (missing(sig_threshold)){
 
   }
 
-
+#' @rdname KEGG_gather
+#' @export
 KEGG_gather.rxn <- function(countDF){
 
 #Set variables
@@ -81,7 +84,8 @@ return(countDF)
 }
 
 
-
+#' @rdname KEGG_gather
+#' @export
 KEGG_gather.KO <- function(countDF){
 
 #Set variables

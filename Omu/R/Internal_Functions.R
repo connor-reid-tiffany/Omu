@@ -38,8 +38,8 @@ make_omelette <- function(countDF, column, req){
 plate_omelette_rxnko<- function(countDF, matrix){
 
 ko_df = as.data.frame(unlist(matrix[,2], recursive = F))
-ko_df = rownames_to_column(df, "KO_Number")
-ko_df = with(ko_df, cbind(DF[,2],
+ko_df = rownames_to_column(ko_df, "KO_Number")
+ko_df = with(ko_df, cbind(ko_df[,2],
 colsplit(ko_df$KO_Number, pattern = "\\.",
 names = c('Element_number', 'KO_Number'))))
 colnames(ko_df)[1] <- "KO"

@@ -4,36 +4,27 @@
 \alias{plot_volcano}
 \title{plot_volcano}
 \usage{
-plot_volcano(data, columns, strpattern, fill_list, sig_threshold, alpha_list,
-  shape_list, color_list)
+plot_volcano(data, column, strpattern, fill, sig_threshold, alpha, shape, color)
 }
 \arguments{
-\item{data}{The output file from the Clean_DESeq_results() function.}
+\item{data}{The output file from the T_Test().}
 
-\item{columns}{The factor as a list, i.e. columns = c("Class")}
+\item{column}{A character vector, i.e. column = c("Class")}
 
-\item{strpattern}{A list of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")}
+\item{strpattern}{A character vector of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")}
 
-\item{fill_list}{A list of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.}
+\item{fill}{A character vector of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.}
 
-\item{sig_threshold}{An integer. Creates a horizontal dashed line for a significance threshold. i.e. sig_threshold = 0.05. Defaut value is 0.05}
+\item{sig_threshold}{Numeric. Creates a horizontal dashed line for a significance threshold. i.e. sig_threshold = 0.05. Defaut value is 0.05}
 
-\item{alpha_list}{A list for setting transparency of factor levels. i.e. alpha_list = (1, 0.5, 1)}
+\item{alpha}{A character vector for setting transparency of factor levels. i.e. alpha = (1, 0.5, 1)}
 
-\item{shape_list}{A list for setting the shapes for your factor levels. See ggplot2 for an index of shapes}
+\item{shape}{A character vector for setting the shapes for your factor levels. See ggplot2 for an index of shapes}
 
-\item{color_list}{A list of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.}
+\item{color}{A character vector of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.}
 
 \item{factor}{A column of metadata from the data file, i.e. data$Class. If you provide the function with a factor parameter, every other parameter except sig_threshold is required. Choosing no factor parameter will produce a volcano plot with significant points in red, and not significant points in black.}
 }
 \description{
-This function takes an input data frame from Clean_DESeq_results and creates a Volcano Plot as a ggplot2 graphical object.
-The output is compatible with any ggplot2 layers or themes that are applicable to geom_point graphs.
+This function takes a data frame from T_Test and creates a Volcano Plot as a ggplot2 graphical object.
 }
-\examples{
-plot_volcano(data, factor = data$Subclass_2, columns = c("Subclass_2"), strpattern = c("SugaralcoholsFig", "SugaracidsFig"),
-fill_list = c("black", "hotpink", "cyan"), sig_threshold = 1.301029996, alpha_list = c(0.25, 1, 1), shape_list = c(1, 24, 22),
-color_list = c("black", "black", "black"))
-plot_volcano(data)
-}
-\keyword{metabo}

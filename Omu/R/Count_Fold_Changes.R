@@ -1,4 +1,4 @@
-#'count fold changes
+#'count_fold_changes
 #'
 #'This function takes an input data frame that has been run in a statistical modeling function
 #'and returns the number of compounds that significantly changed in each metabolite Class or Subclass.
@@ -9,9 +9,9 @@
 #'@keywords metabo
 #'@export
 #'@examples count_fold_changes(data = data, "Class", column = "Class", alpha = 0.05)
-#'count_fold_changes()
-count_fold_changes <- function(data, ..., column, alpha){
-  data <- data[which(data$padj < alpha), ]
+
+count_fold_changes <- function(data, ..., column, sig_threshold){
+  data <- data[which(data$padj < sig_threshold), ]
   data <- data %>% group_by_(...) %>%
     mutate(Significant_Changes = sum(log2FoldChange>0),
            neg = sum(log2FoldChange<0))
