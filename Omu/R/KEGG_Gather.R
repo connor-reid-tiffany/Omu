@@ -31,7 +31,7 @@ if (missing(sig_threshold)){
   cat(text_art, sep = "\n")
 
   #Send identifier countDF to KEGG API
-  matrix <- Make_Omelette(countDF = countDF, column = column, req = req)
+  matrix <- make_omelette(countDF = countDF, column = column, req = req)
 
   #Convert to data.frame and append acquired data
   df = as.data.frame(matrix)
