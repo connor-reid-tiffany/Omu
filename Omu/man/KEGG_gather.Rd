@@ -2,10 +2,19 @@
 % Please edit documentation in R/KEGG_Gather.R
 \name{KEGG_gather}
 \alias{KEGG_gather}
+\alias{KEGG_gather.cpd}
+\alias{KEGG_gather.rxn}
+\alias{KEGG_gather.KO}
 \title{KEGG_gather
 Method for gathering metadata from KEGG API}
 \usage{
 KEGG_gather(countDF, sig_threshold)
+
+\method{KEGG_gather}{cpd}(countDF, sig_threshold)
+
+\method{KEGG_gather}{rxn}(countDF)
+
+\method{KEGG_gather}{KO}(countDF)
 }
 \arguments{
 \item{countDF}{A metabolmics count dataframe with a KEGG identifier columns}

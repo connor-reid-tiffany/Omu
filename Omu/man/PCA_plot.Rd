@@ -3,8 +3,7 @@
 \name{PCA_plot}
 \alias{PCA_plot}
 \title{PCA_plot
-Principle component analysis plot
-internally performs and ordination and outputs a PCA plot}
+Performs an ordination and outputs a PCA plot}
 \usage{
 PCA_plot(data, colData, variable, color, response_variable)
 }
@@ -21,6 +20,5 @@ PCA_plot(data, colData, variable, color, response_variable)
 }
 \description{
 PCA_plot
-Principle component analysis plot
-internally performs and ordination and outputs a PCA plot
+Performs an ordination and outputs a PCA plot
 }
