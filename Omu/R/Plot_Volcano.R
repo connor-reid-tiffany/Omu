@@ -2,8 +2,7 @@
 #'
 #'This function takes an input data frame from T_Test and creates a volcano plot as a ggplot2 object.
 #'@param data The output file from the Clean_DESeq_results() function.
-#'@param factor A column of metadata from the data file, i.e. data$Class. If you provide the function with a factor parameter, every other parameter except sig_threshold is required. Choosing no factor parameter will produce a volcano plot with significant points in red, and not significant points in black.
-#'@param columns The factor as a list, i.e. columns = c("Class")
+#'@param column The factor as a list, i.e. column = c("Class")
 #'@param strpattern A list of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")
 #'@param fill_list A list of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.
 #'@param sig_threshold An integer. Creates a horizontal dashed line for a significance threshold. i.e. sig_threshold = 0.05. Defaut value is 0.05
@@ -12,17 +11,17 @@
 #'@param color_list A list of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.
 #'@keywords metabo
 #'@export
-#'@examples plot_volcano(data, factor = data$Subclass_2, columns = c("Subclass_2"), strpattern = c("SugaralcoholsFig", "SugaracidsFig"),
+#'@examples plot_volcano(data, column = c("Subclass_2"), strpattern = c("SugaralcoholsFig", "SugaracidsFig"),
 #'fill_list = c("black", "hotpink", "cyan"), sig_threshold = 1.301029996, alpha_list = c(0.25, 1, 1), shape_list = c(1, 24, 22),
 #'color_list = c("black", "black", "black"))
 #'@examples plot_volcano(data)
 
 
 
-plot_volcano <- function(data, factor, columns, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
+plot_volcano <- function(data, column, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
   if (missing(sig_threshold)) sig_threshold = 0.05
   else sig_threshold = sig_threshold
-  if (missing(factor)){
+  if (missing(column)){
     data[, "Color"] <- NA
     data$Color = data$padj <= sig_threshold
       ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
@@ -33,9 +32,14 @@ plot_volcano <- function(data, factor, columns, strpattern, fill_list, sig_thres
         scale_fill_manual(values = c("TRUE" = "red", "FALSE" = "white"))+
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed")
   }else{
-    data[, columns] <- sapply(data[, columns], as.character)
-    factor<- str_match(pattern = strpattern, string = factor)
+    data2 = data
+    data2[,column] <- sapply(data2[,column], function(x) replace(x, x %in% strpattern, NA))
+    data2[,column] <- factor(data2[,column])
+    to_remove = levels(data2[,column])
+    data[,column] = sapply(data[,column], function(x) replace(x, x %in% to_remove, NA))
+    factor = data[,column]
     factor = str_replace_na(factor, replacement = "NA")
+    data[,column] = factor(data[,column])
     data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)],
                                                as.factor)
     ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
