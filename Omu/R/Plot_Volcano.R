@@ -9,7 +9,7 @@
 #'@param alpha_list A list for setting transparency of factor levels. i.e. alpha_list = (1, 0.5, 1)
 #'@param shape_list A list for setting the shapes for your factor levels. See ggplot2 for an index of shapes
 #'@param color_list A list of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.
-#'@keywords metabo
+#'@param size Size of points in plot
 #'@export
 #'@examples plot_volcano(data, column = c("Subclass_2"), strpattern = c("SugaralcoholsFig", "SugaracidsFig"),
 #'fill_list = c("black", "hotpink", "cyan"), sig_threshold = 1.301029996, alpha_list = c(0.25, 1, 1), shape_list = c(1, 24, 22),
@@ -18,7 +18,7 @@
 
 
 
-plot_volcano <- function(data, column, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
+plot_volcano <- function(data, column, size, strpattern, fill_list, sig_threshold,  alpha_list, shape_list, color_list){
   if (missing(sig_threshold)) sig_threshold = 0.05
   else sig_threshold = sig_threshold
   if (missing(column)){
@@ -43,7 +43,7 @@ plot_volcano <- function(data, column, strpattern, fill_list, sig_threshold,  al
     data[sapply(data, is.character)] <- lapply(data[sapply(data, is.character)],
                                                as.factor)
     ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
-        geom_point(size = 3.5, aes(fill = factor(factor), alpha = factor(factor), shape = factor(factor))) +
+        geom_point(size = size, aes(fill = factor(factor), alpha = factor(factor), shape = factor(factor))) +
         scale_fill_manual(values = fill_list) +
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed") +
         scale_alpha_manual(values = alpha_list) +
