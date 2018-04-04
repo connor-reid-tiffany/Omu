@@ -25,10 +25,10 @@ plot_volcano <- function(data, column, size, strpattern, fill_list, sig_threshol
     data[, "Color"] <- NA
     data$Color = data$padj <= sig_threshold
       ggplot(data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
-        geom_point(size = 3.5, aes(color = data$Color, alpha = data$Color, shape = data$Color, fill = data$Color)) +
+        geom_point(size = size, aes(color = data$Color, alpha = data$Color, shape = data$Color, fill = data$Color)) +
         scale_color_manual(values = c("TRUE" = "black", "FALSE" = "black")) +
-        scale_alpha_manual(values = c("FALSE" = 0.25, "TRUE" = 1)) +
-        scale_shape_manual(values = c("TRUE" = 21, "FALSE" = 1)) +
+        scale_alpha_manual(values = c("FALSE" = 1, "TRUE" = 1)) +
+        scale_shape_manual(values = c("TRUE" = 21, "FALSE" = 21)) +
         scale_fill_manual(values = c("TRUE" = "red", "FALSE" = "white"))+
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed")
   }else{
