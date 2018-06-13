@@ -2,13 +2,13 @@
 #'
 #'This function takes an input data frame from T_Test and creates a volcano plot as a ggplot2 object.
 #'@param data The output file from the Clean_DESeq_results() function.
-#'@param column The factor as a list, i.e. column = c("Class")
-#'@param strpattern A list of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")
-#'@param fill_list A list of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.
+#'@param column The factor as a character vector, i.e. column = c("Class")
+#'@param strpattern A character vector of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")
+#'@param fill_list A character vector of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.
 #'@param sig_threshold An integer. Creates a horizontal dashed line for a significance threshold. i.e. sig_threshold = 0.05. Defaut value is 0.05
-#'@param alpha_list A list for setting transparency of factor levels. i.e. alpha_list = (1, 0.5, 1)
-#'@param shape_list A list for setting the shapes for your factor levels. See ggplot2 for an index of shapes
-#'@param color_list A list of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.
+#'@param alpha_list A character vector for setting transparency of factor levels. i.e. alpha_list = (1, 0.5, 1)
+#'@param shape_list A character vector for setting the shapes for your factor levels. See ggplot2 for an index of shapes
+#'@param color_list A character vector of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.
 #'@param size Size of points in plot
 #'@export
 #'@examples plot_volcano(data, column = c("Subclass_2"), strpattern = c("SugaralcoholsFig", "SugaracidsFig"),

@@ -5,13 +5,13 @@
 #'@param data Output dataframe from the Clean_DESeq_results function
 #'@param ... Either a Class or Subclass column listed in paretheses, i.e. "Class
 #'@param column The same value entered for the ... parameter, i.e. column = "Class
-#'@param alpha Significance threshold, i.e. alpha = 0.05
+#'@param sig_threshold Significance threshold, i.e. sig_threshold = 0.05
 #'@keywords metabo
 #'@export
-#'@examples count_fold_changes(data = data, "Class", column = "Class", alpha = 0.05)
+#'@examples count_fold_changes(data = data, "Class", column = "Class", sig_threshold = 0.05)
 
 count_fold_changes <- function(data, ..., column, sig_threshold){
-  data <- data[which(data$padj < sig_threshold), ]
+  data <- data[which(data[,"padj"] < sig_threshold),]
   data <- data %>% group_by_(...) %>%
     mutate(Significant_Changes = sum(log2FoldChange>0),
            neg = sum(log2FoldChange<0))

@@ -4,7 +4,7 @@
 
 
 
-plate_omelette <- function(countDF, Matrix) UseMethod("plate_omelette")
+plate_omelette <- function(countDF) UseMethod("plate_omelette")
 
 #' @rdname plate_omelette
 #' @export

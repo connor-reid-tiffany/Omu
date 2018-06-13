@@ -1,22 +1,18 @@
 #'KEGG_gather
 #'Method for gathering metadata from KEGG API
 #'@param countDF A metabolmics count dataframe with a KEGG identifier columns
-#'@param sig_threshold Numeric. A significance threshold to prune out metabolites
-#'@example KEGG_gather(countDF = countDF, sig_threshold = 0.05)
+#'@example KEGG_gather(countDF = countDF)
 #'@export
 
-KEGG_gather <- function(countDF, sig_threshold) UseMethod("KEGG_gather", countDF)
+KEGG_gather <- function(countDF) UseMethod("KEGG_gather", countDF)
 
 #' @rdname KEGG_gather
 #' @export
-KEGG_gather.cpd <- function(countDF, sig_threshold){
+KEGG_gather.cpd <- function(countDF){
 
-#create value column, subset data based on significance
-if (missing(sig_threshold)){
-    countDF$Val <- if_else(countDF$log2FoldChange > 0, 'Increase', 'Decrease')
-  }else {
-    countDF = countDF[which(countDF['padj'] <= sig_threshold), ]
-    countDF$Val <- if_else(countDF["log2FoldChange"] > 0, 'Increase', 'Decrease')}
+#create value column, subset data based on log2FoldChange
+countDF$Val <- if_else(countDF$log2FoldChange > 0, 'Increase', 'Decrease')
+
 
   #Set variables
   req <- c('ENTRY', 'REACTION')
