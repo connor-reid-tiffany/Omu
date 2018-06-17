@@ -4,14 +4,19 @@
 \alias{plate_omelette}
 \alias{plate_omelette.rxn}
 \alias{plate_omelette.genes}
-\title{plate_omelette}
+\title{plate_omelette
+Internal method for KEGG_Gather}
 \usage{
-plate_omelette(countDF, Matrix)
+plate_omelette(countDF)
 
 \method{plate_omelette}{rxn}(countDF)
 
 \method{plate_omelette}{genes}(countDF)
 }
+\arguments{
+\item{countDF}{The metabolomics count dataframe}
+}
 \description{
 plate_omelette
+Internal method for KEGG_Gather
 }

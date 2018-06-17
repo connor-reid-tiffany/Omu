@@ -1,6 +1,9 @@
-#'plate_omelette
-#Internal method for KEGG_Gather
-#'@export
+#' plate_omelette
+#' Internal method for KEGG_Gather
+#' @param countDF The metabolomics count dataframe
+#' @importFrom stringr str_split_fixed
+#' @importFrom stats complete.cases
+#' @export
 
 
 

@@ -1,18 +1,14 @@
-#'KEGG_gather
-#'Method for gathering metadata from KEGG API
-#'@param countDF A metabolmics count dataframe with a KEGG identifier columns
-#'@example KEGG_gather(countDF = countDF)
-#'@export
+#' KEGG_gather
+#' Method for gathering metadata from KEGG API
+#' @param countDF A metabolmics count dataframe with a KEGG identifier columns
+#' @importFrom dplyr if_else
+#' @export
 
 KEGG_gather <- function(countDF) UseMethod("KEGG_gather", countDF)
 
 #' @rdname KEGG_gather
 #' @export
 KEGG_gather.cpd <- function(countDF){
-
-#create value column, subset data based on log2FoldChange
-countDF$Val <- if_else(countDF$log2FoldChange > 0, 'Increase', 'Decrease')
-
 
   #Set variables
   req <- c('ENTRY', 'REACTION')

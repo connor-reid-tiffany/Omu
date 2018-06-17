@@ -4,34 +4,41 @@
 \alias{plot_volcano}
 \title{plot_volcano}
 \usage{
-plot_volcano(data, column, size, strpattern, fill_list, sig_threshold,
-  alpha_list, shape_list, color_list)
+plot_volcano(data, column, size, strpattern, fill, sig_threshold, alpha, shape,
+  color)
 }
 \arguments{
 \item{data}{The output file from the Clean_DESeq_results() function.}
 
-\item{column}{The factor as a list, i.e. column = c("Class")}
+\item{column}{The factor as a string, i.e. column = "Class"}
 
 \item{size}{Size of points in plot}
 
-\item{strpattern}{A list of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")}
+\item{strpattern}{A character vector of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")}
 
-\item{fill_list}{A list of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.}
+\item{fill}{A character vector of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.}
 
 \item{sig_threshold}{An integer. Creates a horizontal dashed line for a significance threshold. i.e. sig_threshold = 0.05. Defaut value is 0.05}
 
-\item{alpha_list}{A list for setting transparency of factor levels. i.e. alpha_list = (1, 0.5, 1)}
+\item{alpha}{A character vector for setting transparency of factor levels. i.e. alpha_list = (1, 0.5, 1)}
 
-\item{shape_list}{A list for setting the shapes for your factor levels. See ggplot2 for an index of shapes}
+\item{shape}{A character vector for setting the shapes for your factor levels. See ggplot2 for an index of shapes}
 
-\item{color_list}{A list of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.}
+\item{color}{A character vector of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.}
 }
 \description{
-This function takes an input data frame from T_Test and creates a volcano plot as a ggplot2 object.
+This function takes an input data frame from t_test and creates a volcano plot as a ggplot2 object.
 }
 \examples{
-plot_volcano(data, column = c("Subclass_2"), strpattern = c("SugaralcoholsFig", "SugaracidsFig"),
-fill_list = c("black", "hotpink", "cyan"), sig_threshold = 1.301029996, alpha_list = c(0.25, 1, 1), shape_list = c(1, 24, 22),
-color_list = c("black", "black", "black"))
-plot_volcano(data)
+c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
+
+t_test_df <-  t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
+log_transform = TRUE)
+
+plot_volcano(data = t_test_df, column = "Class", strpattern = c("Carbohydrates", "Lipids"),
+fill = c("firebrick2", "dodgerblue2", "white"), sig_threshold = 0.05, alpha = c(1,1,1),
+shape = c(1,21,24), color = c("black", "black", "black"), size = 2)
+
+plot_volcano(data = t_test_df, sig_threshold = 0.05, size = 2)
 }

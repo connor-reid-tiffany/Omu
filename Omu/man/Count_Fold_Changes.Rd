@@ -13,13 +13,17 @@ count_fold_changes(data, ..., column, sig_threshold)
 
 \item{column}{The same value entered for the ... parameter, i.e. column = "Class}
 
-\item{alpha}{Significance threshold, i.e. alpha = 0.05}
+\item{sig_threshold}{Significance threshold, i.e. sig_threshold = 0.05}
 }
 \description{
 This function takes an input data frame that has been run in a statistical modeling function
 and returns the number of compounds that significantly changed in each metabolite Class or Subclass.
 }
 \examples{
-count_fold_changes(data = data, "Class", column = "Class", alpha = 0.05)
+c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
+t_test_df <- t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
+log_transform = TRUE)
+fold_change_counts <- count_fold_changes(data = t_test_df, "Class",
+column = "Class", sig_threshold = 0.05)
 }
-\keyword{metabo}

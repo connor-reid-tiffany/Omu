@@ -7,12 +7,20 @@
 #'@param Var2 String of the second independent variable you wish to test. Optional parameter
 #'@param interaction Boolean of TRUE or FALSE for whether or not you wish to model an interaction betweenindependent variables. Optional parameter
 #'@param log_transform Boolean of TRUE or FALSE for whether or not you wish to log transform your counts
-#'@example anova_function(data = metabolomics_counts, colData = metadata, response_variable = "Metabolite", Var1 = "Treatment", log_transform = TRUE)
+#'@importFrom dplyr left_join
+#'@importFrom plyr llply
+#'@importFrom stats p.adjust
+#'@importFrom stats anova
+#'@importFrom stats lm
+
 #'@export
+
 
 anova_function <- function(data, colData, response_variable, Var1, Var2, interaction, log_transform){
 
-data = column_to_rownames(df = data, var = response_variable)
+rownames(data) <- data[,response_variable]
+data[,response_variable] <- NULL
+
 data_Int <- data[sapply(data, function(x) is.numeric(x))]
 
 #Transform for 'normalization'
@@ -60,9 +68,11 @@ results <- as.data.frame(t(results))
 colnames(results)[1] <- "Var1 pval"
 
 #Merge metadata, means & fold change, and t test results by metabolite name
-results = rownames_to_column(results, "Metabolite")
-results$padj = p.adjust(results$`Var1 pval`, method = "BH")
-data = rownames_to_column(data, "Metabolite")
+results <- cbind(rownames(results), data.frame(results, row.names=NULL))
+colnames(results)[1] <- response_variable
+results$padj = p.adjust(results$`Var1.pval`, method = "BH")
+data <- cbind(rownames(data), data.frame(data, row.names=NULL))
+colnames(data)[1] <- response_variable
 results = left_join(results, data, by = response_variable)
 results = results[, !(colnames(results) %in% c("V2"))]
 return(results)
@@ -86,9 +96,11 @@ return(results)
   colnames(results)[2] <- "Var2 pval"
 
   #Merge metadata, means & fold change, and t test results by metabolite name
-  results = rownames_to_column(results, "Metabolite")
-  data = rownames_to_column(data, "Metabolite")
-  results$padj = p.adjust(results$`Var2 pval`, method = "BH")
+  results <- cbind(rownames(results), data.frame(results, row.names=NULL))
+  colnames(results)[1] <- response_variable
+  data <- cbind(rownames(data), data.frame(data, row.names=NULL))
+  colnames(data)[1] <- response_variable
+  results$padj = p.adjust(results$`Var2.pval`, method = "BH")
   results = left_join(results, data, by = "Metabolite")
   return(results)
 
@@ -112,9 +124,13 @@ return(results)
   colnames(results)[3] <- "Interaction pval"
 
   #Merge metadata, means & fold change, and t test results by metabolite name
-  results = rownames_to_column(results, "Metabolite")
-  data = rownames_to_column(data, "Metabolite")
-  results$padj = p.adjust(results$`Interaction pval`, method = "BH")
+  results <- cbind(rownames(results), data.frame(results, row.names=NULL))
+  colnames(results)[1] <- response_variable
+
+  data <- cbind(rownames(data), data.frame(data, row.names=NULL))
+  colnames(data)[1] <- response_variable
+
+  results$padj = p.adjust(results$`Interaction.pval`, method = "BH")
   results = left_join(results, data, by = "Metabolite")
   return(results)
 }

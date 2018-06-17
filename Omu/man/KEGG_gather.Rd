@@ -8,9 +8,9 @@
 \title{KEGG_gather
 Method for gathering metadata from KEGG API}
 \usage{
-KEGG_gather(countDF, sig_threshold)
+KEGG_gather(countDF)
 
-\method{KEGG_gather}{cpd}(countDF, sig_threshold)
+\method{KEGG_gather}{cpd}(countDF)
 
 \method{KEGG_gather}{rxn}(countDF)
 
@@ -18,8 +18,6 @@ KEGG_gather(countDF, sig_threshold)
 }
 \arguments{
 \item{countDF}{A metabolmics count dataframe with a KEGG identifier columns}
-
-\item{sig_threshold}{Numeric. A significance threshold to prune out metabolites}
 }
 \description{
 KEGG_gather

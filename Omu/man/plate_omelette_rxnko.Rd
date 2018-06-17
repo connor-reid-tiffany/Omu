@@ -9,6 +9,11 @@ There was no way to incorporate as a method}
 \usage{
 plate_omelette_rxnko(countDF, matrix)
 }
+\arguments{
+\item{countDF}{Metabolomics count DF}
+
+\item{matrix}{the matrix of KEGG metadata}
+}
 \description{
 Plate_Omelette_rxnKO
 Internal function for KEGG_Gather.rxn method

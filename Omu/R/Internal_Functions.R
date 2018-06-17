@@ -1,6 +1,11 @@
 #' make_omelette
 #' Internal function for KEGG_Gather
-#'@export
+#' @param countDF The metabolomics countDF
+#' @param column The name of the KEGG identifier being sent to the KEGG API
+#' @param req The character vector with variables to pull out of the metadata
+#' @importFrom KEGGREST keggGet
+#' @importFrom plyr llply
+#' @export
 
 
 make_omelette <- function(countDF, column, req){
@@ -33,12 +38,17 @@ make_omelette <- function(countDF, column, req){
 #' Internal function for KEGG_Gather.rxn method
 #' KEGG_Gather.rxn requires dispatch on multiple elements, so
 #' There was no way to incorporate as a method
+#' @param countDF Metabolomics count DF
+#' @param matrix  the matrix of KEGG metadata
+#' @importFrom reshape2 colsplit
+#' @importFrom dplyr left_join
 #' @export
 
 plate_omelette_rxnko<- function(countDF, matrix){
 
 ko_df = as.data.frame(unlist(matrix[,2], recursive = F))
-ko_df = rownames_to_column(ko_df, "KO_Number")
+ko_df <- cbind(rownames(ko_df), data.frame(ko_df, row.names=NULL))
+colnames(ko_df)[1] <- "KO_Number"
 ko_df = with(ko_df, cbind(ko_df[,2],
 colsplit(ko_df$KO_Number, pattern = "\\.",
 names = c('Element_number', 'KO_Number'))))
@@ -46,7 +56,8 @@ colnames(ko_df)[1] <- "KO"
 
 #Do the above but for Rxn numbers this time
 rxn_df = as.data.frame(unlist(matrix[,1], recursive = F))
-rxn_df = rownames_to_column(rxn_df, "Element_number")
+rxn_df <- cbind(rownames(rxn_df), data.frame(rxn_df, row.names=NULL))
+colnames(rxn_df)[1] <- "Element_number"
 rxn_df = with(rxn_df, cbind(rxn_df[,2],
   colsplit(rxn_df$Element_number, pattern = "\\.",
   names = c('Element_number', 'remove'))))
