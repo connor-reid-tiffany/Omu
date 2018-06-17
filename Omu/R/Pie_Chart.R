@@ -1,11 +1,31 @@
-#'pie_chart
-#'Makes pie chart as ggplot2 object from ra_table function output
-#'@param data a dataframe object of percents. output from ra_table function
-#'@param variable The meta data variable you are measuring, i.e. "Class"
-#'@param column either "Increase", "Decrease", or "Significant_Changes"
-#'@param color string denoting color for outline. use NA for no outline
-#'@example pie_chart(data = ra_table, variable = "Increase",column = "Class", color = "black")
-#'@export
+#' pie_chart
+#' Makes pie chart as ggplot2 object from ra_table function output
+#' @param data a dataframe object of percents. output from ra_table function
+#' @param variable The meta data variable you are measuring, i.e. "Class"
+#' @param column either "Increase", "Decrease", or "Significant_Changes"
+#' @param color string denoting color for outline. use NA for no outline
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_bar
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 element_blank
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 coord_polar
+#' @importFrom stats reorder
+#' @examples
+#' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
+#'
+#' t_test_df <- t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+#' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
+#' log_transform = TRUE)
+#'
+#' fold_change_counts <- count_fold_changes(data = t_test_df, "Class",
+#' column = "Class", sig_threshold = 0.05)
+#'
+#' ra_table(data = fold_change_counts, variable = "Class")
+#'
+#' pie_chart(data = ra_table, variable = "Class", column = "Decrease", color = "black")
+#' @export
 
 pie_chart <- function(data,variable, column, color){
   variable <- reorder(variable, column)

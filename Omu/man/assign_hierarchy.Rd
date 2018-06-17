@@ -16,3 +16,7 @@ assign_hierarchy(data, keep_unknowns, identifier)
 \description{
 This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers. It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
 }
+\examples{
+assign_hierarchy(data = c57_nos2KO_mouse_countDF,
+keep_unknowns = TRUE, identifier = "KEGG")
+}

@@ -7,6 +7,13 @@ Internal function for KEGG_Gather}
 \usage{
 make_omelette(countDF, column, req)
 }
+\arguments{
+\item{countDF}{The metabolomics countDF}
+
+\item{column}{The name of the KEGG identifier being sent to the KEGG API}
+
+\item{req}{The character vector with variables to pull out of the metadata}
+}
 \description{
 make_omelette
 Internal function for KEGG_Gather

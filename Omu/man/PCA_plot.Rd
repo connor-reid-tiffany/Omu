@@ -22,3 +22,7 @@ PCA_plot(data, colData, variable, color, response_variable)
 PCA_plot
 Performs an ordination and outputs a PCA plot
 }
+\examples{
+PCA_plot(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+variable = "Treatment", color = "Treatment", response_variable = "Metabolite")
+}
