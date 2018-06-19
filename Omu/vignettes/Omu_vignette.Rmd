@@ -74,12 +74,12 @@ kable(DF[1:4,])
 Omu supports two univariate statistical models, t test and anova, using the functions ```t_test``` and ```anova_function``` respectively. Most scaled metabolomics count matrices can have a normal distribution fit to them without issue, so both of these models are useful for observing relationships between your independent variables. Lets take the dataframe we created using the assign_hierarchy function and use ```t_test``` to run statistics on it. We will also need to use the ```c57_nos2KO_mouse_metadata``` data frame included with the package. Lets compare the "WT" group in our dataset to the "Nos2" group to observe if genetic background had an effect on the metabolome, and log transform our data so the model has a better fit.
 
 ```
-DF_stats <- t_test(data = DF, colData = c57_nos2KO_mouse_metadata, numerator = "Nos2", denominator = "WT", response_variable = "Metabolite", Factor = "Background", log_transform = TRUE)
+DF_stats <- t_test(data = DF, colData = c57_nos2KO_mouse_metadata, numerator = "Nos2", denominator = "WT", response_variable = "Metabolite", Factor = "Background", log_transform = TRUE, p_adjust = "BH")
 ```
 Once the function has finished running, you should have a dataframe object with new columns added:
 ```{r echo=FALSE,message=FALSE, warning=FALSE}
 library(plotrix)
-DF_stats <- t_test(data = data, colData = c57_nos2KO_mouse_metadata, numerator = "Nos2", denominator = "WT", response_variable = "Metabolite", Factor = "Background", log_transform = TRUE)
+DF_stats <- t_test(data = data, colData = c57_nos2KO_mouse_metadata, numerator = "Nos2", denominator = "WT", response_variable = "Metabolite", Factor = "Background", log_transform = TRUE, p_adjust = "BH")
 DF_stats_trunc = DF_stats[,c(1,6,7,8,9,10)]
 kable(DF_stats_trunc[1:3,])
 ```
@@ -89,7 +89,7 @@ including adjusted p values ("padj"), log2FoldChange, and standard error for eac
 An alternative to the ```t_test``` is the ```anova_function```, which can be used to measure the variance of all variable groups within a Factor at once, or see if independent variables have an effect on one another by modeling an interaction term (this only applies to multi factorial datasets).```anova_function``` has the same arguments as ```t_test```, except "numerator" and "denominator" replaced by the names of your Factors, and interaction, which takes a value of TRUE or FALSE. Currently, it supports an interaction term containing two Factors. With this dataset, you could use an anova to observe if mouse background has an effect on how strep treatment effects the metabolome of the mice by using the following code:
 
 ```
-DF_anova <- anova_function(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", Var1 = "Background", Var2 = "Treatment", interaction = TRUE, log_transform = TRUE)
+DF_anova <- anova_function(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", var1 = "Background", var2 = "Treatment", interaction = TRUE, log_transform = TRUE, p_adjust = "BH")
 ```
 
 This should produce the follwing matrix:
@@ -97,12 +97,12 @@ This should produce the follwing matrix:
 
 ```{r echo=FALSE,message=FALSE, warning=FALSE}
 library(plotrix)
-DF_anova <- anova_function(data = data, colData = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", Var1 = "Background", Var2 = "Treatment", interaction = TRUE, log_transform = TRUE)
+DF_anova <- anova_function(data = data, colData = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", var1 = "Background", var2 = "Treatment", interaction = TRUE, log_transform = TRUE, p_adjust = "BH")
 DF_anova_trunc = DF_anova[,c(1:7)]
 kable(DF_anova_trunc[1:3,])
 ```
 
-The output gives you columns with pvalues for ```Var1```, ```Var2```, and your interaction term. The adjusted p value is for the interaction term.
+The output gives you columns with pvalues for ```var1```, ```var2```, and your interaction term. The adjusted p value is for the interaction term.
 
 An alternative to doing an anova model with an interaction statement is to paste factor groups together using base R to make a new metadata column to be able to model the effect of treatment within mouse genetic backgrounds. For example, we can use base R to make a new "Grouped" Factor, with 4 levels; WTMock, WTStrep, Nos2Mock, and Nos2Strep.
 
@@ -121,14 +121,14 @@ kable(c57_nos2KO_mouse_metadata[1:4,])
 We can then perform a T Test like we did above to model the effect of strep treatment on the wild type mouse metabolome, this time using the "Grouped" column as our factor, WTStrep as the numerator term, and WTMock as the denominator term:
 
 ```
-DF_stats_grouped <- t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata, numerator = "WTStrep", denominator = "WTMock", response_variable = "Metabolite", Factor = "Grouped", log_transform = TRUE)
+DF_stats_grouped <- t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata, numerator = "WTStrep", denominator = "WTMock", response_variable = "Metabolite", Factor = "Grouped", log_transform = TRUE, p_adjust = "BH")
 ```
 
 Giving us this data frame:
 
 ```{r echo=FALSE,message=FALSE, warning=FALSE}
 library(plotrix)
-DF_stats_grouped <- t_test(data = data, colData = c57_nos2KO_mouse_metadata, numerator = "WTStrep", denominator = "WTMock", response_variable = "Metabolite", Factor = "Grouped", log_transform = TRUE)
+DF_stats_grouped <- t_test(data = data, colData = c57_nos2KO_mouse_metadata, numerator = "WTStrep", denominator = "WTMock", response_variable = "Metabolite", Factor = "Grouped", log_transform = TRUE, p_adjust = "BH")
 DF_stats_grouped_trunc = DF_stats_grouped[,c(1,6,7,8,9,10)]
 kable(DF_stats_grouped_trunc[1:3,])
 ```

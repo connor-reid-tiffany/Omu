@@ -7,19 +7,19 @@
 #' @param response_variable the name of the column with your response variables
 #' @param Factor the column name for your independent variables
 #' @param log_transform TRUE or FALSE value for whether or not log transformation of data is performed before the t test
+#' @param p_adjust Method for adjusting the p value, i.e. "BH"
 #' @importFrom dplyr filter
 #' @importFrom plyr ldply
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarise_all
 #' @importFrom dplyr funs
-#' @importFrom plotrix std.error
 #' @importFrom magrittr %>%
 #' @importFrom stats t.test
 #' @importFrom stats p.adjust
 #' @examples
 #' t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
-#' log_transform = TRUE)
+#' log_transform = TRUE, p_adjust = "BH")
 #' @export
 
 t_test <- function(data, colData, numerator, denominator, response_variable, Factor, log_transform){
@@ -80,8 +80,10 @@ t_test <- function(data, colData, numerator, denominator, response_variable, Fac
   Means_T = as.data.frame(t(Means))
   colnames(Means_T) <- as.character(unlist(Means_T[1,]))
   Means_T = Means_T[-1,]
-  colnames(Means_T)[1] <- "Numerator_Mean"
-  colnames(Means_T)[2] <- "Denominator_Mean"
+  colnames(Means_T)[1] <- numerator
+  colnames(Means_T)[1] <- paste(colnames(Means_T)[1], "mean", sep = ".")
+  colnames(Means_T)[2] <- denominator
+  colnames(Means_T)[2] <- paste(colnames(Means_T)[2], "mean", sep = ".")
 
   #Compute log2FoldChange
   Means_T[,3] <- as.numeric(as.character(Means_T[,1])) / as.numeric(as.character(Means_T[,2]))
@@ -91,23 +93,44 @@ t_test <- function(data, colData, numerator, denominator, response_variable, Fac
   Means_T <- cbind(rownames(Means_T), data.frame(Means_T, row.names=NULL))
   colnames(Means_T)[1] <- response_variable
 
+  #Create standard error function
+  st.err <- function(x) sd(x)/sqrt(length(x))
+
+  #Compute standard deviation
+  stdev <- data_Log %>% group_by(Factor) %>% summarise_all(funs(sd))
+  stdev <- as.data.frame(stdev)
+  rownames(stdev) <- stdev[,"Factor"]
+  stdev[,"Factor"] <- NULL
+  stdev_t = as.data.frame(t(stdev))
+  stdev_t <- cbind(rownames(stdev_t), data.frame(stdev_t, row.names=NULL))
+  colnames(stdev_t)[1] <- response_variable
+  colnames(stdev_t)[2] <- numerator
+  colnames(stdev_t)[2] <- paste(colnames(stdev_t)[2], "stdev", sep = ".")
+  colnames(stdev_t)[3] <- denominator
+  colnames(stdev_t)[3] <- paste(colnames(stdev_t)[3], "stdev", sep = ".")
+
   #Compute standard error
-  SE <- data_Log %>% group_by(Factor) %>% summarise_all(funs(std.error))
+  SE <- data_Log %>% group_by(Factor) %>% summarise_all(funs(st.err))
   SE <- as.data.frame(SE)
   rownames(SE) <- SE[,"Factor"]
   SE[,"Factor"] <- NULL
   SE_t = as.data.frame(t(SE))
   SE_t <- cbind(rownames(SE_t), data.frame(SE_t, row.names=NULL))
   colnames(SE_t)[1] <- response_variable
+  colnames(SE_t)[2] <- numerator
+  colnames(SE_t)[2] <- paste(colnames(SE_t)[2], "std.err", sep = ".")
+  colnames(SE_t)[3] <- denominator
+  colnames(SE_t)[3] <- paste(colnames(SE_t)[3], "std.err", sep = ".")
 
   #Merge metabo_path metadata, means & fold change, and t test results by metabolite name
   colnames(results)[1] <- response_variable
-  results$padj = p.adjust(results$pval, method = "BH")
+  results$padj = p.adjust(results$pval, method = p_adjust)
   data = cbind(rownames(data), data.frame(data, row.names=NULL))
   colnames(data)[1] <- "Metabolite"
   results = merge(results, data, by = response_variable, all = TRUE)
   results = merge(Means_T, results, by = response_variable, all.y = TRUE)
   results = merge(SE_t, results, by = response_variable, all.y = TRUE)
+  results = merge(stdev_t, results, by = response_variable, all.y = TRUE)
 
   class(results) = append(class(results), "cpd")
 
