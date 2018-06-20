@@ -18,11 +18,13 @@ if (identifier == "KEGG"){
   if (keep_unknowns ==FALSE){
     data <- inner_join(data, Metabolite_Hierarchy_Table, by = identifier)
     data <- distinct(data, Metabolite,.keep_all = TRUE)
+    class(data) = append(class(data), "cpd")
     return(data)
     }
     else if (keep_unknowns == TRUE) {
       data <- left_join(data, Metabolite_Hierarchy_Table, by = identifier)
       data <- distinct(data, Metabolite,.keep_all = TRUE)
+      class(data) = append(class(data), "cpd")
       return(data)
     }
   } else if (identifier == "KO_Number"){
@@ -36,13 +38,15 @@ if (identifier == "KEGG"){
 
     return(data)
   } else if (identifier == "Prokaryote"){
-    data <- inner_join(data, Prokaryote_Hierarchy_Table, by = identifier)
+
+    data <- inner_join(data, Prokaryote_Hierarchy_Table, by = 'Org')
 
 
 
     return(data)
   } else if (identifier == "Eukaryote"){
-    data <- inner_join(data, Eukaryote_Hierarchy_Table, by = identifier)
+
+    data <- inner_join(data, Eukaryote_Hierarchy_Table, by = 'Org')
 
     return(data)
   }

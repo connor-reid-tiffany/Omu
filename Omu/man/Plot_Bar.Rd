@@ -22,11 +22,11 @@ Creates a ggplot2 object using the output file from the count_fold_changes funct
 }
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-t_test_df <- t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+t_test_df <- omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
-log_transform = TRUE)
+log_transform = TRUE, p_adjust = "BH")
 fold_change_counts <- count_fold_changes(data = t_test_df, "Class",
-column = "Class", sig_threshold = 0.05)
+column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
 plot_bar(data = fold_change_counts, fill = c("firebrick2", "dodgerblue2"),
 color = c("black", "black"), size = c(1,1))
 }

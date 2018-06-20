@@ -1,5 +1,5 @@
-#' t_test
-#' Performs t test, Standard Error, FDR correction, Fold Change, log2FoldChange. The order effects the fold change values
+#' omu_summary
+#' Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange. The order effects the fold change values
 #' @param data should be a metabolomics count data frame
 #' @param colData is meta data
 #' @param numerator is the variable you wish to compare against the denominator, in quotes
@@ -17,12 +17,12 @@
 #' @importFrom stats t.test
 #' @importFrom stats p.adjust
 #' @examples
-#' t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+#' omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH")
 #' @export
 
-t_test <- function(data, colData, numerator, denominator, response_variable, Factor, log_transform){
+omu_summary <- function(data, colData, numerator, denominator, response_variable, Factor, log_transform, p_adjust){
 
 
   #Temporarily separate meta data from counts and store in other object

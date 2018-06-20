@@ -32,9 +32,9 @@ This function takes an input data frame from t_test and creates a volcano plot a
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
 
-t_test_df <-  t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+t_test_df <-  omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
-log_transform = TRUE)
+log_transform = TRUE, p_adjust = "BH")
 
 plot_volcano(data = t_test_df, column = "Class", strpattern = c("Carbohydrates", "Lipids"),
 fill = c("firebrick2", "dodgerblue2", "white"), sig_threshold = 0.05, alpha = c(1,1,1),

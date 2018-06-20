@@ -1,4 +1,4 @@
-#'anova_function
+#'omu_anova
 #'Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent variables individually, or on the interaction between two independent variables
 #'@param data A metabolomics count data frame
 #'@param colData Meta data dataframe for the metabolomics count data frame
@@ -13,11 +13,14 @@
 #'@importFrom stats p.adjust
 #'@importFrom stats anova
 #'@importFrom stats lm
-
+#'@examples 
+#'anova_df <- omu_anova(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+#'response_variable = "Metabolite", var1 = "Treatment", var2 = "Background", log_transfor = TRUE,
+#'p_adjust = "BH", interaction = TRUE)
 #'@export
 
 
-anova_function <- function(data, colData, response_variable, var1, var2, interaction, log_transform, p_adjust){
+omu_anova <- function(data, colData, response_variable, var1, var2, interaction, log_transform, p_adjust){
 
   #Make variables for setting column names
   variable1 = var1
@@ -150,7 +153,7 @@ anova_function <- function(data, colData, response_variable, var1, var2, interac
     colnames(results)[5] <- paste(colnames(results)[5], variable2, sep = ".")
     results$padj = p.adjust(results[,3], method = p_adjust)
     colnames(results)[6] <- paste(colnames(results)[6], "Interaction", sep = ".")
-    
+
 
     #Merge metadata, means & fold change, and t test results by metabolite name
     results <- cbind(rownames(results), data.frame(results, row.names=NULL))

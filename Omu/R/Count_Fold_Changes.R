@@ -6,20 +6,22 @@
 #' @param ... Either a Class or Subclass column listed in paretheses, i.e. "Class
 #' @param column The same value entered for the ... parameter, i.e. column = "Class
 #' @param sig_threshold Significance threshold, i.e. sig_threshold = 0.05
+#' @param keep_unknowns TRUE or FALSE for whether to drop NA class compounds
 #' @importFrom dplyr group_by_
 #' @importFrom dplyr mutate
+#' @importFrom tidyr drop_na
 #' @importFrom magrittr %>%
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-#' t_test_df <- t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+#' t_test_df <- omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
-#' log_transform = TRUE)
+#' log_transform = TRUE, p_adjust = "BH")
 #' fold_change_counts <- count_fold_changes(data = t_test_df, "Class",
-#' column = "Class", sig_threshold = 0.05)
+#' column = "Class", sig_threshold = 0.05, keep_unknowns = "FALSE")
 #' @export
 
-count_fold_changes <- function(data, ..., column, sig_threshold){
-  data <- data[which(data[,"padj"] < sig_threshold),]
+count_fold_changes <- function(data, ..., column, sig_threshold, keep_unknowns){
+  data <- data[which(data[,"padj"] <= sig_threshold),]
   data <- data %>% group_by_(...) %>%
     mutate(Significant_Changes = sum(log2FoldChange>0),
            neg = sum(log2FoldChange<0))
@@ -33,5 +35,13 @@ count_fold_changes <- function(data, ..., column, sig_threshold){
   data$colour <- ifelse(data$Significant_Changes < 0, "Decrease","Increase")
 
   data <- data[apply(data[2],1,function(z) !any(z==0)),]
+
+
+  if(keep_unknowns==TRUE){
+    data = data
+    }else if(keep_unknowns==FALSE){
+     data <- drop_na(data)
+    }
   unique(data[])
+
 }
