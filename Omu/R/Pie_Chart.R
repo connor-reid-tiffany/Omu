@@ -15,8 +15,10 @@
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
 #'
-#' t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
-#' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
+#' t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
+#' metadata = c57_nos2KO_mouse_metadata,
+#' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite",
+#' Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH")
 #'
 #' fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",

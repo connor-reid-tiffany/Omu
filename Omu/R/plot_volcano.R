@@ -36,8 +36,9 @@
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
 #'
-#' t_test_df <-  omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
-#' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
+#' t_test_df <-  omu_summary(count_data = c57_nos2KO_mouse_countDF,
+#' metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
+#' response_variable = "Metabolite", Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH")
 #'
 #' plot_volcano(count_data = t_test_df, column = "Class", strpattern = c("Carbohydrates", "Lipids"),
@@ -60,8 +61,10 @@ plot_volcano <- function(count_data, column, size, strpattern, fill, sig_thresho
   if (missing(column)){
     count_data[, "Color"] <- NA
     count_data$Color = count_data$padj <= sig_threshold
-      volcano_plot <- ggplot(count_data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
-        geom_point(size = size, aes(color = count_data$Color, alpha = count_data$Color, shape = count_data$Color, fill = count_data$Color)) +
+      volcano_plot <- ggplot(count_data, aes(x = log2FoldChange,
+        y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
+        geom_point(size = size, aes(color = count_data$Color, alpha = count_data$Color,
+          shape = count_data$Color, fill = count_data$Color)) +
         scale_color_manual(values = c("TRUE" = "black", "FALSE" = "black")) +
         scale_alpha_manual(values = c("FALSE" = 1, "TRUE" = 1)) +
         scale_shape_manual(values = c("TRUE" = 21, "FALSE" = 21)) +
@@ -73,14 +76,16 @@ plot_volcano <- function(count_data, column, size, strpattern, fill, sig_thresho
     data2[,column] <- sapply(data2[,column], function(x) replace(x, x %in% strpattern, NA))
     data2[,column] <- factor(data2[,column])
     to_remove = levels(data2[,column])
-    data[,column] = sapply(data[,column], function(x) replace(x, x %in% to_remove, NA))
+    count_data[,column] = sapply(count_data[,column], function(x) replace(x, x %in% to_remove, NA))
     factor = count_data[,column]
     factor = str_replace_na(factor, replacement = "NA")
     count_data[,column] = factor(count_data[,column])
     count_data[sapply(count_data, is.character)] <- lapply(count_data[sapply(count_data, is.character)],
-                                               as.factor)
-    volcano_plot <- ggplot(count_data, aes(x = log2FoldChange, y = -log10(padj), text = paste("Metabolite:", Metabolite))) +
-        geom_point(size = size, aes(fill = factor(factor), alpha = factor(factor), shape = factor(factor))) +
+    as.factor)
+    volcano_plot <- ggplot(count_data, aes(x = log2FoldChange, y = -log10(padj),
+    text = paste("Metabolite:", Metabolite))) +
+        geom_point(size = size, aes(fill = factor(factor), alpha = factor(factor),
+        shape = factor(factor))) +
         scale_fill_manual(values = fill) +
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed") +
         scale_alpha_manual(values = alpha) +

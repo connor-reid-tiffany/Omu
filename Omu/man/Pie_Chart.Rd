@@ -5,12 +5,12 @@
 \title{pie_chart
 Makes pie chart as ggplot2 object from ra_table function output}
 \usage{
-pie_chart(data, variable, column, color)
+pie_chart(ratio_data, variable, column, color)
 }
 \arguments{
-\item{data}{a dataframe object of percents. output from ra_table function}
+\item{ratio_data}{a dataframe object of percents. output from ra_table function}
 
-\item{variable}{The meta data variable you are measuring, i.e. "Class"}
+\item{variable}{The metadata variable you are measuring, i.e. "Class"}
 
 \item{column}{either "Increase", "Decrease", or "Significant_Changes"}
 
@@ -23,14 +23,16 @@ Makes pie chart as ggplot2 object from ra_table function output
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
 
-t_test_df <- omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
-numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
+t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
+metadata = c57_nos2KO_mouse_metadata,
+numerator = "Strep", denominator = "Mock", response_variable = "Metabolite",
+Factor = "Treatment",
 log_transform = TRUE, p_adjust = "BH")
 
-fold_change_counts <- count_fold_changes(data = t_test_df, "Class",
+fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
 column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
 
-ra_table <- ra_table(data = fold_change_counts, variable = "Class")
+ra_table <- ra_table(fc_data = fold_change_counts, variable = "Class")
 
-pie_chart(data = ra_table, variable = "Class", column = "Decrease", color = "black")
+pie_chart(ratio_data = ra_table, variable = "Class", column = "Decrease", color = "black")
 }

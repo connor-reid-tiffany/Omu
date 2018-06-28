@@ -5,10 +5,10 @@
 \title{make_omelette
 Internal function for KEGG_Gather}
 \usage{
-make_omelette(countDF, column, req)
+make_omelette(count_data, column, req)
 }
 \arguments{
-\item{countDF}{The metabolomics countDF}
+\item{count_data}{The metabolomics count data}
 
 \item{column}{The name of the KEGG identifier being sent to the KEGG API}
 
