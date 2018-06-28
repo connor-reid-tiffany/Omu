@@ -10,7 +10,8 @@ plot_bar(data, fill, size, color)
 \arguments{
 \item{data}{The output file from Count_Fold_Changes}
 
-\item{fill}{A character vector of length 2 containing colors for filling the bars, Factors are alphanumeric, so the first color is for the "Decrease" bar while the second is for "Increase"}
+\item{fill}{A character vector of length 2 containing colors for filling the bars,
+Factors are alphanumeric, so the first color is for the "Decrease" bar while the second is for "Increase"}
 
 \item{size}{A character vector of 2 numbers for the size of the bar outlines.}
 

@@ -10,21 +10,26 @@ plot_volcano(data, column, size, strpattern, fill, sig_threshold, alpha, shape,
 \arguments{
 \item{data}{The output file from the Clean_DESeq_results() function.}
 
-\item{column}{The factor as a string, i.e. column = "Class"}
+\item{column}{The column with metadata you want to highlight points in the plot with, i.e. "Class"}
 
-\item{size}{Size of points in plot}
+\item{size}{Size of the points in the plot}
 
-\item{strpattern}{A character vector of levels of the factor you want the plot to focus on, i.e. strpattern = c("Carbohydrates", "Organicacids")}
+\item{strpattern}{A character vector of levels of the column you want the plot to focus on,
+i.e. strpattern = c("Carbohydrates", "Organicacids")}
 
-\item{fill}{A character vector of colors you want your points to be. Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.}
+\item{fill}{A character vector of colors you want your points to be.
+Levels of a factor are organzed alphabetically. All levels not in the strpattern argument will be set to NA.}
 
-\item{sig_threshold}{An integer. Creates a horizontal dashed line for a significance threshold. i.e. sig_threshold = 0.05. Defaut value is 0.05}
+\item{sig_threshold}{An integer. Creates a horizontal dashed line for a significance threshold.
+i.e. sig_threshold = 0.05. Defaut value is 0.05}
 
 \item{alpha}{A character vector for setting transparency of factor levels. i.e. alpha_list = (1, 0.5, 1)}
 
-\item{shape}{A character vector for setting the shapes for your factor levels. See ggplot2 for an index of shapes}
+\item{shape}{A character vector for setting the shapes for your column levels.
+See ggplot2 for an index of shape values. These should all be numbers, i.e. 1,24,20}
 
-\item{color}{A character vector of colors for the factor levels. If you choose to use shapes with outlines, this list will set the outline colors.}
+\item{color}{A character vector of colors for the column levels. If you choose to use shapes with outlines,
+this list will set the outline colors.}
 }
 \description{
 This function takes an input data frame from t_test and creates a volcano plot as a ggplot2 object.

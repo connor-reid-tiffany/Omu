@@ -3,7 +3,8 @@
 \name{omu_summary}
 \alias{omu_summary}
 \title{omu_summary
-Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange. The order effects the fold change values}
+Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
+The order effects the fold change values}
 \usage{
 omu_summary(data, colData, numerator, denominator, response_variable, Factor,
   log_transform, p_adjust)
@@ -21,13 +22,15 @@ omu_summary(data, colData, numerator, denominator, response_variable, Factor,
 
 \item{Factor}{the column name for your independent variables}
 
-\item{log_transform}{TRUE or FALSE value for whether or not log transformation of data is performed before the t test}
+\item{log_transform}{TRUE or FALSE value for whether or not log transformation of data is performed
+before the t test}
 
 \item{p_adjust}{Method for adjusting the p value, i.e. "BH"}
 }
 \description{
 omu_summary
-Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange. The order effects the fold change values
+Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
+The order effects the fold change values
 }
 \examples{
 omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,

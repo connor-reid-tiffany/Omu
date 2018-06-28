@@ -51,6 +51,11 @@ kable(c57_nos2KO_mouse_metadata[1:4,])
 
 For end users metabolomics data, it is recommended to use the ```read.metabo``` function to load it into R. This function is simply a wrapper for ```read.csv```, which ensures your data has the proper class for ```KEGG_gather``` to work. For metadata, ```read.csv``` should be used.
 
+```
+your_metabolomics_count_dataframe <- read.metabo(filepath = "path/to/your/data.csv")
+your_metabolomics_metadata <- read.csv("path/to/your/metadata.csv")
+```
+
 ### Assiging Hierarchical Class Data
 
 Omu can assign hierarchical class data for metabolites, functional orthologies, and organism identifiers associated with gene names. It does this using data frames located in the system data of the package(these can not be viewed or edited by the user, but the tables are available on the Omu github page in .csv format). To assign hierarchical class data, use the ```assign_hierarchy``` function and pick the correct identifier, either "KEGG", "KO_Number", "Prokaryote", or "Eukaryote". For example, using the c57_nos2KO_mouse_countDF.RData that comes with the package, compound hierarchy data can be assigned with the following code:

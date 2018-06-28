@@ -7,7 +7,7 @@
 ra_table(data, variable)
 }
 \arguments{
-\item{data}{data frame object from the count_fold_changes function}
+\item{data}{data frame output from the count_fold_changes function}
 
 \item{variable}{meta data from count_fold_changes, i.e. "Class"}
 }
