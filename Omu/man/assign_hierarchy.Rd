@@ -4,19 +4,22 @@
 \alias{assign_hierarchy}
 \title{assign_hierarchy}
 \usage{
-assign_hierarchy(data, keep_unknowns, identifier)
+assign_hierarchy(count_data, keep_unknowns, identifier)
 }
 \arguments{
-\item{data}{a metabolomics count matrix with either a KEGG compound, orthology, or gene identifier}
+\item{count_data}{a metabolomics count data frame with either a KEGG compound, orthology,
+or a gene identifier column}
 
-\item{keep_unknowns}{a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds, FALSE prunes them}
+\item{keep_unknowns}{a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds,
+FALSE removes them}
 
-\item{identifier}{a string that is either "KEGG" for metabolite, "KO_Number" for orthology,"Prokaryote" for organism, or "Eukaryote" for organism}
+\item{identifier}{a string that is either "KEGG" for metabolite, "KO_Number" for orthology,
+"Prokaryote" for organism, or "Eukaryote" for organism}
 }
 \description{
-This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers. It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
+This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.
+It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
 }
 \examples{
-assign_hierarchy(data = c57_nos2KO_mouse_countDF,
-keep_unknowns = TRUE, identifier = "KEGG")
+assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
 }

@@ -3,34 +3,41 @@
 \name{omu_anova}
 \alias{omu_anova}
 \title{omu_anova
-Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent variables individually, or on the interaction between two independent variables}
+Function to apply an anova across all response variables. Options for running the model
+on 1 or 2 independent variables individually, or on the interaction between two
+independent variables}
 \usage{
-omu_anova(data, colData, response_variable, var1, var2, interaction,
+omu_anova(count_data, metadata, response_variable, var1, var2, interaction,
   log_transform, p_adjust)
 }
 \arguments{
-\item{data}{A metabolomics count data frame}
+\item{count_data}{A metabolomics count data frame}
 
-\item{colData}{Meta data dataframe for the metabolomics count data frame}
+\item{metadata}{Metadata dataframe for the metabolomics count data frame}
 
-\item{response_variable}{String of the column header for the response variables, usually "Metabolite"}
+\item{response_variable}{String of the column header for the response variables,
+usually "Metabolite"}
 
 \item{var1}{String of the first independent variable you wish to test}
 
 \item{var2}{String of the second independent variable you wish to test. Optional parameter}
 
-\item{interaction}{Boolean of TRUE or FALSE for whether or not you wish to model an interaction betweenindependent variables. Optional parameter}
+\item{interaction}{Boolean of TRUE or FALSE for whether or not you wish to model
+an interaction between independent variables. Optional parameter}
 
-\item{log_transform}{Boolean of TRUE or FALSE for whether or not you wish to log transform your counts}
+\item{log_transform}{Boolean of TRUE or FALSE for whether or not you wish to log transform
+your metabolite counts}
 
 \item{p_adjust}{Method for p value adjustment, i.e. "BH"}
 }
 \description{
 omu_anova
-Function to apply an anova across all response variables. Options for running the model on 1 or 2 independent variables individually, or on the interaction between two independent variables
+Function to apply an anova across all response variables. Options for running the model
+on 1 or 2 independent variables individually, or on the interaction between two
+independent variables
 }
 \examples{
-anova_df <- omu_anova(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 response_variable = "Metabolite", var1 = "Treatment", var2 = "Background", log_transfor = TRUE,
 p_adjust = "BH", interaction = TRUE)
 }

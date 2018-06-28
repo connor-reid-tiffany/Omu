@@ -33,7 +33,7 @@ omu_anova <- function(count_data, metadata, response_variable, var1, var2, inter
 
   #Convert column 1 to rownames
   rownames(count_data) <- count_data[,response_variable]
-  data[,response_variable] <- NULL
+  count_data[,response_variable] <- NULL
 
   #Convert classes to numeric
   data_Int <- count_data[sapply(count_data, function(x) is.numeric(x))]

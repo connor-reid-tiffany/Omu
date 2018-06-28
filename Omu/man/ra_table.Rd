@@ -4,25 +4,27 @@
 \alias{ra_table}
 \title{ra_table}
 \usage{
-ra_table(data, variable)
+ra_table(fc_data, variable)
 }
 \arguments{
-\item{data}{data frame output from the count_fold_changes function}
+\item{fc_data}{data frame output from the count_fold_changes function}
 
-\item{variable}{meta data from count_fold_changes, i.e. "Class"}
+\item{variable}{metadata from count_fold_changes, i.e. "Class"}
 }
 \description{
-Make a relative abundance table from the count_fold_changes function output. For making pie charts
+Make a ratio table from the count_fold_changes function output. The ratio
+table can then be used to make pie charts.
 }
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
 
-t_test_df <- omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
-numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
+t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
+metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
+response_variable = "Metabolite", Factor = "Treatment",
 log_transform = TRUE, p_adjust = "BH")
 
-fold_change_counts <- count_fold_changes(data = t_test_df, "Class",
+fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
 column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
 
-ra_table(data = fold_change_counts, variable = "Class")
+ra_table(fc_data = fold_change_counts, variable = "Class")
 }

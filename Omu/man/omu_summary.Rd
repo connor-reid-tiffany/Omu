@@ -6,13 +6,13 @@
 Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
 The order effects the fold change values}
 \usage{
-omu_summary(data, colData, numerator, denominator, response_variable, Factor,
-  log_transform, p_adjust)
+omu_summary(count_data, metadata, numerator, denominator, response_variable,
+  Factor, log_transform, p_adjust)
 }
 \arguments{
-\item{data}{should be a metabolomics count data frame}
+\item{count_data}{should be a metabolomics count data frame}
 
-\item{colData}{is meta data}
+\item{metadata}{is meta data}
 
 \item{numerator}{is the variable you wish to compare against the denominator, in quotes}
 
@@ -33,7 +33,7 @@ Performs t test, standard deviation, standard error, FDR correction, fold change
 The order effects the fold change values
 }
 \examples{
-omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
 log_transform = TRUE, p_adjust = "BH")
 }

@@ -7,10 +7,10 @@ Internal function for KEGG_Gather.rxn method
 KEGG_Gather.rxn requires dispatch on multiple elements, so
 There was no way to incorporate as a method}
 \usage{
-plate_omelette_rxnko(countDF, matrix)
+plate_omelette_rxnko(count_data, matrix)
 }
 \arguments{
-\item{countDF}{Metabolomics count DF}
+\item{count_data}{Metabolomics count data}
 
 \item{matrix}{the matrix of KEGG metadata}
 }
