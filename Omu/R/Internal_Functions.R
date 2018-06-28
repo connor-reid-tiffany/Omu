@@ -1,6 +1,6 @@
 #' make_omelette
 #' Internal function for KEGG_Gather
-#' @param countDF The metabolomics countDF
+#' @param count_data The metabolomics count data
 #' @param column The name of the KEGG identifier being sent to the KEGG API
 #' @param req The character vector with variables to pull out of the metadata
 #' @importFrom KEGGREST keggGet
@@ -8,10 +8,10 @@
 #' @export
 
 
-make_omelette <- function(countDF, column, req){
+make_omelette <- function(count_data, column, req){
 
   #Create input of nested lists of length 10 and feed to KEGG API
-  input <- data.frame(i = countDF[, column])
+  input <- data.frame(i = count_data[, column])
   input = as.vector(input[rowSums(is.na(input)) != ncol(input),])
   input_split  <- split(input,  ceiling(seq_along(input)/10))
   input_split = llply(input_split, as.list)
@@ -38,13 +38,13 @@ make_omelette <- function(countDF, column, req){
 #' Internal function for KEGG_Gather.rxn method
 #' KEGG_Gather.rxn requires dispatch on multiple elements, so
 #' There was no way to incorporate as a method
-#' @param countDF Metabolomics count DF
+#' @param count_data Metabolomics count data
 #' @param matrix  the matrix of KEGG metadata
 #' @importFrom reshape2 colsplit
 #' @importFrom dplyr left_join
 #' @export
 
-plate_omelette_rxnko<- function(countDF, matrix){
+plate_omelette_rxnko<- function(count_data, matrix){
 
 ko_df = as.data.frame(unlist(matrix[,2], recursive = F))
 ko_df <- cbind(rownames(ko_df), data.frame(ko_df, row.names=NULL))
@@ -66,10 +66,10 @@ rxn_df = rxn_df[,1:2]
 
 #Join origianl dataframe to dataframe with KO by Rxn number
 ko_with_rxn <- left_join(ko_df, rxn_df, by = "Element_number")
-countDF= left_join(ko_with_rxn, countDF, by = "Rxn")
+count_data= left_join(ko_with_rxn, count_data, by = "Rxn")
 
 #Drop the element number column as it is no longer needed
-countDF = countDF[ , !(names(countDF) %in% "Element_number")]
+count_data = count_data[ , !(names(count_data) %in% "Element_number")]
 
-return(countDF)
+return(count_data)
 }

@@ -1,26 +1,26 @@
 #' plate_omelette
 #' Internal method for KEGG_Gather
-#' @param countDF The metabolomics count dataframe
+#' @param count_data The metabolomics count dataframe
 #' @importFrom stringr str_split_fixed
 #' @importFrom stats complete.cases
 #' @export
 
 
 
-plate_omelette <- function(countDF) UseMethod("plate_omelette")
+plate_omelette <- function(count_data) UseMethod("plate_omelette")
 
 #' @rdname plate_omelette
 #' @export
-plate_omelette.rxn <- function(countDF){
+plate_omelette.rxn <- function(count_data){
 
 #Clean up using regex
-countDF$Rxn = gsub("\\c\\("," \\[",countDF$Rxn)
-countDF$Rxn = gsub("[[:punct:]]", "", countDF$Rxn)
-countDF$Rxn = gsub("\\s+", ",", gsub("^\\s+|\\s+$", "",countDF$Rxn))
+count_data$Rxn = gsub("\\c\\("," \\[",count_data$Rxn)
+count_data$Rxn = gsub("[[:punct:]]", "", count_data$Rxn)
+count_data$Rxn = gsub("\\s+", ",", gsub("^\\s+|\\s+$", "",count_data$Rxn))
 
 #Split multiple values per identifier by a delimiter
-lst <- strsplit(as.character(countDF$Rxn), ",")
-Split_DF <- transform(countDF[rep(1:nrow(countDF),
+lst <- strsplit(as.character(count_data$Rxn), ",")
+Split_DF <- transform(count_data[rep(1:nrow(count_data),
 lengths(lst)),-5], Rxn= unlist(lst))
 Split_DF$Rxn = as.vector(Split_DF$Rxn)
 Split_DF[Split_DF =="NULL"] <- NA
@@ -32,15 +32,15 @@ return(Split_DF)
 
 #' @rdname plate_omelette
 #' @export
-plate_omelette.genes <- function(countDF){
+plate_omelette.genes <- function(count_data){
 
 #Clean up using regex
-countDF$Genes = gsub("\\c\\("," \\[",countDF$Genes)
-countDF$Genes = gsub("\\[|\\]", "", countDF$Genes)
+count_data$Genes = gsub("\\c\\("," \\[",count_data$Genes)
+count_data$Genes = gsub("\\[|\\]", "", count_data$Genes)
 
 #Split multiple values per identifier by a delimiter
-lst <- strsplit(as.character(countDF$Genes), ",")
-DF <- transform(countDF[rep(1:nrow(countDF), lengths(lst)),-1], Genes= unlist(lst))
+lst <- strsplit(as.character(count_data$Genes), ",")
+DF <- transform(count_data[rep(1:nrow(count_data), lengths(lst)),-1], Genes= unlist(lst))
 DF <- as.data.frame(sapply(DF, function(x) gsub("\"", "", x)))
 DF$Gene_number <- DF$Genes
 DF2 <- str_split_fixed(DF$Genes, ":", 2)

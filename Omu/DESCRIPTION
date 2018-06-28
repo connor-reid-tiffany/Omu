@@ -3,17 +3,19 @@ Title: A Metabolomics Analysis R Package for Intuitive Figures and Convenient Me
 Version: 0.9.2
 Authors@R: person("Connor", "Tiffany", email = "crtiffany@ucdavis.edu", role = c("aut", "cre"))
 Description: This package facilitates creation of intuitive figures to describe metabolomics data by utilizing KEGG hierarchy data, and gathers functional orthology and gene data using KEGGREST to access the KEGG API.
-Depends: R (>= 3.3.2)
+Depends: R (>= 3.3.0)
 Imports:
     plyr,
     dplyr,
     stringr,
     KEGGREST,
+    BiocInstaller,
     plotrix,
     reshape2,
     ggfortify,
     ggplot2,
-    magrittr
+    magrittr,
+    tidyr
 License: MIT
 Encoding: UTF-8
 LazyData: true

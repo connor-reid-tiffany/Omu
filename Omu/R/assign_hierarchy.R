@@ -1,49 +1,59 @@
 #' assign_hierarchy
 #'
-#' This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers. It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
-#' @param data a metabolomics count matrix with either a KEGG compound, orthology, or gene identifier
-#' @param keep_unknowns a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds, FALSE prunes them
-#' @param identifier a string that is either "KEGG" for metabolite, "KO_Number" for orthology,"Prokaryote" for organism, or "Eukaryote" for organism
+#' This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.
+#' It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
+#' @param count_data a metabolomics count data frame with either a KEGG compound, orthology,
+#' or a gene identifier column
+#' @param keep_unknowns a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds,
+#' FALSE removes them
+#' @param identifier a string that is either "KEGG" for metabolite, "KO_Number" for orthology,
+#' "Prokaryote" for organism, or "Eukaryote" for organism
 #' @importFrom dplyr inner_join
 #' @importFrom dplyr left_join
 #' @importFrom dplyr distinct
 #' @examples
-#' assign_hierarchy(data = c57_nos2KO_mouse_countDF,
-#' keep_unknowns = TRUE, identifier = "KEGG")
+#' assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
 #' @export
 
-assign_hierarchy <- function(data, keep_unknowns, identifier){
+assign_hierarchy <- function(count_data, keep_unknowns, identifier){
+Metabolite <- NULL
+identifier = match.arg(arg = identifier, choices = c("KEGG", "KO_Number", "Prokaryote", "Eukaryote"))
 
 if (identifier == "KEGG"){
   if (keep_unknowns ==FALSE){
-    data <- inner_join(data, Metabolite_Hierarchy_Table, by = identifier)
-    data <- distinct(data, Metabolite,.keep_all = TRUE)
-    return(data)
+    count_data <- inner_join(count_data, Metabolite_Hierarchy_Table, by = identifier)
+    count_data <- distinct(count_data, Metabolite,.keep_all = TRUE)
+    class(count_data) = append(class(count_data), "cpd")
+    return(count_data)
     }
     else if (keep_unknowns == TRUE) {
-      data <- left_join(data, Metabolite_Hierarchy_Table, by = identifier)
-      data <- distinct(data, Metabolite,.keep_all = TRUE)
-      return(data)
+      count_data <- left_join(count_data, Metabolite_Hierarchy_Table, by = identifier)
+      count_data <- distinct(count_data, Metabolite,.keep_all = TRUE)
+      class(count_data) = append(class(count_data), "cpd")
+      return(count_data)
     }
   } else if (identifier == "KO_Number"){
 
-    data$KO_Class <- Orthology_Hierarchy_Table$KO_Class[match(data$KO_Number,
+    count_data$KO_Class <- Orthology_Hierarchy_Table$KO_Class[match(count_data$KO_Number,
       Orthology_Hierarchy_Table$KO_Number)]
-    data$KO_Subclass_1 <- Orthology_Hierarchy_Table$KO_Subclass_1[match(data$KO_Number,
+    count_data$KO_Subclass_1 <- Orthology_Hierarchy_Table$KO_Subclass_1[match(count_data$KO_Number,
       Orthology_Hierarchy_Table$KO_Number)]
-    data$KO_Subclass_2 <- Orthology_Hierarchy_Table$KO_Subclass_2[match(data$KO_Number,
+    count_data$KO_Subclass_2 <- Orthology_Hierarchy_Table$KO_Subclass_2[match(count_data$KO_Number,
         Orthology_Hierarchy_Table$KO_Number)]
 
-    return(data)
+    return(count_data)
   } else if (identifier == "Prokaryote"){
-    data <- inner_join(data, Prokaryote_Hierarchy_Table, by = identifier)
+
+    count_data <- inner_join(count_data, Prokaryote_Hierarchy_Table, by = 'Org')
 
 
 
-    return(data)
+    return(count_data)
   } else if (identifier == "Eukaryote"){
-    data <- inner_join(data, Eukaryote_Hierarchy_Table, by = identifier)
 
-    return(data)
+    count_data <- inner_join(count_data, Eukaryote_Hierarchy_Table, by = 'Org')
+
+    return(count_data)
   }
+
 }

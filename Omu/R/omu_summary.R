@@ -1,12 +1,14 @@
-#' t_test
-#' Performs t test, Standard Error, FDR correction, Fold Change, log2FoldChange. The order effects the fold change values
-#' @param data should be a metabolomics count data frame
-#' @param colData is meta data
+#' omu_summary
+#' Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
+#' The order effects the fold change values
+#' @param count_data should be a metabolomics count data frame
+#' @param metadata is meta data
 #' @param numerator is the variable you wish to compare against the denominator, in quotes
 #' @param denominator see above, in quotes
 #' @param response_variable the name of the column with your response variables
 #' @param Factor the column name for your independent variables
-#' @param log_transform TRUE or FALSE value for whether or not log transformation of data is performed before the t test
+#' @param log_transform TRUE or FALSE value for whether or not log transformation of data is performed
+#' before the t test
 #' @param p_adjust Method for adjusting the p value, i.e. "BH"
 #' @importFrom dplyr filter
 #' @importFrom plyr ldply
@@ -16,33 +18,36 @@
 #' @importFrom magrittr %>%
 #' @importFrom stats t.test
 #' @importFrom stats p.adjust
+#' @importFrom stats sd
 #' @examples
-#' t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+#' omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH")
 #' @export
 
-t_test <- function(data, colData, numerator, denominator, response_variable, Factor, log_transform){
+omu_summary <- function(count_data, metadata, numerator, denominator, response_variable,
+  Factor, log_transform, p_adjust){
 
 
   #Temporarily separate meta data from counts and store in other object
-  rownames(data) <- data[,response_variable]
-  data[,response_variable] <- NULL
-  data_Int <- data[sapply(data, function(x) is.numeric(x))]
+  rownames(count_data) <- count_data[,response_variable]
+  count_data[,response_variable] <- NULL
+  data_Int <- count_data[sapply(count_data, function(x) is.numeric(x))]
 
 
   #Transform for 'normalization' and T test
   data_Transpose <- as.data.frame(t(data_Int))
   data_Transpose <- as.data.frame(cbind(Sample = rownames(data_Transpose), data_Transpose))
-  Factor = colData[, Factor]
-  data_Transpose$Factor = Factor[match(colData$Sample, data_Transpose$Sample)]
+  Factor = metadata[, Factor]
+  data_Transpose$Factor = Factor[match(metadata$Sample, data_Transpose$Sample)]
   data_Subset <- filter(data_Transpose, Factor==numerator|Factor==denominator)
   rownames(data_Subset) <- data_Subset[,"Sample"]
   data_Subset[,"Sample"] <- NULL
 
   #Treatment_vect <- as.data.frame(data_Subset$Treatment)
   data_Numeric <- data_Subset[sapply(data_Subset, function(x) is.numeric(x))]
-  data_Numeric <- data.frame(lapply(data_Numeric, function(x) as.numeric(as.character(x))),check.names=F, row.names = rownames(data_Numeric))
+  data_Numeric <- data.frame(lapply(data_Numeric,
+    function(x) as.numeric(as.character(x))),check.names=F, row.names = rownames(data_Numeric))
 
   #Normalize the data using natural logarithm
   data_Log <- as.data.frame(log(data_Numeric))
@@ -125,9 +130,9 @@ t_test <- function(data, colData, numerator, denominator, response_variable, Fac
   #Merge metabo_path metadata, means & fold change, and t test results by metabolite name
   colnames(results)[1] <- response_variable
   results$padj = p.adjust(results$pval, method = p_adjust)
-  data = cbind(rownames(data), data.frame(data, row.names=NULL))
-  colnames(data)[1] <- "Metabolite"
-  results = merge(results, data, by = response_variable, all = TRUE)
+  count_data = cbind(rownames(count_data), data.frame(count_data, row.names=NULL))
+  colnames(count_data)[1] <- "Metabolite"
+  results = merge(results, count_data, by = response_variable, all = TRUE)
   results = merge(Means_T, results, by = response_variable, all.y = TRUE)
   results = merge(SE_t, results, by = response_variable, all.y = TRUE)
   results = merge(stdev_t, results, by = response_variable, all.y = TRUE)

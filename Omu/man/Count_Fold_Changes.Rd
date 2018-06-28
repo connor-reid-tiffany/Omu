@@ -4,7 +4,7 @@
 \alias{count_fold_changes}
 \title{count_fold_changes}
 \usage{
-count_fold_changes(data, ..., column, sig_threshold)
+count_fold_changes(data, ..., column, sig_threshold, keep_unknowns)
 }
 \arguments{
 \item{data}{Output dataframe from the Clean_DESeq_results function}
@@ -14,6 +14,8 @@ count_fold_changes(data, ..., column, sig_threshold)
 \item{column}{The same value entered for the ... parameter, i.e. column = "Class}
 
 \item{sig_threshold}{Significance threshold, i.e. sig_threshold = 0.05}
+
+\item{keep_unknowns}{TRUE or FALSE for whether to drop NA class compounds}
 }
 \description{
 This function takes an input data frame that has been run in a statistical modeling function
@@ -21,9 +23,9 @@ and returns the number of compounds that significantly changed in each metabolit
 }
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-t_test_df <- t_test(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
+t_test_df <- omu_summary(data = c57_nos2KO_mouse_countDF, colData = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
-log_transform = TRUE)
+log_transform = TRUE, p_adjust = "BH")
 fold_change_counts <- count_fold_changes(data = t_test_df, "Class",
-column = "Class", sig_threshold = 0.05)
+column = "Class", sig_threshold = 0.05, keep_unknowns = "FALSE")
 }
