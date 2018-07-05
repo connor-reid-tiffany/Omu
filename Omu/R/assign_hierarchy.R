@@ -1,7 +1,7 @@
-#' assign_hierarchy
+#' Assign hierarchy metadata
 #'
-#' This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.
-#' It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
+#' @description Assigns hierarchy metadata to a metabolomics count matrix using identifier values.
+#' It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy data.
 #' @param count_data a metabolomics count data frame with either a KEGG compound, orthology,
 #' or a gene identifier column
 #' @param keep_unknowns a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds,

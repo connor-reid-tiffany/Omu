@@ -1,9 +1,7 @@
-#'count_fold_changes
+#' Get counts for significant fold changes by metabolite class.
 #'
-#' This function takes an input data frame that has been run in a statistical
-#' modeling function
-#' and returns the number of compounds that significantly changed in each metabolite
-#' Class or Subclass.
+#' @description Takes an input data frame from the output of omu_summary and creates a
+#' data frame of counts for significantly changed metabolites by class hierarchy data.
 #' @param count_data Output dataframe from the omu_summary function
 #' @param ... Either a Class or Subclass column as a string, i.e. "Class
 #' @param column The same value entered for the ... argument, i.e. column = "Class
@@ -17,11 +15,12 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
+#' \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:30,]}
 #' t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 #' metadata = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite",
-#' Factor = "Treatment",
-#' log_transform = TRUE, p_adjust = "BH")
+#' Factor = "Treatment", log_transform = TRUE, p_adjust = "BH")
+#'
 #' fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
 #' column = "Class", sig_threshold = 0.05, keep_unknowns = "FALSE")
 #' @export

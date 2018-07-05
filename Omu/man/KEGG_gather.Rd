@@ -5,8 +5,7 @@
 \alias{KEGG_gather.cpd}
 \alias{KEGG_gather.rxn}
 \alias{KEGG_gather.KO}
-\title{KEGG_gather
-Method for gathering metadata from KEGG API}
+\title{Gather metadata from KEGG for metabolites}
 \usage{
 KEGG_gather(count_data)
 
@@ -20,6 +19,13 @@ KEGG_gather(count_data)
 \item{count_data}{A metabolmics count dataframe with a KEGG identifier columns}
 }
 \description{
-KEGG_gather
-Method for gathering metadata from KEGG API
+Method for gathering metadata from the KEGG API.
+}
+\examples{
+count_data <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF,
+keep_unknowns = TRUE, identifier = "KEGG")
+
+count_data <- subset(count_data, Subclass_2=="Aldoses")
+
+count_data <- KEGG_gather(count_data = count_data)
 }

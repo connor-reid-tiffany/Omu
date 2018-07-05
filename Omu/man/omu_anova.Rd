@@ -37,6 +37,7 @@ on 1 or 2 independent variables individually, or on the interaction between two
 independent variables
 }
 \examples{
+\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}
 anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 response_variable = "Metabolite", var1 = "Treatment", var2 = "Background", log_transfor = TRUE,
 p_adjust = "BH", interaction = TRUE)

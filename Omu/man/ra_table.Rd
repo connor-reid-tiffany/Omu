@@ -2,7 +2,7 @@
 % Please edit documentation in R/ra_table.R
 \name{ra_table}
 \alias{ra_table}
-\title{ra_table}
+\title{Creates a ratio table from the count_fold_changes function output.}
 \usage{
 ra_table(fc_data, variable)
 }
@@ -12,12 +12,11 @@ ra_table(fc_data, variable)
 \item{variable}{metadata from count_fold_changes, i.e. "Class"}
 }
 \description{
-Make a ratio table from the count_fold_changes function output. The ratio
-table can then be used to make pie charts.
+Create a ratio table
 }
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-
+\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:20,]}
 t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
 response_variable = "Metabolite", Factor = "Treatment",

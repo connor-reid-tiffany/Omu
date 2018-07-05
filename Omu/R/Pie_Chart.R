@@ -1,5 +1,6 @@
-#' pie_chart
-#' Makes pie chart as ggplot2 object from ra_table function output
+#' Create a pie chart
+#'
+#' @description Creates a pie chart as ggplot2 object using the output from ra_table.
 #' @param ratio_data a dataframe object of percents. output from ra_table function
 #' @param variable The metadata variable you are measuring, i.e. "Class"
 #' @param column either "Increase", "Decrease", or "Significant_Changes"
@@ -14,7 +15,7 @@
 #' @importFrom stats reorder
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-#'
+#' \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:20,]}
 #' t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 #' metadata = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite",

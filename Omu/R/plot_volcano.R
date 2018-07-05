@@ -1,7 +1,6 @@
-#' plot_volcano
+#' Create a volcano plot
 #'
-#' This function takes an input data frame from omu_summary and creates a volcano plot as a
-#' ggplot2 object.
+#' @description Creates a volcano plot as ggplot2 object using the output of omu_summary
 #' @param count_data The output file from the omu_summary function.
 #' @param column The column with metadata you want to highlight points in the plot with,
 #' i.e. "Class"
@@ -15,8 +14,8 @@
 #' @param alpha A character vector for setting transparency of factor levels.
 #' @param shape A character vector for setting the shapes for your column levels.
 #' See ggplot2 for an index of shape values.
-#' @param color A character vector of colors for the column levels. If you choose to use shapes with
-#' outlines, this list will set the outline colors.
+#' @param color A character vector of colors for the column levels. If you choose to use shapes
+#' with outlines, this list will set the outline colors.
 #' @param size Size of the points in the plot
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
@@ -35,15 +34,15 @@
 #' @importFrom stringr str_replace_na
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-#'
+#' \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:20,]}
 #' t_test_df <-  omu_summary(count_data = c57_nos2KO_mouse_countDF,
 #' metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
 #' response_variable = "Metabolite", Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH")
 #'
-#' plot_volcano(count_data = t_test_df, column = "Class", strpattern = c("Carbohydrates", "Lipids"),
-#' fill = c("firebrick2", "dodgerblue2", "white"), sig_threshold = 0.05, alpha = c(1,1,1),
-#' shape = c(1,21,24), color = c("black", "black", "black"), size = 2)
+#' plot_volcano(count_data = t_test_df, column = "Class", strpattern = c("Carbohydrates"),
+#' fill = c("firebrick2", "white"), sig_threshold = 0.05, alpha = c(1,1),
+#' shape = c(1,24), color = c("black", "black"), size = 2)
 #'
 #' plot_volcano(count_data = t_test_df, sig_threshold = 0.05, size = 2)
 #' @export

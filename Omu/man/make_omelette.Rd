@@ -2,8 +2,7 @@
 % Please edit documentation in R/Internal_Functions.R
 \name{make_omelette}
 \alias{make_omelette}
-\title{make_omelette
-Internal function for KEGG_Gather}
+\title{Get metadata from KEGG API}
 \usage{
 make_omelette(count_data, column, req)
 }
@@ -15,6 +14,5 @@ make_omelette(count_data, column, req)
 \item{req}{The character vector with variables to pull out of the metadata}
 }
 \description{
-make_omelette
 Internal function for KEGG_Gather
 }

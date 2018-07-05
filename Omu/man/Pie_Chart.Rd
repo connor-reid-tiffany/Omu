@@ -2,8 +2,7 @@
 % Please edit documentation in R/pie_chart.R
 \name{pie_chart}
 \alias{pie_chart}
-\title{pie_chart
-Makes pie chart as ggplot2 object from ra_table function output}
+\title{Create a pie chart}
 \usage{
 pie_chart(ratio_data, variable, column, color)
 }
@@ -17,12 +16,11 @@ pie_chart(ratio_data, variable, column, color)
 \item{color}{string denoting color for outline. use NA for no outline}
 }
 \description{
-pie_chart
-Makes pie chart as ggplot2 object from ra_table function output
+Creates a pie chart as ggplot2 object using the output from ra_table.
 }
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-
+\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:20,]}
 t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 metadata = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite",
