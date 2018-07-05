@@ -2,7 +2,7 @@
 % Please edit documentation in R/assign_hierarchy.R
 \name{assign_hierarchy}
 \alias{assign_hierarchy}
-\title{assign_hierarchy}
+\title{Assign hierarchy metadata}
 \usage{
 assign_hierarchy(count_data, keep_unknowns, identifier)
 }
@@ -17,8 +17,8 @@ FALSE removes them}
 "Prokaryote" for organism, or "Eukaryote" for organism}
 }
 \description{
-This function assigns hierarchy metadata to a metabolomics count matrix with KEGG identifier numbers.
-It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy
+Assigns hierarchy metadata to a metabolomics count matrix using identifier values.
+It can assign KEGG compound hierarchy, orthology hierarchy, or organism hierarchy data.
 }
 \examples{
 assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")

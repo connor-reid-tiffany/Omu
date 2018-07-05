@@ -1,7 +1,6 @@
-#' ra_table
+#' Create a ratio table
 #'
-#' Make a ratio table from the count_fold_changes function output. The ratio
-#' table can then be used to make pie charts.
+#' @title Creates a ratio table from the count_fold_changes function output.
 #' @param fc_data data frame output from the count_fold_changes function
 #' @param variable metadata from count_fold_changes, i.e. "Class"
 #' @importFrom dplyr left_join
@@ -9,7 +8,7 @@
 #' @importFrom plyr numcolwise
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
-#'
+#' \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:20,]}
 #' t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 #' metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
 #' response_variable = "Metabolite", Factor = "Treatment",

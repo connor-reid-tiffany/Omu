@@ -20,6 +20,7 @@
 #' @importFrom stats p.adjust
 #' @importFrom stats sd
 #' @examples
+#' \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}
 #' omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH")

@@ -1,8 +1,8 @@
-#' plot_bar
-#' Creates a ggplot2 object using the output file from the count_fold_changes function
+#' Create a bar plot
+#' @description Creates a ggplot2 object using the output file from the count_fold_changes function
 #' @param fc_data The output file from Count_Fold_Changes
 #' @param fill A character vector of length 2 containing colors for filling the bars,
-#' Factors are alphanumeric, so the first color is for the "Decrease" bar while the second
+#' the first color is for the "Decrease" bar while the second
 #' is for "Increase"
 #' @param color A character vector of length 2 containing colors for the bar outlines
 #' @param size A character vector of 2 numbers for the size of the bar outlines.
@@ -19,12 +19,15 @@
 #' @importFrom ggplot2 scale_color_manual
 #' @examples
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
+#' \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:20,]}
 #' t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 #' metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
 #' response_variable = "Metabolite", Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH")
+#'
 #' fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
 #' column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
+#'
 #' plot_bar(fc_data = fold_change_counts, fill = c("firebrick2", "dodgerblue2"),
 #' color = c("black", "black"), size = c(1,1))
 #' @export

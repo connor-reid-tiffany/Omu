@@ -1,7 +1,15 @@
-#' KEGG_gather
-#' Method for gathering metadata from KEGG API
+#' Gather metadata from KEGG for metabolites
+#'
+#' @description Method for gathering metadata from the KEGG API.
 #' @param count_data A metabolmics count dataframe with a KEGG identifier columns
 #' @importFrom dplyr if_else
+#' @examples
+#' count_data <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF,
+#' keep_unknowns = TRUE, identifier = "KEGG")
+#'
+#' count_data <- subset(count_data, Subclass_2=="Aldoses")
+#'
+#' count_data <- KEGG_gather(count_data = count_data)
 #' @export
 
 KEGG_gather <- function(count_data) UseMethod("KEGG_gather", count_data)

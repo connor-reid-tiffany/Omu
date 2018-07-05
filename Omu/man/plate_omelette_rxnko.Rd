@@ -2,10 +2,7 @@
 % Please edit documentation in R/Internal_Functions.R
 \name{plate_omelette_rxnko}
 \alias{plate_omelette_rxnko}
-\title{Plate_Omelette_rxnKO
-Internal function for KEGG_Gather.rxn method
-KEGG_Gather.rxn requires dispatch on multiple elements, so
-There was no way to incorporate as a method}
+\title{Clean up orthology metadata}
 \usage{
 plate_omelette_rxnko(count_data, matrix)
 }
@@ -15,7 +12,6 @@ plate_omelette_rxnko(count_data, matrix)
 \item{matrix}{the matrix of KEGG metadata}
 }
 \description{
-Plate_Omelette_rxnKO
 Internal function for KEGG_Gather.rxn method
 KEGG_Gather.rxn requires dispatch on multiple elements, so
 There was no way to incorporate as a method

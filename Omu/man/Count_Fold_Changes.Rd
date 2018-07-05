@@ -2,7 +2,7 @@
 % Please edit documentation in R/count_fold_changes.R
 \name{count_fold_changes}
 \alias{count_fold_changes}
-\title{count_fold_changes}
+\title{Get counts for significant fold changes by metabolite class.}
 \usage{
 count_fold_changes(count_data, ..., column, sig_threshold, keep_unknowns)
 }
@@ -20,18 +20,17 @@ sig_threshold = 0.05}
 hierarchy metadata}
 }
 \description{
-This function takes an input data frame that has been run in a statistical
-modeling function
-and returns the number of compounds that significantly changed in each metabolite
-Class or Subclass.
+Takes an input data frame from the output of omu_summary and creates a
+data frame of counts for significantly changed metabolites by class hierarchy data.
 }
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
+\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:30,]}
 t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 metadata = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite",
-Factor = "Treatment",
-log_transform = TRUE, p_adjust = "BH")
+Factor = "Treatment", log_transform = TRUE, p_adjust = "BH")
+
 fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
 column = "Class", sig_threshold = 0.05, keep_unknowns = "FALSE")
 }

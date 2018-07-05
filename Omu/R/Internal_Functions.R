@@ -1,5 +1,6 @@
-#' make_omelette
-#' Internal function for KEGG_Gather
+#' Get metadata from KEGG API
+#'
+#' @description Internal function for KEGG_Gather
 #' @param count_data The metabolomics count data
 #' @param column The name of the KEGG identifier being sent to the KEGG API
 #' @param req The character vector with variables to pull out of the metadata
@@ -16,7 +17,7 @@ make_omelette <- function(count_data, column, req){
   input_split  <- split(input,  ceiling(seq_along(input)/10))
   input_split = llply(input_split, as.list)
 
-  #Send nested list of Cpd numbers to KEGG API
+  #Send nested list of identifier values to KEGG API
   output <- llply(input_split, function(x)keggGet(x), .progress = "text")
   unlist_output <- unlist(output, recursive = F)
 
@@ -34,8 +35,9 @@ make_omelette <- function(count_data, column, req){
 
 }
 
-#' Plate_Omelette_rxnKO
-#' Internal function for KEGG_Gather.rxn method
+#' Clean up orthology metadata
+#'
+#' @description Internal function for KEGG_Gather.rxn method
 #' KEGG_Gather.rxn requires dispatch on multiple elements, so
 #' There was no way to incorporate as a method
 #' @param count_data Metabolomics count data
@@ -46,6 +48,7 @@ make_omelette <- function(count_data, column, req){
 
 plate_omelette_rxnko<- function(count_data, matrix){
 
+#Unlist orthology data, extract KO numbers, and element numbers to join with Rxn numbers
 ko_df = as.data.frame(unlist(matrix[,2], recursive = F))
 ko_df <- cbind(rownames(ko_df), data.frame(ko_df, row.names=NULL))
 colnames(ko_df)[1] <- "KO_Number"
@@ -64,7 +67,7 @@ rxn_df = with(rxn_df, cbind(rxn_df[,2],
 colnames(rxn_df)[1] <- "Rxn"
 rxn_df = rxn_df[,1:2]
 
-#Join origianl dataframe to dataframe with KO by Rxn number
+#Join original dataframe to dataframe with KO by Rxn number
 ko_with_rxn <- left_join(ko_df, rxn_df, by = "Element_number")
 count_data= left_join(ko_with_rxn, count_data, by = "Rxn")
 

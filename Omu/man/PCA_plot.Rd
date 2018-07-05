@@ -2,8 +2,7 @@
 % Please edit documentation in R/PCA_plot.R
 \name{PCA_plot}
 \alias{PCA_plot}
-\title{PCA_plot
-Performs an ordination and outputs a PCA plot}
+\title{Create a PCA plot}
 \usage{
 PCA_plot(count_data, metadata, variable, color, response_variable)
 }
@@ -19,8 +18,8 @@ PCA_plot(count_data, metadata, variable, color, response_variable)
 \item{response_variable}{String of the response_variable, usually should be "Metabolite"}
 }
 \description{
-PCA_plot
-Performs an ordination and outputs a PCA plot
+Performs an ordination and outputs a PCA plot using a metabolomics
+count data frame and metabolomics metadata
 }
 \examples{
 PCA_plot(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,

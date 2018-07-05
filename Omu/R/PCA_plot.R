@@ -1,6 +1,7 @@
-#' PCA_plot
+#' Create a PCA plot
 
-#' Performs an ordination and outputs a PCA plot
+#' @description Performs an ordination and outputs a PCA plot using a metabolomics
+#' count data frame and metabolomics metadata
 #' @param count_data Metabolomics count data
 #' @param metadata Metabolomics metadata
 #' @param variable The independent variable you wish to compare and contrast
