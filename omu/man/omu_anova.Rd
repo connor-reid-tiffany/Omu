@@ -2,10 +2,9 @@
 % Please edit documentation in R/omu_anova.R
 \name{omu_anova}
 \alias{omu_anova}
-\title{omu_anova
-Function to apply an anova across all response variables. Options for running the model
-on 1 or 2 independent variables individually, or on the interaction between two
-independent variables}
+\title{Perform anova
+Performs an anova across all response variables. The function can take a maximum of 2
+independent variables and perform an interaction term between them.}
 \usage{
 omu_anova(count_data, metadata, response_variable, var1, var2, interaction,
   log_transform, p_adjust)
@@ -31,10 +30,9 @@ your metabolite counts}
 \item{p_adjust}{Method for p value adjustment, i.e. "BH"}
 }
 \description{
-omu_anova
-Function to apply an anova across all response variables. Options for running the model
-on 1 or 2 independent variables individually, or on the interaction between two
-independent variables
+Perform anova
+Performs an anova across all response variables. The function can take a maximum of 2
+independent variables and perform an interaction term between them.
 }
 \examples{
 \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}

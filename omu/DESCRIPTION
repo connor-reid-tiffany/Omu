@@ -1,8 +1,8 @@
-Package: Omu
+Package: omu
 Title: A Metabolomics Analysis R Package for Intuitive Figures and Convenient Metadata Collection
 Version: 1.0.0
 Authors@R: person("Connor", "Tiffany", email = "crtiffany@ucdavis.edu", role = c("aut", "cre"))
-Description: This package facilitates creation of intuitive figures to describe metabolomics data by utilizing KEGG hierarchy data, and gathers functional orthology and gene data using KEGGREST to access the KEGG API.
+Description: Facilitates the creation of intuitive figures to describe metabolomics data by utilizing KEGG hierarchy data, and gathers functional orthology and gene data using KEGGREST to access the KEGG API.
 Depends: R (>= 3.3.0)
 Imports:
     plyr,
@@ -10,7 +10,6 @@ Imports:
     stringr,
     KEGGREST,
     BiocInstaller,
-    plotrix,
     reshape2,
     ggfortify,
     ggplot2,

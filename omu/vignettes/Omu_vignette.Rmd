@@ -1,5 +1,5 @@
 ---
-title: "Omu, a Metabolomics Analysis R Package"
+title: "omu, a Metabolomics Analysis R Package"
 author: "Connor R. Tiffany"
 date: "3/21/2018"
 output:
@@ -20,7 +20,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction to Omu
+## Introduction to omu
 
 Omu is an R package that enables rapid analysis of Metabolomics data sets, and the creation of intuitive graphs. Omu can assign metabolite classes (Carbohydrates, Lipids, etc) as meta data, perform t tests, anovas and principle component analysis, and gather functional orthology and gene names from the KEGG database that are associated with the metabolites in a dataset. This package was developed with inexperienced R users in mind.
 
@@ -33,7 +33,7 @@ Omu is an R package that enables rapid analysis of Metabolomics data sets, and t
 Included with Omu is an example metabolomics dataset of data from fecal samples collected from a two factor experiment with wild type c57B6J mice and c57B6J mice with a knocked out nos2 gene, that were either mock treated, or given streptomycin(an antibiotic), and a metadata file.  To use Omu, you need a metabolomics count data frame in .csv format that resembles the example dataset, with the column headers Metabolite, KEGG, and then one for each of your samples. Row values are metabolite names in the Metabolite column, KEGG cpd numbers in the KEGG column, and numeric counts in the Sample columns. Here is a truncated version of the sample data in Omu as a visual example of this:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-library(Omu)
+library(omu)
 library(knitr)
 load("../data/c57_nos2KO_mouse_countDF.rda")
 load("../data/c57_nos2KO_mouse_metadata.rda")

@@ -1,7 +1,6 @@
-#'omu_anova
-#'Function to apply an anova across all response variables. Options for running the model
-#'on 1 or 2 independent variables individually, or on the interaction between two
-#'independent variables
+#'Perform anova
+#'Performs an anova across all response variables. The function can take a maximum of 2
+#'independent variables and perform an interaction term between them.
 #'@param count_data A metabolomics count data frame
 #'@param metadata Metadata dataframe for the metabolomics count data frame
 #'@param response_variable String of the column header for the response variables,
