@@ -5,7 +5,7 @@
 #' @param filepath a file path in "" to your metabolomics count table
 #' @importFrom utils read.csv
 #' @examples
-#' #See vignette for information on read_metabo()
+#' \dontrun{count_data <- read_metabo("path/to/your/data")}
 #' @export
 
 
