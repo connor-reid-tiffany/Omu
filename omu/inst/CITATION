@@ -1,0 +1,3 @@
+citHeader("To cite omu in publications use:")
+
+citEntry(entry = "Unpublished", title = "omu, A Metabolomics Analysis Tool for Intuitive Figures and Convenient Metadata Collection", author = as.person("Connor R. Tiffany"), year = "2018", url = "https://zenodo.org/record/1318308#.W1ZRBy2ZMWo", doi = "10.5281/zenodo.1318308", textVersion = "Connor Tiffany. (2018, July 20). connor-reid-tiffany/Omu: First release of omu (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.1318308", note = "Version 1.0.0")
