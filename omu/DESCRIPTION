@@ -1,8 +1,8 @@
 Package: omu
 Title: A Metabolomics Analysis Tool for Intuitive Figures and Convenient Metadata Collection
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: person("Connor", "Tiffany", email = "crtiffany@ucdavis.edu", role = c("aut", "cre"))
-Description: Facilitates the creation of intuitive figures to describe metabolomics data by utilizing KEGG hierarchy data, and gathers functional orthology and gene data using KEGGREST to access the KEGG API.
+Description: Facilitates the creation of intuitive figures to describe metabolomics data by utilizing Kyoto Encyclopedia of Genes and Genomes (KEGG) hierarchy data, and gathers functional orthology and gene data using the package 'KEGGREST' to access the 'KEGG' API.
 Depends: R (>= 3.3.0)
 biocViews:
 Imports:
@@ -18,8 +18,8 @@ Imports:
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/connor-reid-tiffany/Omu
+URL: https://github.com/connor-reid-tiffany/Omu, https://www.kegg.jp/kegg/rest/keggapi.html
 BugReports: https://github.com/connor-reid-tiffany/Omu/issues

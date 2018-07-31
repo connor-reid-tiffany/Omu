@@ -6,8 +6,8 @@
 Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
 The order effects the fold change values}
 \usage{
-omu_summary(count_data, metadata, numerator, denominator, response_variable,
-  Factor, log_transform, p_adjust)
+omu_summary(count_data, metadata, numerator, denominator,
+  response_variable, Factor, log_transform, p_adjust)
 }
 \arguments{
 \item{count_data}{should be a metabolomics count data frame}
