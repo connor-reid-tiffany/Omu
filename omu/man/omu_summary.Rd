@@ -3,11 +3,11 @@
 \name{omu_summary}
 \alias{omu_summary}
 \title{omu_summary
-Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
+Performs comparison of means between two independent variables, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
 The order effects the fold change values}
 \usage{
 omu_summary(count_data, metadata, numerator, denominator,
-  response_variable, Factor, log_transform, p_adjust)
+  response_variable, Factor, log_transform, p_adjust, test_type)
 }
 \arguments{
 \item{count_data}{should be a metabolomics count data frame}
@@ -26,15 +26,17 @@ omu_summary(count_data, metadata, numerator, denominator,
 before the t test}
 
 \item{p_adjust}{Method for adjusting the p value, i.e. "BH"}
+
+\item{test_type}{One of "mwu", "students", or "welch" to determine which means comparison model to use}
 }
 \description{
 omu_summary
-Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
+Performs comparison of means between two independent variables, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
 The order effects the fold change values
 }
 \examples{
 \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}
 omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
-log_transform = TRUE, p_adjust = "BH")
+log_transform = TRUE, p_adjust = "BH", test_type = "welch")
 }
