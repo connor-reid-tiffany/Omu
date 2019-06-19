@@ -4,8 +4,8 @@
 \alias{plot_volcano}
 \title{Create a volcano plot}
 \usage{
-plot_volcano(count_data, column, size, strpattern, fill, sig_threshold, alpha,
-  shape, color)
+plot_volcano(count_data, column, size, strpattern, fill, sig_threshold,
+  alpha, shape, color)
 }
 \arguments{
 \item{count_data}{The output file from the omu_summary function.}
@@ -42,7 +42,7 @@ c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KE
 t_test_df <-  omu_summary(count_data = c57_nos2KO_mouse_countDF,
 metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
 response_variable = "Metabolite", Factor = "Treatment",
-log_transform = TRUE, p_adjust = "BH")
+log_transform = TRUE, p_adjust = "BH", test_type = "welch")
 
 plot_volcano(count_data = t_test_df, column = "Class", strpattern = c("Carbohydrates"),
 fill = c("firebrick2", "white"), sig_threshold = 0.05, alpha = c(1,1),

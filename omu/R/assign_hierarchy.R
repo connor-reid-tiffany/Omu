@@ -40,6 +40,8 @@ if (identifier == "KEGG"){
       Orthology_Hierarchy_Table$KO_Number)]
     count_data$KO_Subclass_2 <- Orthology_Hierarchy_Table$KO_Subclass_2[match(count_data$KO_Number,
         Orthology_Hierarchy_Table$KO_Number)]
+    count_data$KO_Subclass_3_Enzyme <- Orthology_Hierarchy_Table$KO_Subclass_3_Enzyme[match(count_data$KO_Number,
+            Orthology_Hierarchy_Table$KO_Number)]
 
     return(count_data)
   } else if (identifier == "Prokaryote"){

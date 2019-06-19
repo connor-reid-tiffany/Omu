@@ -1,5 +1,5 @@
 #' omu_summary
-#' Performs t test, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
+#' Performs comparison of means between two independent variables, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
 #' The order effects the fold change values
 #' @param count_data should be a metabolomics count data frame
 #' @param metadata is meta data
@@ -10,6 +10,7 @@
 #' @param log_transform TRUE or FALSE value for whether or not log transformation of data is performed
 #' before the t test
 #' @param p_adjust Method for adjusting the p value, i.e. "BH"
+#' @param test_type One of "mwu", "students", or "welch" to determine which means comparison model to use
 #' @importFrom dplyr filter
 #' @importFrom plyr ldply
 #' @importFrom dplyr group_by
@@ -17,17 +18,18 @@
 #' @importFrom dplyr funs
 #' @importFrom magrittr %>%
 #' @importFrom stats t.test
+#' @importFrom stats wilcox.test
 #' @importFrom stats p.adjust
 #' @importFrom stats sd
 #' @examples
 #' \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}
 #' omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 #' numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment",
-#' log_transform = TRUE, p_adjust = "BH")
+#' log_transform = TRUE, p_adjust = "BH", test_type = "welch")
 #' @export
 
 omu_summary <- function(count_data, metadata, numerator, denominator, response_variable,
-  Factor, log_transform, p_adjust){
+                        Factor, log_transform, p_adjust, test_type){
 
 
   #Temporarily separate meta data from counts and store in other object
@@ -48,7 +50,7 @@ omu_summary <- function(count_data, metadata, numerator, denominator, response_v
   #Treatment_vect <- as.data.frame(data_Subset$Treatment)
   data_Numeric <- data_Subset[sapply(data_Subset, function(x) is.numeric(x))]
   data_Numeric <- data.frame(lapply(data_Numeric,
-    function(x) as.numeric(as.character(x))),check.names=F, row.names = rownames(data_Numeric))
+                                    function(x) as.numeric(as.character(x))),check.names=F, row.names = rownames(data_Numeric))
 
   #Normalize the data using natural logarithm
   data_Log <- as.data.frame(log(data_Numeric))
@@ -68,7 +70,8 @@ omu_summary <- function(count_data, metadata, numerator, denominator, response_v
   model = data_mod[, "Factor"]
 
   #T Test function in function envir. Iterates T_Test across all response variables
-  Run_T_Tests <- function(data_Log, Vect, model) {
+  if(test_type == "students"){
+  Run_Tests <- function(data_Log, Vect, model) {
     results <- ldply(
       Vect, function(Metabolite) {
         t_val = t.test(data_mod[[Metabolite]] ~ model)$statistic
@@ -76,8 +79,26 @@ omu_summary <- function(count_data, metadata, numerator, denominator, response_v
         return(data.frame(Metabolite=Metabolite, t_value=t_val, pval = p_val))
       })
   }
-
-  results <- Run_T_Tests(data_Log = data_Log, Vect = Vect, model = model)
+  }else if(test_type == "mwu"){
+    Run_Tests <- function(data_Log, Vect, model) {
+      results <- ldply(
+        Vect, function(Metabolite) {
+          t_val = wilcox.test(data_mod[[Metabolite]] ~ model)$statistic
+          p_val = wilcox.test(data_mod[[Metabolite]] ~ model)$p.value
+          return(data.frame(Metabolite=Metabolite, t_value=t_val, pval = p_val))
+        })
+    }
+  }else if(test_type == "welch"){
+    Run_Tests <- function(data_Log, Vect, model) {
+      results <- ldply(
+        Vect, function(Metabolite) {
+          t_val = t.test(data_mod[[Metabolite]] ~ model, var.equal = FALSE)$statistic
+          p_val = t.test(data_mod[[Metabolite]] ~ model, var.equal = FALSE)$p.value
+          return(data.frame(Metabolite=Metabolite, t_value=t_val, pval = p_val))
+        })
+  }
+  }
+  results <- Run_Tests(data_Log = data_Log, Vect = Vect, model = model)
 
   #Compute raw count means
   data_Log$Factor <- factor(data_Log$Factor, levels = c(numerator, denominator))

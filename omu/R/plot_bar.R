@@ -23,7 +23,7 @@
 #' t_test_df <- omu_summary(count_data = c57_nos2KO_mouse_countDF,
 #' metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock",
 #' response_variable = "Metabolite", Factor = "Treatment",
-#' log_transform = TRUE, p_adjust = "BH")
+#' log_transform = TRUE, p_adjust = "BH", test_type = "welch")
 #'
 #' fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
 #' column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
