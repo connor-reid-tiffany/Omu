@@ -6,8 +6,17 @@
 Performs comparison of means between two independent variables, standard deviation, standard error, FDR correction, fold change, log2FoldChange.
 The order effects the fold change values}
 \usage{
-omu_summary(count_data, metadata, numerator, denominator,
-  response_variable, Factor, log_transform, p_adjust, test_type)
+omu_summary(
+  count_data,
+  metadata,
+  numerator,
+  denominator,
+  response_variable,
+  Factor,
+  log_transform,
+  p_adjust,
+  test_type
+)
 }
 \arguments{
 \item{count_data}{should be a metabolomics count data frame}

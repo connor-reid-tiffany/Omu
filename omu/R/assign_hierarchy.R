@@ -13,11 +13,11 @@
 #' assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
 #' @export
 
-assign_hierarchy <- function(count_data, keep_unknowns, indentifier){
+assign_hierarchy <- function(count_data, keep_unknowns, identifier){
 
 
   Metabolite <- NULL
-
+  identifier = match.arg(arg = identifier, choices = c("KEGG", "KO_Number", "Prokaryote", "Eukaryote"))
 
   if (identifier == "KEGG"){
     if (keep_unknowns ==FALSE){

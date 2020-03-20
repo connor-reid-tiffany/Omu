@@ -4,8 +4,16 @@
 \alias{plot_heatmap}
 \title{Create a heatmap}
 \usage{
-plot_heatmap(count_data, metadata, Factor, response_variable,
-  log_transform, high_color, low_color, aggregate_by)
+plot_heatmap(
+  count_data,
+  metadata,
+  Factor,
+  response_variable,
+  log_transform,
+  high_color,
+  low_color,
+  aggregate_by
+)
 }
 \arguments{
 \item{count_data}{A metabolomics count data frame.}

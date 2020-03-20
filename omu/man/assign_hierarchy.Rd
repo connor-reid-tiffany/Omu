@@ -4,7 +4,7 @@
 \alias{assign_hierarchy}
 \title{Assign hierarchy metadata}
 \usage{
-assign_hierarchy(count_data, keep_unknowns, identifier)
+assign_hierarchy(count_data, keep_unknowns, indentifier)
 }
 \arguments{
 \item{count_data}{a metabolomics count data frame with either a KEGG compound, orthology,

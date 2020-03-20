@@ -6,8 +6,16 @@
 Performs an anova across all response variables. The function can take a maximum of 2
 independent variables and perform an interaction term between them.}
 \usage{
-omu_anova(count_data, metadata, response_variable, var1, var2, interaction,
-  log_transform, p_adjust)
+omu_anova(
+  count_data,
+  metadata,
+  response_variable,
+  var1,
+  var2,
+  interaction,
+  log_transform,
+  p_adjust
+)
 }
 \arguments{
 \item{count_data}{A metabolomics count data frame}
