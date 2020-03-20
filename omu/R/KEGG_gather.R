@@ -78,7 +78,7 @@ matrix <- make_omelette(count_data = count_data, column = column, req = req)
 count_data = plate_omelette_rxnko(count_data, matrix)
 
 #append KO class in case user wishes to KEGG_Gather genes
-class(count_data) <- append(class(count_data), "KO")
+class(count_data) <- c("data.frame", "KO")
 
 return(count_data)
 }
