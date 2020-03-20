@@ -48,31 +48,32 @@ make_omelette <- function(count_data, column, req){
 
 plate_omelette_rxnko<- function(count_data, matrix){
 
-#Unlist orthology data, extract KO numbers, and element numbers to join with Rxn numbers
-ko_df = as.data.frame(unlist(matrix[,2], recursive = F))
-ko_df <- cbind(rownames(ko_df), data.frame(ko_df, row.names=NULL))
-colnames(ko_df)[1] <- "KO_Number"
-ko_df = with(ko_df, cbind(ko_df[,2],
-colsplit(ko_df$KO_Number, pattern = "\\.",
-names = c('Element_number', 'KO_Number'))))
-colnames(ko_df)[1] <- "KO"
+  #Unlist orthology data, extract KO numbers, and element numbers to join with Rxn numbers
+  ko_df = as.data.frame(unlist(matrix[,2], recursive = F))
+  ko_df <- cbind(rownames(ko_df), data.frame(ko_df, row.names=NULL))
+  colnames(ko_df)[1] <- "KO_Number"
+  ko_df = with(ko_df, cbind(ko_df[,2],
+                            colsplit(ko_df$KO_Number, pattern = "\\.",
+                                     names = c('Element_number', 'KO_Number'))))
+  colnames(ko_df)[1] <- "KO"
 
-#Do the above but for Rxn numbers this time
-rxn_df = as.data.frame(unlist(matrix[,1], recursive = F))
-rxn_df <- cbind(rownames(rxn_df), data.frame(rxn_df, row.names=NULL))
-colnames(rxn_df)[1] <- "Element_number"
-rxn_df = with(rxn_df, cbind(rxn_df[,2],
-  colsplit(rxn_df$Element_number, pattern = "\\.",
-  names = c('Element_number', 'remove'))))
-colnames(rxn_df)[1] <- "Rxn"
-rxn_df = rxn_df[,1:2]
+  #Do the above but for Rxn numbers this time
+  rxn_df = as.data.frame(unlist(matrix[,1], recursive = F))
+  rxn_df <- cbind(rownames(rxn_df), data.frame(rxn_df, row.names=NULL))
+  colnames(rxn_df)[1] <- "Element_number"
+  rxn_df = with(rxn_df, cbind(rxn_df[,2],
+                              colsplit(rxn_df$Element_number, pattern = "\\.",
+                                       names = c('Element_number', 'remove'))))
+  colnames(rxn_df)[1] <- "Rxn"
+  rxn_df = rxn_df[,1:2]
 
-#Join original dataframe to dataframe with KO by Rxn number
-ko_with_rxn <- left_join(ko_df, rxn_df, by = "Element_number")
-count_data= left_join(ko_with_rxn, count_data, by = "Rxn")
+  #Join original dataframe to dataframe with KO by Rxn number
+  ko_with_rxn <- left_join(ko_df, rxn_df, by = "Element_number")
+  count_data$KO <- ko_with_rxn$KO[match(count_data$Rxn, ko_with_rxn$Rxn)]
+  count_data$Element_number <- ko_with_rxn$Element_number[match(count_data$Rxn, ko_with_rxn$Rxn)]
+  count_data$KO_Number <- ko_with_rxn$KO_Number[match(count_data$Rxn, ko_with_rxn$Rxn)]
+  #Drop the element number column as it is no longer needed
+  count_data = count_data[ , !(names(count_data) %in% "Element_number")]
 
-#Drop the element number column as it is no longer needed
-count_data = count_data[ , !(names(count_data) %in% "Element_number")]
-
-return(count_data)
+  return(count_data)
 }

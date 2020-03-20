@@ -26,6 +26,9 @@
 #' @export
 
 count_fold_changes <- function(count_data, ..., column, sig_threshold, keep_unknowns){
+
+class(count_data) <- "data.frame"
+
    log2FoldChange <- neg <- NULL
 
   count_data <- count_data[which(count_data[,"padj"] <= sig_threshold),]
