@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Omu is an R package that enables rapid analysis of Metabolomics data sets, and the creation of intuitive graphs. Omu can assign metabolite classes (Carbohydrates, Lipids, etc) as meta data, perform t tests, anovas and principle component analysis, and gather functional orthology and gene names from the KEGG database that are associated with the metabolites in a dataset. This package was developed with inexperienced R users in mind.
 
-If your data do not yet have KEGG compound numbers you can acquire them by using the chemical translation service provided by the Fiehn lab here http://cts.fiehnlab.ucdavis.edu/ 
+If your data do not yet have KEGG compound numbers you can acquire them by using the chemical translation service provided by the Fiehn lab here http://cts.fiehnlab.ucdavis.edu/
 
 
 ## Data Analysis
@@ -32,7 +32,7 @@ If your data do not yet have KEGG compound numbers you can acquire them by using
 
 ### Data Format
 
-Included with Omu is an example metabolomics dataset of data from fecal samples collected from a two factor experiment with wild type c57B6J mice and c57B6J mice with a knocked out nos2 gene, that were either mock treated, or given streptomycin(an antibiotic), and a metadata file.  To use Omu, you need a metabolomics count data frame in .csv format that resembles the example dataset, with the column headers Metabolite, KEGG, and then one for each of your samples. Row values are metabolite names in the Metabolite column, KEGG cpd numbers in the KEGG column, and numeric counts in the Sample columns.Here is a truncated version of the sample data in Omu as a visual example of this:
+Included with Omu is an example metabolomics dataset of data from fecal samples collected from a two factor experiment with wild type c57B6J mice and c57B6J mice with a knocked out nos2 gene, that were either mock treated, or given streptomycin(an antibiotic), and a metadata file.  To use Omu, you need a metabolomics count data frame in .csv format that resembles the example dataset, with the column headers Metabolite, KEGG, and then one for each of your samples. Row values are metabolite names in the Metabolite column, KEGG cpd numbers in the KEGG column, and numeric counts in the Sample columns.Additionally, for statistical analysis your data should already have undergone missing value imputation(eg. using random forest, k nearest neighbors, etc.). Here is a truncated version of the sample data in Omu as a visual example of this:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 library(omu)
@@ -340,7 +340,7 @@ plot(PCA)
 
 ### Heatmaps
 
-Heatmaps can be generated using `plot_heatmap` on a dataframe that has not been transformed by `omu_summary` or `omu_anova`. It gives the user the option of aggregating their metabolite data by metabolite Class or Subclass with the argument `aggregate_by`. If unused, the heatmap will include every individual metabolite in the users count data. log transformation is recommended but optional, and if TRUE will transform the data by the natural log. 
+Heatmaps can be generated using `plot_heatmap` on a dataframe that has not been transformed by `omu_summary` or `omu_anova`. It gives the user the option of aggregating their metabolite data by metabolite Class or Subclass with the argument `aggregate_by`. If unused, the heatmap will include every individual metabolite in the users count data. log transformation is recommended but optional, and if TRUE will transform the data by the natural log.
 
 To avoid an overly noisy plot, its recommended that you either subset to metabolites within a class of interest, or aggregate metabolites by a class of interest. For example, using the data frame from the start of our analysis with compound hierarchy assigned:
 

@@ -17,6 +17,7 @@
 #' @importFrom ggplot2 facet_wrap
 #' @importFrom ggplot2 scale_fill_manual
 #' @examples
+#' c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:5,]
 #' c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")
 #'
 #' plot_boxplot(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
