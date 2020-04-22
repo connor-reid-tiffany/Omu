@@ -4,8 +4,17 @@
 \alias{plot_volcano}
 \title{Create a volcano plot}
 \usage{
-plot_volcano(count_data, column, size, strpattern, fill, sig_threshold,
-  alpha, shape, color)
+plot_volcano(
+  count_data,
+  column,
+  size,
+  strpattern,
+  fill,
+  sig_threshold,
+  alpha,
+  shape,
+  color
+)
 }
 \arguments{
 \item{count_data}{The output file from the omu_summary function.}

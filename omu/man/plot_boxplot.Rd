@@ -4,8 +4,15 @@
 \alias{plot_boxplot}
 \title{Create a box plot}
 \usage{
-plot_boxplot(count_data, metadata, aggregate_by, log_transform, Factor,
-  response_variable, fill_list)
+plot_boxplot(
+  count_data,
+  metadata,
+  aggregate_by,
+  log_transform,
+  Factor,
+  response_variable,
+  fill_list
+)
 }
 \arguments{
 \item{count_data}{A metabolomics count data frame, either from read_metabo or omu_summary}
