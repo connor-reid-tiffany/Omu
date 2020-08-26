@@ -1,0 +1,419 @@
+---
+title: "omu, a Metabolomics Analysis R Package"
+author: "Connor R. Tiffany"
+date: "5/2020"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    latex_engine: xelatex
+    toc: yes
+    toc_depth: 3
+    vignette: >
+      %\VignetteIndexEntry{omu, a Metabolomics Analysis R Package}
+      %\VignetteEngine{knitr::rmarkdown}
+      \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction to omu
+
+Omu is an R package that enables rapid analysis of Metabolomics data sets, and the creation of intuitive graphs. Omu can assign metabolite classes (Carbohydrates, Lipids, etc) as meta data, perform t tests, anovas and principle component analysis, and gather functional orthology and gene names from the KEGG database that are associated with the metabolites in a dataset. This package was developed with inexperienced R users in mind.
+
+If your data do not yet have KEGG compound numbers you can acquire them by using the chemical translation service provided by the Fiehn lab here http://cts.fiehnlab.ucdavis.edu/
+
+
+## Data Analysis
+
+
+### Data Format
+
+Included with Omu is an example metabolomics dataset of data from fecal samples collected from a two factor experiment with wild type c57B6J mice and c57B6J mice with a knocked out nos2 gene, that were either mock treated, or given streptomycin(an antibiotic), and a metadata file.  To use Omu, you need a metabolomics count data frame in .csv format that resembles the example dataset, with the column headers Metabolite, KEGG, and then one for each of your samples. Row values are metabolite names in the Metabolite column, KEGG cpd numbers in the KEGG column, and numeric counts in the Sample columns.Additionally, for statistical analysis your data should already have undergone missing value imputation(eg. using random forest, k nearest neighbors, etc.). Here is a truncated version of the sample data in Omu as a visual example of this:
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(omu)
+library(knitr)
+load("../data/c57_nos2KO_mouse_countDF.rda")
+load("../data/c57_nos2KO_mouse_metadata.rda")
+df_trunc <- c57_nos2KO_mouse_countDF[,1:3]
+kable(df_trunc[1:4,])
+```
+
+The meta data file should have a Sample column, with row values being sample names, and then a column for each Factor in your dataset, with row values being groups within that factor. Here is a truncated version of the metadata that accompanies the above dataset:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+kable(c57_nos2KO_mouse_metadata[1:4,])
+```
+
+### Getting Your Data into R
+
+For end users metabolomics data, it is recommended to use the ```read.metabo``` function to load it into R. This function is simply a wrapper for ```read.csv```, which ensures your data has the proper class for ```KEGG_gather``` to work. For metadata, ```read.csv``` should be used.
+
+```
+your_metabolomics_count_dataframe <- read.metabo(filepath = "path/to/your/data.csv")
+your_metabolomics_metadata <- read.csv("path/to/your/metadata.csv")
+```
+
+### Assiging Hierarchical Class Data
+
+Omu can assign hierarchical class data for metabolites, functional orthologies, and organism identifiers associated with gene names. It does this using data frames located in the system data of the package(these can not be viewed or edited by the user, but the tables are available on the Omu github page in .csv format). To assign hierarchical class data, use the ```assign_hierarchy``` function and pick the correct identifier, either "KEGG", "KO_Number", "Prokaryote", or "Eukaryote". For example, using the c57_nos2KO_mouse_countDF.RData that comes with the package, compound hierarchy data can be assigned with the following code:
+
+
+```
+DF <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
+```
+
+The argument ```keep_unknowns = TRUE``` keeps compounds without KEGG numbers, and compound hierarchy data was assigned by providing "KEGG" for the ```identifier``` argument. The output DF should look like this:
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+data = c57_nos2KO_mouse_countDF
+data = assign_hierarchy(count_data = data, keep_unknowns = TRUE, identifier = "KEGG")
+c57_nos2KO_mouse_countDF = c57_nos2KO_mouse_countDF[,1:2]
+DF <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
+kable(DF[1:4,])
+```
+
+
+### Modeling with Univariate Statistics
+
+Omu supports two univariate statistical models, t test and anova, using the functions ```omu_summary``` and ```anova_function``` respectively. Both functions will output p values and adjusted p values, while ```omu_summary``` will also output group means, standard error, standard deviation, fold change, and log2foldchange. Both of these models are useful for observing relationships between independent variables in an experiment. The dataframe created using the assign_hierarchy function can be used in the ```count_data``` argument of ```omu_summary``` to run statistics on it. The output of ```omu_summary``` will be needed in order to use the plotting functions in Omu. The metadata that comes with the package, ```c57_nos2KO_mouse_metadata```, must be used for the ```metadata``` argument. A comparison between the "Strep" group within the "Treatment" factor against the "Mock" group can be done to observe if antibiotic treatment of the mice had an effect on the metabolome. The ```response_variable``` is the Metabolite column of the data frame. The data can be log transformed using ```log_transform = TRUE```, and a p value adjustment method of Benjamini & Hochberg with the argument ```p_adjust = "BH"```. Alternatively, any adjustment method for the ```p.adjust``` function that comes with R stats can be used. The ```test_type``` argument is one of "students", "welch", or "mwu" for a students t test, welch's t test, or man whitney u test respectively.
+
+```
+DF_stats <- omu_summary(count_data = DF, metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment", log_transform = TRUE, p_adjust = "BH", test_type = "welch")
+```
+The output should look like this:
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+DF_stats <- omu_summary(count_data = data, metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment", log_transform = TRUE, p_adjust = "BH", test_type = "welch")
+DF_stats_trunc = DF_stats[,c(1,6,7,8,9,10)]
+kable(DF_stats_trunc[1:3,])
+```
+
+with columns of adjusted p values ("padj"), log2FoldChange, standard error, and standard deviation for each of the metabolites. From here, this data frame can be used to create bar plots, volcano plots, or pie charts (see Data Visualization), or used in ```KEGG_gather``` to get functional orthologies and gene info for the metabolites.
+
+An alternative option to ```omu_summary``` is the ```omu_anova```, which can be used to measure the variance of all groups within a factor, or see if independent variables have an effect on one another by modeling an interaction term (this only applies to multi factorial datasets).```omu_anova``` has the same arguments as ```omu_summary```, except "numerator" and "denominator" are replaced by the names of your factors, and interaction, which takes a value of TRUE or FALSE. Currently, it supports an interaction term containing two factors. The function within ```omu_anova``` that iterates the model over all response variables could be edited by a more advanced R user to allow for modeling of more than 2 factors. With this dataset, ```omu_anova``` can be used to observe whether or not Treatment or Background have a statistically significant effect on metabolite levels with the arguments ```var1 = "Background"``` ```var2 = "Treatment"```, and if Background has an effect on Treatment using the argument ```interaction = TRUE```.
+
+```
+DF_anova <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", var1 = "Background", var2 = "Treatment", interaction = TRUE, log_transform = TRUE, p_adjust = "BH")
+```
+
+This should produce the follwing data frame:
+
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+DF_anova <- omu_anova(count_data = data, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", var1 = "Background", var2 = "Treatment", interaction = TRUE, log_transform = TRUE, p_adjust = "BH")
+DF_anova_trunc = DF_anova[,c(1:7)]
+kable(DF_anova_trunc[1:3,])
+```
+
+The output gives columns with adjusted p values for ```var1```, ```var2```, and your interaction term.
+
+An alternative to doing an anova model with an interaction statement is to paste factor groups together using base R to make a new metadata column to be able to model the effect of treatment within mouse genetic backgrounds. For example,  base R can be used to make a new "Grouped" Factor, with 4 levels; WTMock, WTStrep, Nos2Mock, and Nos2Strep.
+
+```
+c57_nos2KO_mouse_metadata$Grouped <- factor(paste0(c57_nos2KO_mouse_metadata$Background, c57_nos2KO_mouse_metadata$Treatment))
+```
+
+This should produce a meta data file that looks like this :
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+c57_nos2KO_mouse_metadata$Grouped <-factor(paste0(c57_nos2KO_mouse_metadata$Background,
+c57_nos2KO_mouse_metadata$Treatment))
+kable(c57_nos2KO_mouse_metadata[1:4,])
+```
+
+ The function ```omu_summary``` can be used to model the effect of strep treatment on the wild type mouse metabolome (excluding the mutant background from the model), by using the "Grouped" column for the ```Factor``` argument, WTStrep for the ```numerator``` argument, and WTMock for the ```denominator``` argument:
+
+```
+DF_stats_grouped <- omu_summary(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, numerator = "WTStrep", denominator = "WTMock", response_variable = "Metabolite", Factor = "Grouped", log_transform = TRUE, p_adjust = "BH", test_type = "welch")
+```
+
+Producing this data frame:
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+DF_stats_grouped <- omu_summary(count_data = data, metadata = c57_nos2KO_mouse_metadata, numerator = "WTStrep", denominator = "WTMock", response_variable = "Metabolite", Factor = "Grouped", log_transform = TRUE, p_adjust = "BH", test_type = "welch")
+DF_stats_grouped_trunc = DF_stats_grouped[,c(1,6,7,8,9,10)]
+kable(DF_stats_grouped_trunc[1:3,])
+```
+
+### Gathering Functional Orthology and Gene Data
+
+To gather functional orthology and gene data, Omu uses an S3 method called ```KEGG_gather```, which retrieves data from the KEGG API using the function ```keggGet``` from the package KEGGREST, and cleans it up into a more readable format as new columns in the input data frame. KEGG_gather can recognizes a second class assigned to the data frame, which changes based on what metadata columns your data has acquired. This means that one can simply use the function ```KEGG_gather```, regardless of what data you want to collect. For advanced users, additional methods and classes can be added to ```KEGG_gather``` if  something other than functional orthologies and genes is desired. This can be done by altering the variables that are fed into the internal ```make_omelette``` function and by creating a new ```plate_omelette``` method that appropriately cleans up the data.  
+
+It is recommended to subset the input data frame before using ```KEGG_gather```, as compounds can have multiple functional orthologies associated with them. The data frame created from using ```omu_summary``` can be subsetted to Organic acids only using base R's ```subset``` function. We can then subset based on significance as well.
+
+```
+DF_stats_sub <- subset(DF_stats, Class=="Organic acids")
+DF_stats_sub <- DF_stats_sub[which(DF_stats_sub[,"padj"] <= 0.05),]
+```
+
+Now the data frame should contain only compounds that are Organic acids, and had adjusted p values lower than or equal to 0.05.
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+DF_stats_sub <- subset(DF_stats, Class=="Organic acids")
+DF_stats_sub <- DF_stats_sub[which(DF_stats_sub[,"padj"] <= 0.05),]
+DF_s_trunc <- DF_stats_sub[c(1:5),]
+DF_s_trunc <- DF_s_trunc[,c(1,9,12,13,14,43)]
+kable(DF_s_trunc)
+```
+
+
+ KEGG_gather can then be used to get the functional orthologies for these compounds.:
+
+```
+DF_stats_sub_KO <- KEGG_gather(DF_stats_sub)
+```
+
+The data frame should now have functional orthologies and KO_numbers columns added.
+
+```{r echo=FALSE,message=FALSE, warning=FALSE,cache = FALSE, results = 'hide'}
+DF_s_trunc_g <- KEGG_gather(DF_stats_sub)
+DF_s_trunc_g <- DF_s_trunc_g[c(1:5),]
+DF_s_trunc_g_t <- DF_s_trunc_g[,c(1:4)]
+kable(DF_s_trunc_g_t)
+```
+
+From here, orthology hierarchy data can be assigned using the  ```assign_hierarchy``` function that was used to assign compound hierarchies.
+
+```
+DF_stats_sub_KO <- assign_hierarchy(count_data = DF_stats_sub_KO, keep_unknowns = TRUE, identifier = "KO_Number")
+```
+
+This should add three new columns of metadata for each orthology.
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+DF_s_trunc_g_a <- assign_hierarchy(count_data = DF_s_trunc_g, keep_unknowns = TRUE, identifier = "KO_Number")
+DF_s_trunc_g_a <- DF_s_trunc_g_a[c(1:50),]
+DF_s_trunc_g_a_trunc <- DF_s_trunc_g_a[, c(1:4)]
+DF_s_trunc_g_a_trunc <- DF_s_trunc_g_a_trunc[c(1:5),]
+kable(DF_s_trunc_g_a_trunc )
+```
+
+The data frame can then be subsetted to orthologies associated with metabolism in order to reduce noise, using ```subset```.
+
+```
+DF_stats_sub_KO <- subset(DF_stats_sub_KO, KO_Class=="Metabolism")
+```
+
+Now that the data is reduced, ```KEGG_gather```  can be used again to get gene information.
+
+```
+DF_genes <- KEGG_gather(count_data = DF_stats_sub_KO)
+```
+This should add columns of gene organism identifiers (Org), KEGG gene identifiers (Genes), and an operon column (GeneOperon).
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, cache = FALSE, results = 'hide'}
+DF_s_trunc_g_a_sub_genes <- KEGG_gather(DF_s_trunc_g_a)
+DF_s_trunc_g_a_genes <- DF_s_trunc_g_a_sub_genes[c(1:5),]
+DF_s_trunc_g_a_genes_trunc <- DF_s_trunc_g_a_genes[, c(1,2,5,13)]
+kable(DF_s_trunc_g_a_genes_trunc)
+```
+
+
+The output of this function will be very large, on the order of tens of thousands of observations. This is because it pulls genes associated with the functional orthologies for all organisms in the KEGG data base. The data frame can be subsetted to data of interest by assigning either prokaryotic or eukaryotic organism hierarchy data to it, and then further subsetted by a specific organism of interest.
+
+```
+DF_genes_Prokaryotes <- assign_hierarchy(count_data = DF_genes, keep_unknowns = FALSE, identifier = "Prokaryote")
+```
+
+This should add prokaryote hierarchy data while also eliminating any rows with eukaryotic organism genes.
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+DF_s_trunc_g_a_sub_genes_prok <- assign_hierarchy(count_data = DF_s_trunc_g_a_sub_genes, keep_unknowns = FALSE, identifier= "Prokaryote")
+DF_s_trunc_g_a_genes_prok_trunc <- DF_s_trunc_g_a_sub_genes_prok[1:5,]
+DF_s_trunc_g_a_genes_prok_trunc <- DF_s_trunc_g_a_genes_prok_trunc[,54:58]
+kable(DF_s_trunc_g_a_genes_prok_trunc)
+```
+
+From here the data can be subsetted further by using ```subset```  on one of the columns of metadata generated by ```assign_hierarchy```. For example, the Genus column to select for genes found only within the genus Pseudomonas:
+
+```
+DF_genes_pseudomonas <- subset(DF_genes_Prokaryotes, Genus=="Pseudomonas")
+```
+
+Now the data frame is much smaller than it was originally (1688 observations and 58 variables), and can be further explored and subsetted, either by species or by Organic acid subclasses. Using ```subset``` in conjunction with ```assign_hierarchy``` and the adjusted p values is crucial for getting the most out of ```KEGG_gather```.
+
+Performing these gene and hierarchical class assignments is useful for using metabolomics to screen for a hypothesis, in order to study organisms via a reductionist approach. It makes it efficient and easy to find compounds that changed between experimental groups, and then look for genes in an organism of interest involved in enzymatic reactions with the compounds that changed significantly.
+
+## Data Visualization
+
+### Bar Plots
+The ```plot_bar``` function can be used to make bar plots of metabolite counts by their class meta data (from ```assign_hierarchy```). To make a bar plot, a data frame of the number of significantly changed compounds by a hierarchy class must be created. This can be done using the output from ```omu_summary``` as an input for the function ```count_fold_changes```, to make a data frame with the number of compounds that significantly increased or decreased per a hierarchy group. For this data frame, the arguments ```Class``` and ```column = "Class"``` can be used to generate counts for the Class level of compound hierarchy.
+
+```
+DF_stats_counts <- count_fold_changes(count_data = DF_stats, "Class", column = "Class", sig_threshold = 0.05)
+```
+This should generate a data frame with 3 columns that show Class, number of compounds within that class that changed, and whether they increased or decreased.
+
+```{r echo=FALSE, warning=FALSE}
+DF_stats_counts <- count_fold_changes(count_data = DF_stats, "Class", column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
+kable(DF_stats_counts)
+```
+
+This count data frame can be used as an input for the ```plot_bar``` function:
+
+```
+library(ggplot2)
+Class_Bar_Plot <- plot_bar(fc_data = DF_stats_counts, fill = c("dodgerblue2", "firebrick2"), color = c("black", "black"), size = c(1,1)) + labs(x = "Class") + theme(panel.grid = element_blank())
+```
+
+This should generate a plot that looks like this:
+
+```{r echo=FALSE, fig.keep='all', results='hide'}
+library(ggplot2)
+Class_Bar_Plot <- plot_bar(fc_data = DF_stats_counts, fill = c("dodgerblue2", "firebrick2"), color = c("black", "black"), size = c(1,1)) + labs(x = "Class") + theme(panel.grid = element_blank())
+plot(Class_Bar_Plot)
+```
+
+The argument ```fill``` is the color of the bars, ```color``` is the outline, and ```size``` is the width of the bar outline.  Colors are picked in alphanumeric order, so the first item in each character vector corresponds to the "Decrease" column and the second corresponds to the "Increase" column. The figure is a ggplot2 object, so it is compatible with any ggplot2 themes you wish to use to edit the appearance. An example of this is in the code above: ```labs(x = "Class") + theme(panel.grid = element_blank())```, and was used to clean up the figures appearance by giving it a descriptive x axis label, and removing the grid lines from the background.
+
+### Pie Charts
+
+It is also possible to make a pie_chart from our counts data frame instead of a bar plot. First, a frequency data frame (percentage values) must be made from the count data frame using the ```ra_table``` function:
+
+```
+DF_ra <- ra_table(fc_data = DF_stats_counts, variable = "Class")
+```
+
+This should generate a data frame with percentages of compounds that increased significantly, decreased significantly, or changed significantly (either increased of decreased):
+
+```{r echo=FALSE}
+DF_ra <- ra_table(fc_data = DF_stats_counts, variable = "Class")
+kable(DF_ra)
+```
+
+This frequency data frame can be used in the ```pie_chart``` function:
+
+```
+Pie_Chart <- pie_chart(ratio_data = DF_ra, variable = "Class", column = "Decrease", color = "black")
+```
+
+This should make a pie chart showing the percent of compounds that decreased per class level:
+
+```{r echo=FALSE, warning=FALSE}
+Pie_Chart <- pie_chart(ratio_data = DF_ra, variable = "Class", column = "Decrease", color = "black")
+plot(Pie_Chart)
+```
+
+### Volcano Plots
+
+Omu can generate volcano plots using the output from ```omu_summary``` and the function ```plot_volcano```. This function gives the user the option to highlight data points in the plot by their hierarchy meta data (i.e. Class, Subclass_1, etc.) For example,  a Volcano plotcan be made that highlights all of the compounds that are either Organic acids or Carbohydrates with the argument ```strpattern = c("Organic acids", "Carbohydrates")```. ```fill``` determines the color of the points, ```color``` determines the outline color of the points, ```alpha``` sets the level of transparency (with 1 being completely opaque), ```size``` sets the size of the points, and ```shape``` takes integers that correspond to ggplot2 shapes. For fill, color, alpha, and shape the character vectors must be a length of n +1, with n being the number of meta data levels that are going to be highlighted. When picking color, fill, alpha, and shape, the values are ordered alphanumerically, and anything not listed in the "strpattern" argument is called "NA". If the ```strpattern``` argument is not used, all points below the chosen ```sig_threshold``` value will be filled red. If ```sig_threshold``` is not used, a dashed line will be drawn automatically for an adjusted p value of 0.05:
+
+```
+Volcano_Plot <- plot_volcano(count_data = DF_stats, size = 2, column = "Class", strpattern = c("Organic acids, Carbohydrates"), fill = c("firebrick2","white","dodgerblue2"), color = c("black", "black", "black"), alpha = c(1,1,1), shape = c(21,21,21)) + theme_bw() + theme(panel.grid = element_blank())
+```
+
+This will give us the following plot:
+
+```{r echo=FALSE, warning=FALSE, results='hide', fig.keep='all'}
+Volcano_Plot <- plot_volcano(count_data = DF_stats_grouped, size = 2, column = "Class", strpattern = c("Organic acids", "Carbohydrates"), fill = c("firebrick2","white","dodgerblue2"), color = c("black", "black", "black"), alpha = c(1,1,1), shape = c(21,21,21)) + theme_bw() + theme(panel.grid = element_blank())
+plot(Volcano_Plot)
+```
+
+### PCA Plots
+
+Omu also supports multivariate statistical analysis and visualization in the form of principle component analysis. To do this one only needs to have their metabolomics count data and meta data in the proper format. It is recommended to deal with overdispersion of data prior to using `PCA_plot`, by transformation via natural log, sqrt, etc.
+
+A PCA plot can be made showing the relationship between Treatment groups in the package dataset:
+
+```
+c57_nos2KO_mouse_countDF_log <- c57_nos2KO_mouse_countDF
+c57_nos2KO_mouse_countDF_log <- log(c57_nos2KO_mouse_countDF_log[,3:31])
+c57_nos2KO_mouse_countDF_log <- cbind(c57_nos2KO_mouse_countDF[,1:2], c57_nos2KO_mouse_countDF_log)
+PCA <- PCA_plot(count_data = c57_nos2KO_mouse_countDF_log, metadata = c57_nos2KO_mouse_metadata, variable = "Treatment", color = "Treatment", response_variable = "Metabolite")+ theme_bw() + theme(panel.grid = element_blank())
+```
+
+This should make the following figure:
+
+```{r echo=FALSE, warning=FALSE}
+library(ggfortify)
+load("../data/c57_nos2KO_mouse_countDF.rda")
+c57_nos2KO_mouse_countDF_log <- c57_nos2KO_mouse_countDF
+c57_nos2KO_mouse_countDF_log <- log(c57_nos2KO_mouse_countDF_log[,3:31])
+c57_nos2KO_mouse_countDF_log <- cbind(c57_nos2KO_mouse_countDF[,1:2], c57_nos2KO_mouse_countDF_log)
+PCA <- PCA_plot(count_data = c57_nos2KO_mouse_countDF_log, metadata = c57_nos2KO_mouse_metadata, variable = "Grouped", color = "Grouped", response_variable = "Metabolite") + theme_bw() + theme(panel.grid = element_blank())
+plot(PCA)
+```
+
+### Heatmaps
+
+Heatmaps can be generated using `plot_heatmap` on a dataframe that has not been transformed by `omu_summary` or `omu_anova`. It gives the user the option of aggregating their metabolite data by metabolite Class or Subclass with the argument `aggregate_by`. If unused, the heatmap will include every individual metabolite in the users count data. log transformation is recommended but optional, and if TRUE will transform the data by the natural log.
+
+To avoid an overly noisy plot, its recommended that you either subset to metabolites within a class of interest, or aggregate metabolites by a class of interest. For example, using the data frame from the start of our analysis with compound hierarchy assigned:
+
+```
+DF <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
+heatmap_class <- plot_heatmap(count_data = DF, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment", response_variable = "Metabolite", log_transform = TRUE, high_color = "goldenrod2", low_color = "midnightblue", aggregate_by = "Class") + theme(axis.text.x = element_text(angle = 30, hjust=1, vjust=1, size = 6), axis.text.y = element_text(size = 6))
+
+```
+This code should generate the following heatmap:
+
+```{r echo=FALSE, warning=FALSE}
+DF <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
+heatmap <- plot_heatmap(count_data = DF, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment", response_variable = "Metabolite", log_transform = TRUE, high_color = "goldenrod2", low_color = "midnightblue", aggregate_by = "Class") + theme(axis.text.x = element_text(angle = 30, hjust=1, vjust=1, size = 6), axis.text.y = element_text(size = 6))
+
+plot(heatmap)
+```
+
+We can subset the data to a Class of interest, such as Carbohydrates, and then either plot all individual carbohydrates or aggregate them by a subclass:
+
+```
+DF <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
+DF_carbs <- subset(DF, Class == "Carbohydrates")
+heatmap_carbs <- plot_heatmap(count_data = DF_carbs, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment", response_variable = "Metabolite", log_transform = TRUE, high_color = "goldenrod2", low_color = "midnightblue") + theme(axis.text.x = element_text(angle = 30, hjust=1, vjust=1, size = 6))
+```
+
+```{r echo=FALSE, warning=FALSE}
+DF_c <- subset(DF, Class == "Carbohydrates")
+heatmap <- plot_heatmap(count_data = DF_c, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment", response_variable = "Metabolite", log_transform = TRUE, high_color = "goldenrod2", low_color = "midnightblue") + theme(axis.text.x = element_text(angle = 30, hjust=1, vjust=1, size = 6), axis.text.y = element_text(size = 6))
+plot(heatmap)
+```
+
+```
+DF_carbs <- subset(DF, Class == "Carbohydrates")
+heatmap_carbs_sc2 <- plot_heatmap(count_data = DF_carbs, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment", response_variable = "Metabolite", log_transform = TRUE, high_color = "goldenrod2", low_color = "midnightblue", aggregate_by = "Subclass_2") + theme(axis.text.x = element_text(angle = 30, hjust=1, vjust=1, size = 6), axis.text.y = element_text(size = 6))
+```
+
+```{r echo=FALSE, warning=FALSE}
+DF_carbs <- subset(DF, Class == "Carbohydrates")
+heatmap <- plot_heatmap(count_data = DF_carbs, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment", response_variable = "Metabolite", log_transform = TRUE, high_color = "goldenrod2", low_color = "midnightblue", aggregate_by = "Subclass_2") + theme(axis.text.x = element_text(angle = 30, hjust=1, vjust=1, size = 6), axis.text.y = element_text(size = 6))
+plot(heatmap)
+```
+
+### Boxplots
+
+Boxplots of metabolite abundance by experiment group can be generated using the function `plot_boxplot` with a count data frame that has not been transformed by `omu_summary` or `omu_anova`. The function will produce a boxplot of every metabolite in your dataframe, so it may be best to subset the dataframe by compound class, similar to what we did with `plot_heatmap`. Like `plot_heatmap`, it also provides the option to aggregate by compound class or subclass. If `log_transform = TRUE` the data will be transformed by the natural log.
+
+```
+DF_carbs_trunc <- DF_carbs[1:10,]
+boxplot_carbs <- plot_boxplot(count_data = DF_carbs_trunc, metadata = c57_nos2KO_mouse_metadata, log_transform = TRUE, Factor = "Treatment", response_variable = "Metabolite", fill_list = c("darkgoldenrod1", "dodgerblue2"))
+```
+
+```{r echo=FALSE, warning=FALSE}
+DF_carbs_trunc <- DF_carbs[1:10,]
+boxplot_carbs <- plot_boxplot(count_data = DF_carbs_trunc, metadata = c57_nos2KO_mouse_metadata, log_transform = TRUE, Factor = "Treatment", response_variable = "Metabolite", fill_list = c("darkgoldenrod1", "dodgerblue2"))
+plot(boxplot_carbs)
+```
+
+Alternatively, we could aggregate the dataset containing carbohydrates only by `Subclass_2`, or aggregate the full dataset by `Class`.
+
+```
+boxplot_carbs_sc2 <- plot_boxplot(count_data = DF_carbs, metadata = c57_nos2KO_mouse_metadata, log_transform = TRUE, Factor = "Treatment", response_variable = "Metabolite", fill_list = c("darkgoldenrod1", "dodgerblue2"), aggregate_by = "Subclass_2")
+```
+
+```{r echo=FALSE, warning=FALSE}
+boxplot_carbs_sc2 <- plot_boxplot(count_data = DF_carbs, metadata = c57_nos2KO_mouse_metadata, log_transform = TRUE, Factor = "Treatment", response_variable = "Metabolite", fill_list = c("darkgoldenrod1", "dodgerblue2"), aggregate_by = "Subclass_2")
+plot(boxplot_carbs_sc2)
+```
+
+```
+boxplot_class <- plot_boxplot(count_data = DF, metadata = c57_nos2KO_mouse_metadata, log_transform = TRUE, Factor = "Treatment", response_variable = "Metabolite", fill_list = c("darkgoldenrod1", "dodgerblue2"), aggregate_by = "Class")
+```
+
+```{r echo=FALSE, warning=FALSE}
+boxplot_class <- plot_boxplot(count_data = DF, metadata = c57_nos2KO_mouse_metadata, log_transform = TRUE, Factor = "Treatment", response_variable = "Metabolite", fill_list = c("darkgoldenrod1", "dodgerblue2"), aggregate_by = "Class")
+plot(boxplot_class)
+```

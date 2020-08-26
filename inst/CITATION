@@ -1,0 +1,9 @@
+citHeader("To cite omu in publications use:")
+
+bibentry(bibtype = "Article",
+         title = "omu, a Metabolomics Count Data Analysis Tool for Intuitive Figures and Convenient Metadata Collection",
+         author = c(as.person("Connor R. Tiffany"),
+                    as.person("Andreas J. Bäumler")),
+         year = 2019,
+         journal = "Microbiology Resource Announcements",
+         url = "https://doi.org/10.1128/MRA.00129-19")
