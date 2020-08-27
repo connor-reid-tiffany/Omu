@@ -17,7 +17,7 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
 
 
   Metabolite <- NULL
-  identifier = match.arg(arg = identifier, choices = c("KEGG", "KO_Number", "Prokaryote", "Eukaryote"))
+  identifier = match.arg(arg = identifier, choices = c("KEGG", "KO", "Prokaryote", "Eukaryote"))
 
   if (identifier == "KEGG"){
     if (keep_unknowns ==FALSE){
