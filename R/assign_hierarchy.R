@@ -6,7 +6,7 @@
 #' or a gene identifier column
 #' @param keep_unknowns a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds,
 #' FALSE removes them
-#' @param identifier a string that is either "KEGG" for metabolite, "KO_Number" for orthology,
+#' @param identifier a string that is either "KEGG" for metabolite, "KO" for orthology,
 #' "Prokaryote" for organism, or "Eukaryote" for organism
 
 #' @examples
@@ -53,16 +53,16 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
       class(count_data) = append(class(count_data), "cpd")
       return(count_data)
     }
-  } else if (identifier == "KO_Number"){
+  } else if (identifier == "KO"){
 
-    count_data$KO_Class <- Orthology_Hierarchy_Table$KO_Class[match(count_data$KO_Number,
-                                                                    Orthology_Hierarchy_Table$KO_Number)]
-    count_data$KO_Subclass_1 <- Orthology_Hierarchy_Table$KO_Subclass_1[match(count_data$KO_Number,
-                                                                              Orthology_Hierarchy_Table$KO_Number)]
-    count_data$KO_Subclass_2 <- Orthology_Hierarchy_Table$KO_Subclass_2[match(count_data$KO_Number,
-                                                                              Orthology_Hierarchy_Table$KO_Number)]
-    count_data$KO_Subclass_3_Enzyme <- Orthology_Hierarchy_Table$KO_Subclass_3_Enzyme[match(count_data$KO_Number,
-                                                                                            Orthology_Hierarchy_Table$KO_Number)]
+    count_data$KO_Class <- Orthology_Hierarchy_Table$KO_Class[match(count_data$KO,
+                                                                    Orthology_Hierarchy_Table$KO)]
+    count_data$KO_Subclass_1 <- Orthology_Hierarchy_Table$KO_Subclass_1[match(count_data$KO,
+                                                                              Orthology_Hierarchy_Table$KO)]
+    count_data$KO_Subclass_2 <- Orthology_Hierarchy_Table$KO_Subclass_2[match(count_data$KO,
+                                                                              Orthology_Hierarchy_Table$KO)]
+    count_data$KO_Subclass_3_Enzyme <- Orthology_Hierarchy_Table$KO_Subclass_3_Enzyme[match(count_data$KO,
+                                                                                            Orthology_Hierarchy_Table$KO)]
 
     return(count_data)
   } else if (identifier == "Prokaryote"){

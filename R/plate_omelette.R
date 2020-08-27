@@ -1,59 +1,194 @@
 #' plate_omelette
-#' Internal method for KEGG_Gather
+#' Internal method for KEGG_Gather which parses flat text files
 #' @param count_data The metabolomics count dataframe
-#' @importFrom stringr str_split_fixed
-#' @importFrom stats complete.cases
+#' @importFrom stringr str_split
+#' @importFrom stringr str_detect
+#' @importFrom stringr str_trim
 #' @export
 
 
 
-plate_omelette <- function(count_data) UseMethod("plate_omelette")
+plate_omelette <- function(output) UseMethod("plate_omelette")
 
 #' @rdname plate_omelette
 #' @export
-plate_omelette.rxn <- function(count_data){
+plate_omelette.rxn <- function(output){
 
-#Clean up using regex
-count_data$Rxn = gsub("\\c\\("," \\[",count_data$Rxn)
-count_data$Rxn = gsub("[[:punct:]]", "", count_data$Rxn)
-count_data$Rxn = gsub("\\s+", ",", gsub("^\\s+|\\s+$", "",count_data$Rxn))
+  #remove newline text delimeters
+    content <- lapply(output, function(x) strsplit(strip(x), "\n", fixed=TRUE)[[1]])
+    #replace delimeter elements with END_OF_ENTRY to separate entries
+    content <- lapply(content, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))
+    #convert to a string
+    #content <- paste(content, sep = "", collapse = "")
+    content <- lapply(content, function(x) paste(x, sep = "", collapse = ""))
+    #split into character matrix by End of Entry
+    #content <- str_split(content, "END_OF_ENTRY", simplify = TRUE)
+    content <- lapply(content, function(x) str_split(x, "END_OF_ENTRY", simplify = TRUE))
+    #remove elements that don't contain REACTION (broken record but needs control flow for each class)
+    #content <-t(content[,str_detect(content, pattern = "REACTION")==TRUE])
+    content <- lapply(content, function(x) t(x[,str_detect(x, pattern = "REACTION")==TRUE]))
+    #convert each column into a vector within a list
+    #content <- as.list(as.data.frame(content))
+    #change element names to compound, this will need control flow in the future for each class of cpd, rxn, KO because the word after ENTRY will
+    #be different!
+    change_names <- function(x){
 
-#Split multiple values per identifier by a delimiter
-lst <- strsplit(as.character(count_data$Rxn), ",")
-Split_DF <- transform(count_data[rep(1:nrow(count_data),
-lengths(lst)),-5], Rxn= unlist(lst))
-Split_DF$Rxn = as.vector(Split_DF$Rxn)
-Split_DF[Split_DF =="NULL"] <- NA
-Split_DF = Split_DF[which(complete.cases(Split_DF$Rxn)),]
+      colnames(x) <- gsub('^.*ENTRY\\s*|\\s*Compound.*$', '', x)
 
-class(Split_DF) <- append(class(Split_DF), "rxn")
-return(Split_DF)
+      return(x)
+
+    }
+    content <- lapply(content, change_names)
+    content <- lapply(content, function(x) as.list(as.data.frame(x)))
+
+    #remove everything but REACTION identifiers (again this will need control flow for each class)
+    content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*REACTION\\s*|\\s*PATHWAY.*$|MODULE.*$|ENZYME.*$|BRITE.*$|DBLINKS.*$|ATOM.*$|BOND.*$', '', x)))
+    #split the strings into vectors of length n again
+    content <- lapply(content, function(x) sapply(x, function(x) str_split(x, " ")))
+    content <- lapply(content, function(x) sapply(x, function(x) x[x!=""]))
+    content <- lapply(content, as.list)
+
+    content_cpd <- lapply(content, names)
+    content_cpd <- lapply(content_cpd, as.list)
+
+    content<- lapply(rapply(content, enquote, how="unlist"), eval)
+    content_cpd<- lapply(rapply(content_cpd, enquote, how="unlist"), eval)
+
+    content <- Map("rbind", content, content_cpd)
+
+    content <- lapply(content, as.data.frame(t))
+
+    content <- lapply(content, function(x){ colnames(x) <- c("Rxn", "KEGG"); return(x)})
+
+    content <- do.call("rbind", content)
+
+    return(content)
 }
 
 #' @rdname plate_omelette
 #' @export
-plate_omelette.genes <- function(count_data){
+plate_omelette.genes <- function(output){
 
 #Clean up using regex
-count_data$Genes = gsub("\\c\\("," \\[",count_data$Genes)
-count_data$Genes = gsub("\\[|\\]", "", count_data$Genes)
+content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))
+  #convert to a string
+  #content <- paste(content, sep = "", collapse = "")
+  content <- lapply(content, function(x) paste(x, sep = "", collapse = ""))
+  #split into character matrix by End of Entry
+  #content <- str_split(content, "END_OF_ENTRY", simplify = TRUE)
+  content <- lapply(content, function(x) str_split(x, "END_OF_ENTRY", simplify = TRUE))
+  #remove elements that don't contain REACTION (broken record but needs control flow for each class)
+  #content <-t(content[,str_detect(content, pattern = "REACTION")==TRUE])
+  content <- lapply(content, function(x) t(x[,str_detect(x, pattern = "GENES")==TRUE]))
+  #convert each column into a vector within a list
+  #content <- as.list(as.data.frame(content))
+  #change element names to compound, this will need control flow in the future for each class of cpd, rxn, KO because the word after ENTRY will
+  #be different!
+  change_names <- function(x){
 
-#Split multiple values per identifier by a delimiter
-lst <- strsplit(as.character(count_data$Genes), ",")
-DF <- transform(count_data[rep(1:nrow(count_data), lengths(lst)),-1], Genes= unlist(lst))
-DF <- as.data.frame(sapply(DF, function(x) gsub("\"", "", x)))
-DF$Gene_number <- DF$Genes
-DF2 <- str_split_fixed(DF$Genes, ":", 2)
-DF2 = as.data.frame(DF2)
-colnames(DF2)[2] <- "Genes"
-DF = DF[,-which(colnames(DF)=="Genes")]
+    colnames(x) <- gsub('^.*ENTRY\\s*|\\s*KO.*$', '', x)
 
-#Create organism identifier
-colnames(DF2)[1] <- "Org"
-DF_Complete = as.data.frame(cbind(DF2, DF))
+    return(x)
 
-DF_Complete$Org <- tolower(DF_Complete$Org)
-DF_Complete$Org <- trimws(DF_Complete$Org)
-DF_Complete = DF_Complete[ , -which(names(DF_Complete) %in% c("Gene_number"))]
-return(DF_Complete)
+  }
+  content <- lapply(content, change_names)
+  content <- lapply(content, function(x) as.list(as.data.frame(x)))
+
+  #remove everything but REACTION identifiers (again this will need control flow for each class)
+  content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*GENES\\s*|\\s*JOURNAL.*$|DOI.*$|SEQUENCE.*$|REFERENCE.*$|AUTHORS.*$|TITLE.*$|JOURNAL.*$', '', x)))
+  #split the strings into vectors of length n again
+  content <- lapply(content, function(x) sapply(x, function(x) gsub(pattern = ":. *", replacement = ":", x = x)))
+  content <- lapply(content, function(x) sapply(x, function(x) str_split(x, "\n")))
+  #content <- lapply(content, function(x) sapply(x, function(x) x[x!=""]))
+  content <- lapply(content, as.list)
+
+  content_KO <- lapply(content, names)
+  content_KO <- lapply(content_KO, as.list)
+
+  content<- lapply(rapply(content, enquote, how="unlist"), eval)
+  content_KO<- lapply(rapply(content_KO, enquote, how="unlist"), eval)
+
+  #content <- lapply(content, as.data.frame)
+  #content <- lapply(content, function(x){ x$first_char <- substring(x[,1], 1,1); return(x)})
+  #content <- lapply(content, function(x) {x <- x[x$first_char=="K",]; return(x)})
+  #content <- lapply(content, function(x) {x$char <- nchar(x[,1]); x[x$char==6,]; x <- x[,!names(x) %in% c("first_char", "char")]; return(x)})
+
+  content <- Map("rbind", content, content_KO)
+
+  content <- lapply(content, as.data.frame(t))
+
+  content <- lapply(content, function(x){ colnames(x) <- c("Org", "KO"); return(x)})
+
+  content <- do.call("rbind", content)
+
+  content$Genes <- gsub(".*:","",content$Org)
+
+  content$Genes <- gsub(" ",",",content$Genes)
+
+  content$Org <- gsub(":.*\\s*", "", content$Org)
+
+  content$Org <- str_trim(content$Org)
+
+  content$Org <- tolower(content$Org)
+
+  return(content)
+}
+
+#' @rdname plate_omelette
+#' @export
+plate_omelette.KO <- function(output){
+
+  content <- lapply(output, function(x) strsplit(strip(x), "\n", fixed=TRUE)[[1]])
+    #replace delimeter elements with END_OF_ENTRY to separate entries
+    content <- lapply(content, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))
+    #convert to a string
+    #content <- paste(content, sep = "", collapse = "")
+    content <- lapply(content, function(x) paste(x, sep = "", collapse = ""))
+    #split into character matrix by End of Entry
+    #content <- str_split(content, "END_OF_ENTRY", simplify = TRUE)
+    content <- lapply(content, function(x) str_split(x, "END_OF_ENTRY", simplify = TRUE))
+    #remove elements that don't contain REACTION (broken record but needs control flow for each class)
+    #content <-t(content[,str_detect(content, pattern = "REACTION")==TRUE])
+    content <- lapply(content, function(x) t(x[,str_detect(x, pattern = "ORTHOLOGY")==TRUE]))
+    #convert each column into a vector within a list
+    #content <- as.list(as.data.frame(content))
+    #change element names to compound, this will need control flow in the future for each class of cpd, rxn, KO because the word after ENTRY will
+    #be different!
+    change_names <- function(x){
+
+      colnames(x) <- gsub('^.*ENTRY\\s*|\\s*Reaction.*$', '', x)
+
+      return(x)
+
+    }
+    content <- lapply(content, change_names)
+    content <- lapply(content, function(x) as.list(as.data.frame(x)))
+
+    #remove everything but REACTION identifiers (again this will need control flow for each class)
+    content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*ORTHOLOGY\\s*|\\s*DBLINKS.*$|RHEA.*$', '', x)))
+    #split the strings into vectors of length n again
+    content <- lapply(content, function(x) sapply(x, function(x) str_split(x, " ")))
+    content <- lapply(content, function(x) sapply(x, function(x) x[x!=""]))
+    content <- lapply(content, as.list)
+
+    content_rxn <- lapply(content, names)
+    content_rxn <- lapply(content_rxn, as.list)
+
+    content<- lapply(rapply(content, enquote, how="unlist"), eval)
+    content_rxn<- lapply(rapply(content_rxn, enquote, how="unlist"), eval)
+
+    content <- lapply(content, as.data.frame)
+    content <- lapply(content, function(x){ x$first_char <- substring(x[,1], 1,1); return(x)})
+    content <- lapply(content, function(x) {x <- x[x$first_char=="K",]; return(x)})
+    content <- lapply(content, function(x) {x$char <- nchar(x[,1]); x[x$char==6,]; x <- x[,!names(x) %in% c("first_char", "char")]; return(x)})
+
+    content <- Map("rbind", content, content_rxn)
+
+    content <- lapply(content, as.data.frame(t))
+
+    content <- lapply(content, function(x){ colnames(x) <- c("KO", "Rxn"); return(x)})
+
+    content <- do.call("rbind", content)
+
+  return(content)
 }

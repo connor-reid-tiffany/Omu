@@ -15,7 +15,6 @@
 #' @importFrom plyr ldply
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarise_all
-#' @importFrom dplyr funs
 #' @importFrom magrittr %>%
 #' @importFrom stats t.test
 #' @importFrom stats wilcox.test
@@ -103,7 +102,7 @@ omu_summary <- function(count_data, metadata, numerator, denominator, response_v
   #Compute raw count means
   data_Log$Factor <- factor(data_Log$Factor, levels = c(numerator, denominator))
   data_Numeric$Factor = data_Log$Factor
-  Means <- data_Numeric %>% group_by(Factor) %>% summarise_all(funs(mean))
+  Means <- data_Numeric %>% group_by(Factor) %>% summarise_all(mean)
   Means_T = as.data.frame(t(Means))
   colnames(Means_T) <- as.character(unlist(Means_T[1,]))
   Means_T = Means_T[-1,]
@@ -124,7 +123,7 @@ omu_summary <- function(count_data, metadata, numerator, denominator, response_v
   st.err <- function(x) sd(x)/sqrt(length(x))
 
   #Compute standard deviation
-  stdev <- data_Log %>% group_by(Factor) %>% summarise_all(funs(sd))
+  stdev <- data_Log %>% group_by(Factor) %>% summarise_all(sd)
   stdev <- as.data.frame(stdev)
   rownames(stdev) <- stdev[,"Factor"]
   stdev[,"Factor"] <- NULL
@@ -137,7 +136,7 @@ omu_summary <- function(count_data, metadata, numerator, denominator, response_v
   colnames(stdev_t)[3] <- paste(colnames(stdev_t)[3], "stdev", sep = ".")
 
   #Compute standard error
-  SE <- data_Log %>% group_by(Factor) %>% summarise_all(funs(st.err))
+  SE <- data_Log %>% group_by(Factor) %>% summarise_all(st.err)
   SE <- as.data.frame(SE)
   rownames(SE) <- SE[,"Factor"]
   SE[,"Factor"] <- NULL

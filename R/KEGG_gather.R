@@ -19,9 +19,9 @@ KEGG_gather <- function(count_data) UseMethod("KEGG_gather", count_data)
 KEGG_gather.cpd <- function(count_data){
 
   #Set variables
-  req <- c('ENTRY', 'REACTION')
+  first_char <- "C"
   column <- "KEGG"
-  req_name <- "REACTION"
+
 
   #print patience snail into terminal =)
   text_art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      /  ___  \\",
@@ -31,20 +31,15 @@ KEGG_gather.cpd <- function(count_data){
   cat(text_art, sep = "\n")
 
   #Send identifier count_data to KEGG API
-  matrix <- make_omelette(count_data = count_data, column = column, req = req)
-
-  #Convert to data.frame and append acquired data
-  df = as.data.frame(matrix)
-  count_data$Rxn = df[,req_name][match(count_data[, column], df[, 'ENTRY'])]
-
+  df <- make_omelette(count_data = count_data, column = column, first_char = first_char)
+  class(df)[2] <- "rxn"
+  #call parser function
+  df = plate_omelette(df)
+  #Append acquired data
+  count_data <- merge(df, count_data, "KEGG")
   #Assign rxn class to data.frame
   class(count_data)[2] <- "rxn"
-
-  #Call function from method Plate_Omelette to make data human readable
-  count_data = plate_omelette(count_data)
-
   #We want Orthologies, so need to run new DF through KEGG_Gather again
-
   count_data <- KEGG_gather(count_data)
 
   return(count_data)
@@ -56,9 +51,8 @@ KEGG_gather.cpd <- function(count_data){
 KEGG_gather.rxn <- function(count_data){
 
 #Set variables
-req <- c("ENTRY","ORTHOLOGY")
+first_char <- "R"
 column <- "Rxn"
-req_name <- "Rxn"
 
 
 #print patience snail into terminal =)
@@ -70,13 +64,12 @@ cat(text_art, sep = "\n")
 
 
 #Send indentifier data to KEGG API
-matrix <- make_omelette(count_data = count_data, column = column, req = req)
-
-#append rxnKO class for calling Plate_Omelette
-
+df <- make_omelette(count_data = count_data, column = column, first_char = first_char)
+class(df)[2] <- "KO"
 #Call Plate_Omelette method to clean data up
-count_data = plate_omelette_rxnko(count_data, matrix)
+df <- plate_omelette(df)
 
+count_data <- merge(df, count_data, "Rxn")
 #append KO class in case user wishes to KEGG_Gather genes
 class(count_data) <- c("data.frame", "KO")
 
@@ -89,9 +82,8 @@ return(count_data)
 KEGG_gather.KO <- function(count_data){
 
 #Set variables
-req <- c("NAME", "ENTRY","DEFINITION", "GENES")
-column <- "KO_Number"
-req_name <- "GENES"
+column <- "KO"
+first_char <- "K"
 
 #print patience snail into terminal =)
 text_art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      /  ___  \\",
@@ -101,18 +93,13 @@ text_art <-  c(" / /", " L_L_", "/    \\", "|00  |       _______", "|_/  |      
 cat(text_art, sep = "\n")
 
 #Send indentifier to KEGG API
-matrix <- make_omelette(count_data = count_data, column = column, req = req)
-df = as.data.frame(matrix)
-
+df <- make_omelette(count_data = count_data, column = column, first_char = first_char)
 #append class "genes"
-class(count_data) <- append(class(count_data), "genes")
-
-#append columns
-count_data$Genes = df[,req_name][match(count_data[, column], df$ENTRY)]
-count_data$GeneOperon = df$NAME[match(count_data[, column], df$ENTRY)]
-
+class(df) <- append(class(df), "genes")
 #Call Plate_Omelette to make it human readable
-count_data = plate_omelette(count_data = count_data)
+df <- plate_omelette(df)
+#Append acquired data
+count_data <- merge(df, count_data, "KO")
 
 return(count_data)
 }
