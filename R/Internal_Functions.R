@@ -102,6 +102,11 @@ make_omelette <- function(count_data, column, first_char){
 
 plate_omelette_rxnko<- function(output){
 
+  .strip <- function(str)
+   {
+     gsub("^\\s+|\\s+$", "", str)
+   }
+
   content <- lapply(output, function(x) strsplit(strip(x), "\n", fixed=TRUE)[[1]])
     #replace delimeter elements with END_OF_ENTRY to separate entries
     content <- lapply(content, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))

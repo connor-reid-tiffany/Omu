@@ -14,8 +14,12 @@ plate_omelette <- function(output) UseMethod("plate_omelette")
 #' @export
 plate_omelette.rxn <- function(output){
 
+  .strip <- function(str)
+   {
+     gsub("^\\s+|\\s+$", "", str)
+   }
   #remove newline text delimeters
-    content <- lapply(output, function(x) strsplit(strip(x), "\n", fixed=TRUE)[[1]])
+    content <- lapply(output, function(x) strsplit(.strip(x), "\n", fixed=TRUE)[[1]])
     #replace delimeter elements with END_OF_ENTRY to separate entries
     content <- lapply(content, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))
     #convert to a string
@@ -138,7 +142,11 @@ content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "EN
 #' @export
 plate_omelette.KO <- function(output){
 
-  content <- lapply(output, function(x) strsplit(strip(x), "\n", fixed=TRUE)[[1]])
+  .strip <- function(str)
+   {
+     gsub("^\\s+|\\s+$", "", str)
+   }
+  content <- lapply(output, function(x) strsplit(.strip(x), "\n", fixed=TRUE)[[1]])
     #replace delimeter elements with END_OF_ENTRY to separate entries
     content <- lapply(content, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))
     #convert to a string
