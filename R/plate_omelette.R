@@ -176,7 +176,7 @@ plate_omelette.KO <- function(output){
     content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*ORTHOLOGY\\s*|\\s*DBLINKS.*$|RHEA.*$', '', x)))
     #split the strings into vectors of length n again
     content <- lapply(content, function(x) sapply(x, function(x) str_split(x, " ")))
-    content <- lapply(content, function(x) sapply(x, function(x) x[x!=""]))
+    #content <- lapply(content, function(x) sapply(x, function(x) x[x!=""]))
     content <- lapply(content, as.list)
 
     content_rxn <- lapply(content, names)
