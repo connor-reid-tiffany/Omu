@@ -13,7 +13,7 @@
 make_omelette <- function(count_data, column, first_char){
 
 
- strip <- function(str)
+ .strip <- function(str)
   {
     gsub("^\\s+|\\s+$", "", str)
   }

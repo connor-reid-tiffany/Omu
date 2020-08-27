@@ -4,19 +4,22 @@
 \alias{plate_omelette}
 \alias{plate_omelette.rxn}
 \alias{plate_omelette.genes}
+\alias{plate_omelette.KO}
 \title{plate_omelette
-Internal method for KEGG_Gather}
+Internal method for KEGG_Gather which parses flat text files}
 \usage{
-plate_omelette(count_data)
+plate_omelette(output)
 
-\method{plate_omelette}{rxn}(count_data)
+\method{plate_omelette}{rxn}(output)
 
-\method{plate_omelette}{genes}(count_data)
+\method{plate_omelette}{genes}(output)
+
+\method{plate_omelette}{KO}(output)
 }
 \arguments{
 \item{count_data}{The metabolomics count dataframe}
 }
 \description{
 plate_omelette
-Internal method for KEGG_Gather
+Internal method for KEGG_Gather which parses flat text files
 }

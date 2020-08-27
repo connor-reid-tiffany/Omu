@@ -4,12 +4,10 @@
 \alias{plate_omelette_rxnko}
 \title{Clean up orthology metadata}
 \usage{
-plate_omelette_rxnko(count_data, matrix)
+plate_omelette_rxnko(output)
 }
 \arguments{
-\item{count_data}{Metabolomics count data}
-
-\item{matrix}{the matrix of KEGG metadata}
+\item{output}{output from plate_omelette}
 }
 \description{
 Internal function for KEGG_Gather.rxn method

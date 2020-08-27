@@ -179,13 +179,13 @@ kable(DF_s_trunc_g_t)
 From here, orthology hierarchy data can be assigned using the  ```assign_hierarchy``` function that was used to assign compound hierarchies.
 
 ```
-DF_stats_sub_KO <- assign_hierarchy(count_data = DF_stats_sub_KO, keep_unknowns = TRUE, identifier = "KO_Number")
+DF_stats_sub_KO <- assign_hierarchy(count_data = DF_stats_sub_KO, keep_unknowns = TRUE, identifier = "KO")
 ```
 
 This should add three new columns of metadata for each orthology.
 
 ```{r echo=FALSE,message=FALSE, warning=FALSE}
-DF_s_trunc_g_a <- assign_hierarchy(count_data = DF_s_trunc_g, keep_unknowns = TRUE, identifier = "KO_Number")
+DF_s_trunc_g_a <- assign_hierarchy(count_data = DF_s_trunc_g, keep_unknowns = TRUE, identifier = "KO")
 DF_s_trunc_g_a <- DF_s_trunc_g_a[c(1:50),]
 DF_s_trunc_g_a_trunc <- DF_s_trunc_g_a[, c(1:4)]
 DF_s_trunc_g_a_trunc <- DF_s_trunc_g_a_trunc[c(1:5),]

@@ -4,14 +4,14 @@
 \alias{make_omelette}
 \title{Get metadata from KEGG API}
 \usage{
-make_omelette(count_data, column, req)
+make_omelette(count_data, column, first_char)
 }
 \arguments{
 \item{count_data}{The metabolomics count data}
 
 \item{column}{The name of the KEGG identifier being sent to the KEGG API}
 
-\item{req}{The character vector with variables to pull out of the metadata}
+\item{first_char}{firct character in number being fed to KEGG database}
 }
 \description{
 Internal function for KEGG_Gather

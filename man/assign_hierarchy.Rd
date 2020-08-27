@@ -13,7 +13,7 @@ or a gene identifier column}
 \item{keep_unknowns}{a boolean of either TRUE or FALSE. TRUE keeps unannotated compounds,
 FALSE removes them}
 
-\item{identifier}{a string that is either "KEGG" for metabolite, "KO_Number" for orthology,
+\item{identifier}{a string that is either "KEGG" for metabolite, "KO" for orthology,
 "Prokaryote" for organism, or "Eukaryote" for organism}
 }
 \description{
