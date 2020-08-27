@@ -1,6 +1,6 @@
 #' plate_omelette
 #' Internal method for KEGG_Gather which parses flat text files
-#' @param count_data The metabolomics count dataframe
+#' @param output The metabolomics count dataframe
 #' @importFrom stringr str_split
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_trim

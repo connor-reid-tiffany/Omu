@@ -8,7 +8,7 @@
 #' FALSE removes them
 #' @param identifier a string that is either "KEGG" for metabolite, "KO" for orthology,
 #' "Prokaryote" for organism, or "Eukaryote" for organism
-
+#' @importFrom stats complete.cases
 #' @examples
 #' assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
 #' @export
