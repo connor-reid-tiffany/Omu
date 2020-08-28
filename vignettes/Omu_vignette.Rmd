@@ -172,7 +172,7 @@ The data frame should now have functional orthologies and KO_numbers columns add
 ```{r echo=FALSE,message=FALSE, warning=FALSE,cache = FALSE, results = 'hide'}
 DF_s_trunc_g <- KEGG_gather(DF_stats_sub)
 
-kable(head(DF_s_trunc_g_t, n = 5))
+kable(head(DF_s_trunc_g, n = 5))
 ```
 
 From here, the user can gather orthology metadata and gene metadata from the KEGG API, using ```KEGG_gather``` again. Additionally, ```assign_hierarchy``` can be used on Orthology identifiers and organism identifiers for genes generated from ```KEGG_gather``` to assign enzyme metadata and organism metadata respectively. This metadata can then help the end user subset their data.frame to pathways and/or organisms of interest related to metabolits that were significantly different between treatment groups in their data for hypothesis generation.
