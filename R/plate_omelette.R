@@ -185,7 +185,7 @@ plate_omelette.KO <- function(output){
     content<- lapply(rapply(content, enquote, how="unlist"), eval)
     content_rxn<- lapply(rapply(content_rxn, enquote, how="unlist"), eval)
 
-    content <- lapply(content, as.data.frame)
+    content <- lapply(content, function(x) as.data.frame(x, stringsAsFactors = FALSE))
     content <- lapply(content, function(x){ x$first_char <- substring(x[,1], 1,1); return(x)})
     content <- lapply(content, function(x) {x <- x[x$first_char=="K",]; return(x)})
     content <- lapply(content, function(x) {x$char <- nchar(x[,1]); x[x$char==6,]; x <- x[,!names(x) %in% c("first_char", "char")]; return(x)})
