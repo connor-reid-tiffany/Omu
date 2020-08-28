@@ -17,7 +17,7 @@ plate_omelette(output)
 \method{plate_omelette}{KO}(output)
 }
 \arguments{
-\item{count_data}{The metabolomics count dataframe}
+\item{output}{The metabolomics count dataframe}
 }
 \description{
 plate_omelette
