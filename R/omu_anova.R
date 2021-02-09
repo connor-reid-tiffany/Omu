@@ -30,7 +30,7 @@ omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NUL
 {
 
 variable1 = var1
-if (var2 = NULL){
+if (var2 == NULL){
 
 } else if (var2 != NULL){
 
@@ -52,7 +52,7 @@ Vect = colnames(data_Num)
 data_Ln <- log(data_Num)
 data_Ln <- as.data.frame(cbind(Sample = rownames(data_Ln),
                                data_Ln))
-data_Fact <- data_Transpose[, factors]
+data_Fact <- data.frame(Sample = data_Transpose[, factors])
 data_Ln = merge(data_Ln, data_Fact, by = "Sample")
 data_Ln <- data_Ln[, !names(data_Ln) %in% c("Sample", "Sample.1")]
 data_Num <- as.data.frame(cbind(Sample = rownames(data_Num),
