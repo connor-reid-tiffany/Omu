@@ -6,7 +6,7 @@
 #'@param response_variable String of the column header for the response variables,
 #'usually "Metabolite"
 #'@param var1 String of the first independent variable you wish to test
-#'@param var2 String of the second independent variable you wish to test. Optional parameter
+#'@param var2 String of the second independent variable you wish to test. Default is NULL.
 #'@param interaction Boolean of TRUE or FALSE for whether or not you wish to model
 #'an interaction between independent variables. Optional parameter
 #'@param log_transform Boolean of TRUE or FALSE for whether or not you wish to log transform
@@ -25,12 +25,17 @@
 #'@export
 
 
-omu_anova <- function (count_data, metadata, response_variable, var1, var2,
+omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NULL,
           interaction, log_transform, p_adjust)
 {
 
 variable1 = var1
-variable2 = var2
+if (var2 = NULL){
+
+} else if (var2 != NULL){
+
+variable2 = var2}
+
 rownames(count_data) <- count_data[, response_variable]
 count_data[, response_variable] <- NULL
 data_Int <- count_data[sapply(count_data, function(x) is.numeric(x))]
@@ -63,7 +68,7 @@ else if (log_transform == TRUE) {
 }
 Mod = data_Fact
 Mod = Mod[, !names(Mod) %in% c("Sample", "Sample.1")]
-if (missing(var2) & interaction == FALSE) {
+if (var2==NULL & interaction == FALSE) {
   var1 = metadata[, var1]
   results <- llply(Vect, function(x) {
     models <- lm(data_mod[[x]] ~ var1, data = Mod)
@@ -124,7 +129,7 @@ else if (interaction == FALSE) {
   results = left_join(results, count_data, by = "Metabolite")
   return(results)
 }
-else if (interaction == TRUE & !missing(var2)) {
+else if (interaction == TRUE & var2 !=NULL) {
   var1 = metadata[, var1]
   var2 = metadata[, var2]
   results <- llply(Vect, function(x) {
