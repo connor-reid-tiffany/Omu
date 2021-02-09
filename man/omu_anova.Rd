@@ -11,7 +11,7 @@ omu_anova(
   metadata,
   response_variable,
   var1,
-  var2,
+  var2 = NULL,
   interaction,
   log_transform,
   p_adjust
@@ -27,7 +27,7 @@ usually "Metabolite"}
 
 \item{var1}{String of the first independent variable you wish to test}
 
-\item{var2}{String of the second independent variable you wish to test. Optional parameter}
+\item{var2}{String of the second independent variable you wish to test. Default is NULL.}
 
 \item{interaction}{Boolean of TRUE or FALSE for whether or not you wish to model
 an interaction between independent variables. Optional parameter}

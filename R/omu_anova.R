@@ -29,11 +29,13 @@ omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NUL
           interaction, log_transform, p_adjust)
 {
 
+if (is.null(var2)){
+
 variable1 = var1
-if (var2 == NULL){
 
-} else if (var2 != NULL){
+} else if (!is.null(var2)){
 
+variable1 = var1
 variable2 = var2}
 
 rownames(count_data) <- count_data[, response_variable]
@@ -68,7 +70,7 @@ else if (log_transform == TRUE) {
 }
 Mod = data_Fact
 Mod = Mod[, !names(Mod) %in% c("Sample", "Sample.1")]
-if (var2==NULL & interaction == FALSE) {
+if (is.null(var2) & interaction == FALSE) {
   var1 = metadata[, var1]
   results <- llply(Vect, function(x) {
     models <- lm(data_mod[[x]] ~ var1, data = Mod)
@@ -129,7 +131,7 @@ else if (interaction == FALSE) {
   results = left_join(results, count_data, by = "Metabolite")
   return(results)
 }
-else if (interaction == TRUE & var2 !=NULL) {
+else if (interaction == TRUE & !is.null(var2)) {
   var1 = metadata[, var1]
   var2 = metadata[, var2]
   results <- llply(Vect, function(x) {
@@ -163,7 +165,9 @@ else if (interaction == TRUE & var2 !=NULL) {
   results <- cbind(rownames(results), data.frame(results,
                                                  row.names = NULL))
   colnames(results)[1] <- response_variable
-
+  count_data <- cbind(rownames(count_data), data.frame(count_data,
+                                                           row.names = NULL))
+      colnames(count_data)[1] <- response_variable
   results <- left_join(results, count_data, by = "Metabolite")
   return(results)
 }
