@@ -29,6 +29,28 @@ omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NUL
           interaction, log_transform, p_adjust)
 {
 
+  if (log_transform==TRUE){
+
+
+  find_zeros <- function(x){
+
+  x2 <- sapply(x, is.numeric)
+
+  x <- x[,x2]
+
+  xl <- sapply(x, function(x) any(x==0))
+
+  }
+
+  if (any(find_zeros(count_data)==TRUE)){
+
+  stop("Your data have zero values. If you trust these zeros are legitimate, set log_transform to FALSE and consider
+       using the square root to center your data.")
+
+  }
+
+  }
+
 if (is.null(var2)){
 
 variable1 = var1

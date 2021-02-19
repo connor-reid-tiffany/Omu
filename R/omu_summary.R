@@ -30,6 +30,26 @@
 omu_summary <- function(count_data, metadata, numerator, denominator, response_variable,
                         Factor, log_transform, p_adjust, test_type){
 
+if (log_transform==TRUE){
+
+find_zeros <- function(x){
+
+x2 <- sapply(x, is.numeric)
+
+x <- x[,x2]
+
+xl <- sapply(x, function(x) any(x==0))
+
+}
+
+if (any(find_zeros(count_data)==TRUE)){
+
+stop("Your data have zero values. If you trust these zeros are legitimate, set log_transform to FALSE and consider
+using the square root to center your data.")
+
+}
+
+}
 
   #Temporarily separate meta data from counts and store in other object
   rownames(count_data) <- count_data[,response_variable]
@@ -70,7 +90,7 @@ omu_summary <- function(count_data, metadata, numerator, denominator, response_v
 
   #T Test function in function envir. Iterates T_Test across all response variables
   if(test_type == "students"){
-  Run_Tests <- function(data_Log, Vect, model) {
+  Run_Tests <- function(data_mod, Vect, model) {
     results <- ldply(
       Vect, function(Metabolite) {
         t_val = t.test(data_mod[[Metabolite]] ~ model)$statistic
