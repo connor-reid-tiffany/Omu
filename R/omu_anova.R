@@ -65,7 +65,7 @@ omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NUL
 
 if (is.null(var2)){
 
-  if (nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)) > 0) {
+  if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)))==FALSE) {
 
     warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
             levels for these metabolites. Consider using check_zeros to subset your data.")
@@ -78,8 +78,8 @@ variable1 = var1
 
 } else if (!is.null(var2)){
 
-  if (nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)) > 0 |
-      nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var2, response_variable = response_variable)) > 0) {
+  if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)))==FALSE |
+      is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)))==FALSE)  {
 
     warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
             levels for these metabolites. Consider using check_zeros to subset your data.")
