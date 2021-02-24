@@ -29,7 +29,7 @@ omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NUL
           interaction, log_transform, p_adjust)
 {
 
-  if(identical(colnames(count_data)[-c(1,2)], metadata$Sample)==FALSE){
+  if(identical(colnames(count_data)[unlist(lapply(count_data, is.numeric))], metadata$Sample)==FALSE){
 
     stop("Sample names in count_data and metadata do not match.")
 
@@ -88,7 +88,7 @@ variable1 = var1
                 check_zeros(count_data = count_data, metadata = metadata, Factor = var2, response_variable = response_variable))[,1]))
 
   }
-  
+
 variable1 = var1
 variable2 = var2
 

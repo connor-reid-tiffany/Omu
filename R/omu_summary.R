@@ -30,7 +30,7 @@
 omu_summary <- function(count_data, metadata, numerator, denominator, response_variable,
                         Factor, log_transform, p_adjust, test_type){
 
-if(identical(colnames(count_data)[-c(1,2)], metadata$Sample)==FALSE){
+if(identical(colnames(count_data)[unlist(lapply(count_data, is.numeric))], metadata$Sample)==FALSE){
 
   stop("Sample names in count_data and metadata do not match.")
 
