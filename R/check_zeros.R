@@ -12,10 +12,12 @@
 #'@param Factor A factor with levels to test for zeros.
 #'@importFrom dplyr filter
 #'@examples
-
+#'
+#'check_zeros(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment")
+#'\dontshow{c57_nos2KO_mouse_countDF[1,3:31] <- 0}
+#'check_zeros(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment",
+#'numerator = "Strep", denominator = "Mock", threshold = 10)
 #'@export
-
-
 
 check_zeros <- function(count_data, metadata, numerator = NULL, denominator = NULL, threshold = 25,
                         response_variable = "Metabolite", Factor){
@@ -51,6 +53,14 @@ metabolites <- do.call(rbind, percent_zero_metabolite)
 
 metabolites$level <- gsub(x = rownames(metabolites), pattern = "\\..*", replacement = "")
 
-return(metabolites)
+if (length(rownames(metabolites))==0) {
+
+  print("Number of zero values is below threshold across all metabolites.")
+
+} else if (length(rownames(metabolites)) > 0){
+
+  return(metabolites)
+
+}
 
 }

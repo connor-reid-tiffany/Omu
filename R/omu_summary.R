@@ -30,6 +30,18 @@
 omu_summary <- function(count_data, metadata, numerator, denominator, response_variable,
                         Factor, log_transform, p_adjust, test_type){
 
+if(identical(colnames(count_data)[-c(1,2)], metadata$Sample)==FALSE){
+
+  stop("Sample names in count_data and metadata do not match.")
+
+}
+
+if(any(colnames(metadata)=="Sample")==FALSE){
+
+  stop("metadata is missing Sample column")
+
+}
+
 if (log_transform==TRUE){
 
 find_zeros <- function(x){
@@ -49,6 +61,16 @@ using the square root to center your data.")
 
 }
 
+}
+
+if (nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = Factor,
+                     numerator = numerator, denominator = denominator, response_variable = response_variable)) > 0) {
+
+  warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
+          levels for these metabolites. Consider using check_zeros to subset your data.")
+
+  print(unique(check_zeros(count_data = count_data, metadata = metadata, Factor = Factor,
+                           numerator = numerator, denominator = denominator, response_variable = response_variable)[,1]))
 }
 
   #Temporarily separate meta data from counts and store in other object
