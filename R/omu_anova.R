@@ -29,6 +29,8 @@ omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NUL
           interaction, log_transform, p_adjust)
 {
 
+   metadata <- as.data.frame(sapply(metadata, function(x) x <- as.character(x)))
+
   if(identical(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))]), as.character(metadata$Sample))==FALSE){
 
     stop("Sample names in count_data and metadata do not match.")
@@ -107,10 +109,19 @@ factors <- sapply(data_Transpose, is.character)
 data_Num <- data.frame(lapply(data_Transpose[, nums], function(x) as.numeric(as.integer(x))),
                        check.names = F, row.names = rownames(data_Transpose))
 Vect = colnames(data_Num)
+
+if (log_transform==TRUE){
+
 data_Ln <- log(data_Num)
+
+} else if (log_transform==FALSE){
+
+data_Ln <- data_Num
+
+}
 data_Ln <- as.data.frame(cbind(Sample = rownames(data_Ln),
                                data_Ln))
-data_Fact <- data.frame(Sample = data_Transpose[, factors])
+data_Fact <- data.frame(data_Transpose[, factors])
 data_Ln = merge(data_Ln, data_Fact, by = "Sample")
 data_Ln <- data_Ln[, !names(data_Ln) %in% c("Sample", "Sample.1")]
 data_Num <- as.data.frame(cbind(Sample = rownames(data_Num),
