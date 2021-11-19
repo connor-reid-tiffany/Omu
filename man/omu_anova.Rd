@@ -2,19 +2,14 @@
 % Please edit documentation in R/omu_anova.R
 \name{omu_anova}
 \alias{omu_anova}
-\title{Perform anova
-Performs an anova across all response variables. The function can take a maximum of 2
-independent variables and perform an interaction term between them.}
+\title{Perform anova}
 \usage{
 omu_anova(
   count_data,
   metadata,
-  response_variable,
-  var1,
-  var2 = NULL,
-  interaction,
-  log_transform,
-  p_adjust
+  response_variable = "Metabolite",
+  model,
+  log_transform = TRUE
 )
 }
 \arguments{
@@ -25,26 +20,26 @@ omu_anova(
 \item{response_variable}{String of the column header for the response variables,
 usually "Metabolite"}
 
-\item{var1}{String of the first independent variable you wish to test}
-
-\item{var2}{String of the second independent variable you wish to test. Default is NULL.}
-
-\item{interaction}{Boolean of TRUE or FALSE for whether or not you wish to model
+\item{model}{A formual class object, see ?formula for more info on formulas in R.
 an interaction between independent variables. Optional parameter}
 
 \item{log_transform}{Boolean of TRUE or FALSE for whether or not you wish to log transform
 your metabolite counts}
-
-\item{p_adjust}{Method for p value adjustment, i.e. "BH"}
 }
 \description{
-Perform anova
-Performs an anova across all response variables. The function can take a maximum of 2
-independent variables and perform an interaction term between them.
+Performs an anova across all response variables, followed by a Tukeys test on every possible
+contrast in your model and calculates group means and fold changes for each contrast. Returns a list of
+data frames for each contrast, and includes a dataframe of model residuals
 }
 \examples{
 \dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}
 anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
-response_variable = "Metabolite", var1 = "Treatment", var2 = "Background", log_transfor = TRUE,
-p_adjust = "BH", interaction = TRUE)
+response_variable = "Metabolite", model = ~ Treatment, log_transform = TRUE)
+
+anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
+response_variable = "Metabolite", model = ~ Treatment + Background, log_transform = TRUE)
+
+anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
+response_variable = "Metabolite", model = ~ Treatment + Background + Treatment*Background, log_transform = TRUE)
+
 }

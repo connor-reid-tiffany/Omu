@@ -11,6 +11,7 @@
 #'@param log_transform Boolean of TRUE or FALSE for whether or not you wish to log transform
 #'your metabolite counts
 #'@importFrom plyr llply
+#'@importFrom broom tidy
 #'@importFrom stats p.adjust
 #'@importFrom stats aov
 #'@importFrom stats TukeyHSD
@@ -166,8 +167,8 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
   #combine information from anova model with info from tukeys post hoc test
   names(results_aov) <- Vect
   results_tukey <- lapply(results_aov, TukeyHSD)
-  results_aov <- lapply(results_aov, broom::tidy)
-  results_tukey <- lapply(results_tukey, broom::tidy)
+  results_aov <- lapply(results_aov, tidy)
+  results_tukey <- lapply(results_tukey, tidy)
 
   add_residuals_placeholder <- function(x){
 

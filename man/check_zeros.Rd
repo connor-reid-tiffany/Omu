@@ -40,8 +40,9 @@ a vector of Metabolites that are 0 above the threshold in any given factor level
 }
 \examples{
 
-check_zeros(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment")
+check_zeros(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
+Factor = "Treatment")
 \dontshow{c57_nos2KO_mouse_countDF[1,3:31] <- 0}
-check_zeros(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, Factor = "Treatment",
-numerator = "Strep", denominator = "Mock", threshold = 10)
+check_zeros(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
+Factor = "Treatment",numerator = "Strep", denominator = "Mock", threshold = 10)
 }
