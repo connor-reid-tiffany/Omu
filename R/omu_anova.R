@@ -18,7 +18,7 @@
 #'@importFrom stats complete.cases
 #'@importFrom stats aggregate
 #'@examples
-#'\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}
+#'\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]; c57_nos2KO_mouse_metadata <- c57_nos2KO_mouse_metadata}
 #'anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 #'response_variable = "Metabolite", model = ~ Treatment, log_transform = TRUE)
 #'
