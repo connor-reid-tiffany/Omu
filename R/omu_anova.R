@@ -18,7 +18,8 @@
 #'@importFrom stats complete.cases
 #'@importFrom stats aggregate
 #'@examples
-#'\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]; c57_nos2KO_mouse_metadata <- c57_nos2KO_mouse_metadata}
+#'\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,];
+#'c57_nos2KO_mouse_metadata <- c57_nos2KO_mouse_metadata;}
 #'anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 #'response_variable = "Metabolite", model = ~ Treatment, log_transform = TRUE)
 #'
@@ -134,14 +135,6 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
 
   }
 
-  fn_list_2_env <- function(model_factors = model_factors) {
-
-    invisible(list2env(x = model_factors, envir = parent.frame()))
-
-  }
-
-  fn_list_2_env(model_factors = model_factors)
-
   Vect_list <- as.list(Vect)
 
   #create list of models
@@ -161,7 +154,9 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
   count_data_character$Metabolite <- gsub(pattern = "`", replacement = "", x = count_data_character$Metabolite)
 
   #run the anova
-
+  #add metadata variables
+  data_mod <- cbind(data_mod, metadata)
+  #run anova
   results_aov <- llply(model_list, function(x) { aov(x, data_mod)})
 
   #combine information from anova model with info from tukeys post hoc test
