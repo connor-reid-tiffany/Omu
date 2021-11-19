@@ -94,22 +94,22 @@ kable(DF_stats_trunc[1:3,])
 
 with columns of adjusted p values ("padj"), log2FoldChange, standard error, and standard deviation for each of the metabolites. From here, this data frame can be used to create bar plots, volcano plots, or pie charts (see Data Visualization), or used in ```KEGG_gather``` to get functional orthologies and gene info for the metabolites.
 
-An alternative option to ```omu_summary``` is the ```omu_anova```, which can be used to measure the variance of all groups within a factor, or see if independent variables have an effect on one another by modeling an interaction term (this only applies to multi factorial datasets).```omu_anova``` has the same arguments as ```omu_summary```, except "numerator" and "denominator" are replaced by the names of your factors, and interaction, which takes a value of TRUE or FALSE. Currently, it supports an interaction term containing two factors. The function within ```omu_anova``` that iterates the model over all response variables could be edited by a more advanced R user to allow for modeling of more than 2 factors. With this dataset, ```omu_anova``` can be used to observe whether or not Treatment or Background have a statistically significant effect on metabolite levels with the arguments ```var1 = "Background"``` ```var2 = "Treatment"```, and if Background has an effect on Treatment using the argument ```interaction = TRUE```.
+An alternative option to ```omu_summary``` is the ```omu_anova```, which can be used to measure the variance of all groups within a factor, or see if independent variables have an effect on one another by modeling an interaction term (this only applies to multi factorial datasets). This function also performs a tukeys test following the anova, as well as calculating group means and fold changes for each contrast in the tukeys test.```omu_anova``` has five arguments, three of which are required: count data, metadata, and a model formula (see ?formula in R for more information on how model formulas work). The function supports any number of factors, or interactions a user wishes to include in their model, and will return a list of dataframes, where each dataframe is one of the possible contrasts in the users model, along with a data frame containing model residuals for each response variable. When providing a formula for the model argument, make sure to leave the left side blank, as the function will supply the left side while running the model on each response variable in the dataset.
 
 ```
-DF_anova <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", var1 = "Background", var2 = "Treatment", interaction = TRUE, log_transform = TRUE, p_adjust = "BH")
+DF_anova <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", model = ~ Treatment")
 ```
 
-This should produce the follwing data frame:
+This should produce a list containing the following dataframe for Strep vs Mock treated mice:
 
 
 ```{r echo=FALSE,message=FALSE, warning=FALSE}
-DF_anova <- omu_anova(count_data = data, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", var1 = "Background", var2 = "Treatment", interaction = TRUE, log_transform = TRUE, p_adjust = "BH")
-DF_anova_trunc = DF_anova[,c(1:7)]
+DF_anova <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", model = ~ Treatment)
+DF_anova_trunc = DF_anova[[1]][,c(1:7)]
 kable(DF_anova_trunc[1:3,])
 ```
 
-The output gives columns with adjusted p values for ```var1```, ```var2```, and your interaction term.
+The output is similar to omu_summary so as to be compatible with graphing functions.
 
 An alternative to doing an anova model with an interaction statement is to paste factor groups together using base R to make a new metadata column to be able to model the effect of treatment within mouse genetic backgrounds. For example,  base R can be used to make a new "Grouped" Factor, with 4 levels; WTMock, WTStrep, Nos2Mock, and Nos2Strep.
 

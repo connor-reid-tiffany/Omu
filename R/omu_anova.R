@@ -1,35 +1,46 @@
 #'Perform anova
-#'Performs an anova across all response variables. The function can take a maximum of 2
-#'independent variables and perform an interaction term between them.
+#'@description Performs an anova across all response variables, followed by a Tukeys test on every possible
+#'contrast in your model and calculates group means and fold changes for each contrast. Returns a list of
+#'data frames for each contrast, and includes a dataframe of model residuals
 #'@param count_data A metabolomics count data frame
 #'@param metadata Metadata dataframe for the metabolomics count data frame
 #'@param response_variable String of the column header for the response variables,
 #'usually "Metabolite"
-#'@param var1 String of the first independent variable you wish to test
-#'@param var2 String of the second independent variable you wish to test. Default is NULL.
-#'@param interaction Boolean of TRUE or FALSE for whether or not you wish to model
+#'@param model A formual class object, see ?formula for more info on formulas in R.
 #'an interaction between independent variables. Optional parameter
 #'@param log_transform Boolean of TRUE or FALSE for whether or not you wish to log transform
 #'your metabolite counts
-#'@param p_adjust Method for p value adjustment, i.e. "BH"
-#'@importFrom dplyr left_join
 #'@importFrom plyr llply
 #'@importFrom stats p.adjust
-#'@importFrom stats anova
-#'@importFrom stats lm
+#'@importFrom stats aov
+#'@importFrom stats TukeyHSD
+#'@importFrom stats complete.cases
+#'@importFrom stats aggregate
 #'@examples
 #'\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]}
 #'anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
-#'response_variable = "Metabolite", var1 = "Treatment", var2 = "Background", log_transfor = TRUE,
-#'p_adjust = "BH", interaction = TRUE)
+#'response_variable = "Metabolite", model = ~ Treatment, log_transform = TRUE)
+#'
+#'anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
+#'response_variable = "Metabolite", model = ~ Treatment + Background, log_transform = TRUE)
+#'
+#'anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
+#'response_variable = "Metabolite", model = ~ Treatment + Background + Treatment*Background, log_transform = TRUE)
+#'
 #'@export
 
 
-omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NULL,
-          interaction, log_transform, p_adjust)
+omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = TRUE)
 {
 
-   metadata <- as.data.frame(sapply(metadata, function(x) x <- as.character(x)))
+  #extract variables from model object
+  model_terms <- terms(model)
+
+  variable_vector <- attr(attr(model_terms,which = "factors"),
+                          which = "dimnames")[[1]]
+
+  #conditionals to check for errors
+  metadata <- as.data.frame(sapply(metadata, function(x) x <- as.character(x)))
 
   if(identical(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))]), as.character(metadata$Sample))==FALSE){
 
@@ -46,196 +57,271 @@ omu_anova <- function (count_data, metadata, response_variable, var1, var2 = NUL
   if (log_transform==TRUE){
 
 
-  find_zeros <- function(x){
+    find_zeros <- function(x){
 
-  x2 <- sapply(x, is.numeric)
+      x2 <- sapply(x, is.numeric)
 
-  x <- x[,x2]
+      x <- x[,x2]
 
-  xl <- sapply(x, function(x) any(x==0))
+      xl <- sapply(x, function(x) any(x==0))
 
-  }
+    }
 
-  if (any(find_zeros(count_data)==TRUE)){
+    if (any(find_zeros(count_data)==TRUE)){
 
-  stop("Your data have zero values. If you trust these zeros are legitimate, set log_transform to FALSE and consider
+      stop("Your data have zero values. If you trust these zeros are legitimate, set log_transform to FALSE and consider
        using the square root to center your data.")
 
-  }
+    }
 
   }
 
-if (is.null(var2)){
+  #function to check for zeros in model terms
+  check_zeros_anova <- function(count_data = count_data, metadata = metadata, variable_vector = variable_vector){
 
-  if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)))==FALSE) {
+    check_zeros_list <- list()
 
-    warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
+    for (v in 1:length(variable_vector)){
+
+      check_zeros_list[[v]] <- check_zeros(count_data = count_data, metadata = metadata, Factor = v)
+
+    }
+
+    return(check_zeros_list)
+
+  }
+
+  if (any(length(check_zeros_anova(count_data = count_data, metadata = metadata, variable_vector = variable_vector))) < 1) {
+
+      warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
             levels for these metabolites. Consider using check_zeros to subset your data.")
 
-    print(unique(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)[,1]))
+      print(unique(check_zeros_anova()[,1]))
+
+    }
+
+  #add backtick quotes to metabolites so that non-syntatic names can be converted into model formulae later
+  count_data$Metabolite <- paste0("`", count_data$Metabolite)
+  count_data$Metabolite <- paste0(count_data$Metabolite, "`")
+
+  #format data for anova, make separate non-integer data to merge later
+  rownames(count_data) <- count_data[, response_variable]
+  count_data_character <- count_data[!sapply(count_data, is.numeric)]
+  count_data[, response_variable] <- NULL
+  data_Int <- count_data[sapply(count_data, is.numeric)]
+  data_Transpose <- as.data.frame(t(data_Int))
+  #make vector of metabolite names
+  Vect = colnames(data_Transpose)
+
+  if (log_transform==TRUE){
+
+    data_mod <- log(data_Transpose)
+
+  } else if (log_transform==FALSE){
+
+    data_mod <- data_Transpose
 
   }
 
-variable1 = var1
+  #establish model terms as factors
 
-} else if (!is.null(var2)){
+  model_factors <- list()
 
-  if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)))==FALSE |
-      is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable)))==FALSE)  {
+  for (t in variable_vector){
 
-    warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
-            levels for these metabolites. Consider using check_zeros to subset your data.")
-
-    print(unique(rbind(check_zeros(count_data = count_data, metadata = metadata, Factor = var1, response_variable = response_variable),
-                check_zeros(count_data = count_data, metadata = metadata, Factor = var2, response_variable = response_variable))[,1]))
+    model_factors[[t]] <- metadata[,t]
 
   }
 
-variable1 = var1
-variable2 = var2
+  fn_list_2_env <- function(model_factors = model_factors) {
 
-}
+    invisible(list2env(x = model_factors, envir = parent.frame()))
 
-rownames(count_data) <- count_data[, response_variable]
-count_data[, response_variable] <- NULL
-data_Int <- count_data[sapply(count_data, function(x) is.numeric(x))]
-data_Transpose <- as.data.frame(t(data_Int))
-data_Transpose <- as.data.frame(cbind(Sample = rownames(data_Transpose),
-                                      data_Transpose))
-data_Transpose <- merge(data_Transpose, metadata, "Sample")
-rownames(data_Transpose) <- data_Transpose[,"Sample"]
-nums <- sapply(data_Transpose, is.numeric)
-factors <- sapply(data_Transpose, is.character)
-data_Num <- data.frame(lapply(data_Transpose[, nums], function(x) as.numeric(as.integer(x))),
-                       check.names = F, row.names = rownames(data_Transpose))
-Vect = colnames(data_Num)
+  }
 
-if (log_transform==TRUE){
+  fn_list_2_env(model_factors = model_factors)
 
-data_Ln <- log(data_Num)
+  Vect_list <- as.list(Vect)
 
-} else if (log_transform==FALSE){
+  #create list of models
+  model_list <- lapply(Vect_list, function(x) {
 
-data_Ln <- data_Num
+     new_formula <- paste(paste(x, "~"), model)
 
-}
-data_Ln <- as.data.frame(cbind(Sample = rownames(data_Ln),
-                               data_Ln))
-data_Fact <- data.frame(data_Transpose[, factors])
-data_Ln = merge(data_Ln, data_Fact, by = "Sample")
-data_Ln <- data_Ln[, !names(data_Ln) %in% c("Sample", "Sample.1")]
-data_Num <- as.data.frame(cbind(Sample = rownames(data_Num),
-                                data_Num))
-data_Num = merge(data_Num, data_Fact, by = "Sample")
-data_Num <- data_Num[, !names(data_Num) %in% c("Sample",
-                                               "Sample.1")]
-if (log_transform == FALSE) {
-  data_mod = data_Num
-}
-else if (log_transform == TRUE) {
-  data_mod = data_Ln
-}
-Mod = data_Fact
-Mod = Mod[, !names(Mod) %in% c("Sample", "Sample.1")]
-if (is.null(var2) & interaction == FALSE) {
-  var1 = metadata[, var1]
-  results <- llply(Vect, function(x) {
-    models <- lm(data_mod[[x]] ~ var1, data = Mod)
+    return(new_formula[2])
+
   })
-  names(results) <- Vect
-  results <- lapply(results, anova)
-  results <- sapply(results, cbind)
-  results <- t(results)
-  results <- as.data.frame(results[, "Pr(>F)"])
-  results <- as.data.frame(t(results))
-  colnames(results)[1] <- variable1
-  colnames(results)[1] <- paste(colnames(results)[1],
-                                "pval", sep = ".")
-  results$padj = p.adjust(results[, 1], method = p_adjust)
-  colnames(results)[3] <- paste(colnames(results)[3],
-                                variable1, sep = ".")
-  count_data <- cbind(rownames(count_data), data.frame(count_data,
-                                                       row.names = NULL))
-  colnames(count_data)[1] <- response_variable
-  results <- cbind(rownames(results), data.frame(results,
-                                                 row.names = NULL))
-  colnames(results)[1] <- response_variable
-  results = left_join(results, count_data, by = response_variable)
-  results = results[, !(colnames(results) %in% c("V2"))]
-  return(results)
-}
-else if (interaction == FALSE) {
-  var1 = metadata[, var1]
-  var2 = metadata[, var2]
-  results <- llply(Vect, function(x) {
-    models <- lm(data_mod[[x]] ~ var1 + var2, data = Mod)
+
+  model_list <- lapply(model_list, as.formula)
+
+  #remove backtick quotes from metabolites
+  names(data_mod) <- gsub("`", "", names(data_mod), fixed = TRUE)
+  Vect <- gsub(pattern = "`", replacement = "", x = Vect)
+  count_data_character$Metabolite <- gsub(pattern = "`", replacement = "", x = count_data_character$Metabolite)
+
+  #run the anova
+
+  results_aov <- llply(model_list, function(x) { aov(x, data_mod)})
+
+  #combine information from anova model with info from tukeys post hoc test
+  names(results_aov) <- Vect
+  results_tukey <- lapply(results_aov, TukeyHSD)
+  results_aov <- lapply(results_aov, broom::tidy)
+  results_tukey <- lapply(results_tukey, broom::tidy)
+
+  add_residuals_placeholder <- function(x){
+
+    resid_empty_df <- data.frame(term = "Residuals", contrast = NA, null.value = NA,
+                                 estimate = NA, conf.low = NA, conf.high = NA, adj.p.value = NA)
+    x <- rbind(x, resid_empty_df)
+
+    return(x)
+
+  }
+
+  #change this part to add a residuals column by matching via metabolite
+  results_tukey <- lapply(results_tukey, add_residuals_placeholder)
+
+  results <- Map(merge, results_tukey, results_aov, by = "term")
+  results <- lapply(results, as.data.frame)
+
+  #add metabolite column and then rbind all response variable dataframes into one tidy dataframe
+  names_list <- as.list(names(results))
+  names_list <- lapply(names_list, function(x) data.frame("Metabolite" = x))
+
+  combined_list <- Map(c, results, names_list)
+  combined_list <- lapply(combined_list, as.data.frame)
+
+  combined_data_frame <- do.call("rbind", combined_list)
+  combined_data_frame_merge <- merge(combined_data_frame, count_data_character, response_variable)
+  colnames(combined_data_frame_merge)[8] <- "padj"
+
+  #calculate fold change for terms
+  #for two way anova
+
+  #create an index for each unique combination of grouped factor comparisons
+  #observed in tukeys test, then use the index to split the transposed data frame
+  #into a dataframe for each unique group comparison
+  #then calculate means and fold changes for each unique group comparison
+  #make dataframe with variable and contrast columns
+  FC_groups <- combined_data_frame_merge[, c("term", "contrast")]
+  #remove residuals
+  FC_groups <- FC_groups[complete.cases(FC_groups),]
+  #take unique contrasts
+  FC_groups <- FC_groups[!duplicated(FC_groups$contrast),]
+  FC_groups$vars <- strsplit(FC_groups$term, ":")
+  #split into a list by contrast
+  FC_groups_l <- split(FC_groups, FC_groups$contrast)
+
+  #make appropriate metadata dataframes for each contrast
+  FC_groups_metadata <- lapply(FC_groups_l, function(x){
+
+    variables <- unlist(x$vars)
+
+    x2 <- data.frame(matrix(nrow = nrow(metadata)))
+
+    for (v in variables){
+
+      x2[,v] <- metadata[, names(metadata) %in% v,drop = F]
+
+    }
+
+    rownames(x2) <- metadata$Sample
+    x2 <- x2[,-1,drop = FALSE]
+
+    return(x2)
+
   })
-  names(results) <- Vect
-  results <- lapply(results, anova)
-  results <- sapply(results, cbind)
-  results <- t(results)
-  results <- as.data.frame(results[, "Pr(>F)"])
-  results <- as.data.frame(t(results))
-  results <- results[, 1:2]
-  colnames(results)[1] <- variable1
-  colnames(results)[1] <- paste(colnames(results)[1],
-                                "pval", sep = ".")
-  colnames(results)[2] <- variable2
-  colnames(results)[2] <- paste(colnames(results)[2],
-                                "pval", sep = ".")
-  results$padj = p.adjust(results[, 1], method = p_adjust)
-  colnames(results)[3] <- paste(colnames(results)[3],
-                                variable1, sep = ".")
-  results$padj = p.adjust(results[, 2], method = p_adjust)
-  colnames(results)[4] <- paste(colnames(results)[4],
-                                variable2, sep = ".")
-  results <- cbind(rownames(results), data.frame(results,
-                                                 row.names = NULL))
-  colnames(results)[1] <- response_variable
-  count_data <- cbind(rownames(count_data), data.frame(count_data,
-                                                       row.names = NULL))
-  colnames(count_data)[1] <- response_variable
-  results = left_join(results, count_data, by = "Metabolite")
-  return(results)
-}
-else if (interaction == TRUE & !is.null(var2)) {
-  var1 = metadata[, var1]
-  var2 = metadata[, var2]
-  results <- llply(Vect, function(x) {
-    models <- lm(data_mod[[x]] ~ var1 + var2 + var1 *
-                   var2, data = Mod)
+
+  #make grouped column by pasting all other columns in dataframe together
+  FC_groups_metadata<- lapply(FC_groups_metadata, function(x)
+
+  {x$Grouped <- do.call(paste, c(x[colnames(x)], sep=":")); return(x)})
+
+  #make a list of corresponding constrasts
+  contrasts_list <- data.frame(contrasts =names(FC_groups_metadata))
+  contrasts_list <- split(contrasts_list, f = contrasts_list$contrasts)
+
+  contrasts_list <- lapply(contrasts_list, function(x){
+
+    x[rep(seq_len(nrow(x)), each = nrow(metadata)),,drop = FALSE ]
+
+
   })
-  names(results) <- Vect
-  results <- lapply(results, anova)
-  results <- sapply(results, cbind)
-  results <- t(results)
-  results <- as.data.frame(results[, "Pr(>F)"])
-  colnames(results) <- Vect
-  results <- as.data.frame(t(results))
-  results <- results[, 1:3]
-  colnames(results)[1] <- variable1
-  colnames(results)[1] <- paste(colnames(results)[1],
-                                "pval", sep = ".")
-  colnames(results)[2] <- variable2
-  colnames(results)[2] <- paste(colnames(results)[2],
-                                "pval", sep = ".")
-  colnames(results)[3] <- "Interaction.pval"
-  results$padj = p.adjust(results[, 1], method = p_adjust)
-  colnames(results)[4] <- paste(colnames(results)[4],
-                                variable1, sep = ".")
-  results$padj = p.adjust(results[, 2], method = p_adjust)
-  colnames(results)[5] <- paste(colnames(results)[5],
-                                variable2, sep = ".")
-  results$padj = p.adjust(results[, 3], method = p_adjust)
-  colnames(results)[6] <- paste(colnames(results)[6],
-                                "Interaction", sep = ".")
-  results <- cbind(rownames(results), data.frame(results,
-                                                 row.names = NULL))
-  colnames(results)[1] <- response_variable
-  count_data <- cbind(rownames(count_data), data.frame(count_data,
-                                                           row.names = NULL))
-      colnames(count_data)[1] <- response_variable
-  results <- left_join(results, count_data, by = "Metabolite")
-  return(results)
-}
+  #add constrasts column to metadata
+  contrasts_metadata <- Map("cbind", FC_groups_metadata, contrasts_list)
+  contrasts_metadata <- lapply(contrasts_metadata, function(x)
+  {x$contrasts <- strsplit(x$contrasts, "-"); return(x)})
+  #subset metadata dataframes by contrast column
+  contrasts_metadata <- lapply(contrasts_metadata, function(x)
+
+    x <- x[which(x$Grouped %in% unlist(x$contrasts)),]
+  )
+  #merge metadata dataframes with dataTranspose via sample values
+  contrasts_metadata <- lapply(contrasts_metadata, function(x){x$Sample <- rownames(x); return(x)})
+  #remove ticks from dataTranspose column names and convert rownames into a column
+  colnames(data_Transpose) <- gsub(pattern = "`", replacement = "", x = colnames(data_Transpose))
+  data_Transpose$Sample <- rownames(data_Transpose)
+
+  contrasts_metadata <- lapply(contrasts_metadata, function(x){
+
+    x <- merge(x, data_Transpose, "Sample")
+
+  })
+  #reorder grouped factor levels based on contrasts
+  contrasts_metadata <- lapply(contrasts_metadata, function(x){
+
+    x$Grouped <- as.factor(x$Grouped)
+    levels(x$Grouped) <-  x$contrasts[[1]]
+
+    return(x)
+  })
+
+  #calculate group means for each dataframe
+  calc_means <- function(x) {
+
+    cols_to_keep_num <- sapply(x, is.numeric)
+
+    cols_to_keep_char <- names(x) %in% c("Grouped", "contrasts")
+
+    x <- x[,cols_to_keep_num | cols_to_keep_char]
+
+    x2 <- aggregate(x = x[,!names(x) %in% c("Grouped", "contrasts")],
+                    list(x$Grouped), mean)
+
+    return(x2)
+  }
+
+  metabo_list_means <- lapply(contrasts_metadata, calc_means)
+  #calculate fold changes
+  calc_FC <- function(x) {
+
+    rownames(x) <- x$Group.1
+
+    x <- x[,-1]
+
+    x[paste0(rownames(x[1,]), "-",rownames(x[2,])),] <- x[1,]/x[2,]
+
+    x["log2FoldChange",] <- log2(x[3,])
+
+    return(x)
+
+  }
+
+  metabo_list_means <- lapply(metabo_list_means, calc_FC)
+  metabo_list_means_t <- lapply(metabo_list_means, function(x) as.data.frame(t(x)))
+  metabo_list_means_t <- lapply(metabo_list_means_t, function(x){x$Metabolite <- rownames(x) ; return(x)})
+  #split combined_data_frame_merge into a list by contrasts, then merge those data frames
+  #with metabo list means by metabolite
+  residuals_df <- combined_data_frame_merge[combined_data_frame_merge$term=="Residuals", c("Metabolite","df","sumsq","meansq","KEGG")]
+  combined_data_frame_merge <- combined_data_frame_merge[!combined_data_frame_merge$term=="Residuals",]
+
+  combined_data_list <- split(combined_data_frame_merge, f = as.factor(combined_data_frame_merge$contrast))
+  data_final <- Map(merge, combined_data_list, metabo_list_means_t, by='Metabolite', all=TRUE)
+
+  #add residuals dataframe to the list, its done!
+  data_final$Residuals <- residuals_df
+
+  return(data_final)
+
 }
