@@ -100,16 +100,6 @@ An alternative option to ```omu_summary``` is the ```omu_anova```, which can be 
 DF_anova <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", model = ~ Treatment")
 ```
 
-This should produce a list containing the following dataframe for Strep vs Mock treated mice:
-
-
-```{r echo=FALSE,message=FALSE, warning=FALSE}
-model <- ~ Treatment
-DF_anova <- omu_anova(count_data = omu::c57_nos2KO_mouse_countDF, metadata = omu::c57_nos2KO_mouse_metadata, response_variable = "Metabolite", model = model)
-DF_anova_trunc = DF_anova[[1]][,c(1:8)]
-kable(DF_anova_trunc[1:3,])
-```
-
 The output is similar to omu_summary so as to be compatible with graphing functions.
 
 An alternative to doing an anova model with an interaction statement is to paste factor groups together using base R to make a new metadata column to be able to model the effect of treatment within mouse genetic backgrounds. For example,  base R can be used to make a new "Grouped" Factor, with 4 levels; WTMock, WTStrep, Nos2Mock, and Nos2Strep.
