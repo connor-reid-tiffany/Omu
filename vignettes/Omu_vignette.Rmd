@@ -104,8 +104,8 @@ This should produce a list containing the following dataframe for Strep vs Mock 
 
 
 ```{r echo=FALSE,message=FALSE, warning=FALSE}
-DF_anova <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata, response_variable = "Metabolite", model = ~ Treatment)
-DF_anova_trunc = DF_anova[[1]][,c(1:7)]
+DF_anova <- omu_anova(count_data = omu::c57_nos2KO_mouse_countDF, metadata = omu::c57_nos2KO_mouse_metadata, response_variable = "Metabolite", model = ~ Treatment)
+DF_anova_trunc = DF_anova[[1]][,c(1:8)]
 kable(DF_anova_trunc[1:3,])
 ```
 
