@@ -32,7 +32,8 @@ contrast in your model and calculates group means and fold changes for each cont
 data frames for each contrast, and includes a dataframe of model residuals
 }
 \examples{
-\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,]; c57_nos2KO_mouse_metadata <- c57_nos2KO_mouse_metadata}
+\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,];
+c57_nos2KO_mouse_metadata <- c57_nos2KO_mouse_metadata;}
 anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
 response_variable = "Metabolite", model = ~ Treatment, log_transform = TRUE)
 
