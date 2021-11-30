@@ -56,13 +56,13 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
   } else if (identifier == "KO"){
 
     count_data$KO_Class <- Orthology_Hierarchy_Table$KO_Class[match(count_data$KO,
-                                                                    Orthology_Hierarchy_Table$KO)]
+                                                                    Orthology_Hierarchy_Table$KO_Number)]
     count_data$KO_Subclass_1 <- Orthology_Hierarchy_Table$KO_Subclass_1[match(count_data$KO,
-                                                                              Orthology_Hierarchy_Table$KO)]
+                                                                              Orthology_Hierarchy_Table$KO_Number)]
     count_data$KO_Subclass_2 <- Orthology_Hierarchy_Table$KO_Subclass_2[match(count_data$KO,
-                                                                              Orthology_Hierarchy_Table$KO)]
+                                                                              Orthology_Hierarchy_Table$KO_Number)]
     count_data$KO_Subclass_3_Enzyme <- Orthology_Hierarchy_Table$KO_Subclass_3_Enzyme[match(count_data$KO,
-                                                                                            Orthology_Hierarchy_Table$KO)]
+                                                                                            Orthology_Hierarchy_Table$KO_Number)]
 
     return(count_data)
   } else if (identifier == "Prokaryote"){
