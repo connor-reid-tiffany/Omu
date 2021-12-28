@@ -270,8 +270,8 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
   #reorder grouped factor levels based on contrasts
   contrasts_metadata <- lapply(contrasts_metadata, function(x){
 
+    x$Grouped <- factor(x$Grouped, levels = unlist(x$contrasts[1]))
     x$Grouped <- as.factor(x$Grouped)
-    levels(x$Grouped) <-  x$contrasts[[1]]
 
     return(x)
   })

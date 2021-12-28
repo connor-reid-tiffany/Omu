@@ -20,6 +20,12 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
   identifier = match.arg(arg = identifier, choices = c("KEGG", "KO", "Prokaryote", "Eukaryote"))
 
   if (identifier == "KEGG"){
+
+    if (any(names(test_df) %in% "KEGG"!=FALSE)){
+
+      stop("dataframe is missing KEGG compound number column")
+
+    }
     if (keep_unknowns ==FALSE){
 
       count_data <- count_data[complete.cases(count_data$KEGG),]
@@ -55,6 +61,12 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
     }
   } else if (identifier == "KO"){
 
+    if (any(names(test_df) %in% "KO"!=FALSE)){
+
+      stop("dataframe is missing KO number column")
+
+    }
+
     count_data$KO_Class <- Orthology_Hierarchy_Table$KO_Class[match(count_data$KO,
                                                                     Orthology_Hierarchy_Table$KO_Number)]
     count_data$KO_Subclass_1 <- Orthology_Hierarchy_Table$KO_Subclass_1[match(count_data$KO,
@@ -66,6 +78,12 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
 
     return(count_data)
   } else if (identifier == "Prokaryote"){
+
+    if (any(names(test_df) %in% "Org"!=FALSE)){
+
+      stop("dataframe is missing Org column")
+
+    }
 
     count_data$Kingdom <- Prokaryote_Hierarchy_Table$Kingdom[match(count_data$Org,
                                                                Prokaryote_Hierarchy_Table$Org)]
@@ -79,6 +97,12 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
 
     return(count_data)
   } else if (identifier == "Eukaryote"){
+
+    if (any(names(test_df) %in% "Org"!=FALSE)){
+
+      stop("dataframe is missing Org column")
+
+    }
 
     count_data$Kingdom <- Eukaryote_Hierarchy_Table$Kingdom[match(count_data$Org,
                                                                     Eukaryote_Hierarchy_Table$Org)]
