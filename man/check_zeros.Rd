@@ -21,6 +21,10 @@ check_zeros(
 
 \item{metadata}{Metadata dataframe for the metabolomics count data frame}
 
+\item{numerator}{String of the first independent variable you wish to test. Defualt is NULL}
+
+\item{denominator}{String of the second independent variable you wish to test. Default is NULL.}
+
 \item{threshold}{Integer. A percentage threshold for the number of zeros in a Metabolite. Default is 25.
 an interaction between independent variables. Optional parameter}
 
@@ -28,10 +32,6 @@ an interaction between independent variables. Optional parameter}
 usually "Metabolite"}
 
 \item{Factor}{A factor with levels to test for zeros.}
-
-\item{Numerator}{String of the first independent variable you wish to test. Defualt is NULL}
-
-\item{Denominator}{String of the second independent variable you wish to test. Default is NULL.}
 }
 \description{
 Check data for zeros across samples within factor levels.

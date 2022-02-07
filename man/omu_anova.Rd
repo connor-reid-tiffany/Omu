@@ -41,6 +41,7 @@ anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2
 response_variable = "Metabolite", model = ~ Treatment + Background, log_transform = TRUE)
 
 anova_df <- omu_anova(count_data = c57_nos2KO_mouse_countDF, metadata = c57_nos2KO_mouse_metadata,
-response_variable = "Metabolite", model = ~ Treatment + Background + Treatment*Background, log_transform = TRUE)
+response_variable = "Metabolite", model = ~ Treatment + Background + Treatment*Background,
+log_transform = TRUE)
 
 }
