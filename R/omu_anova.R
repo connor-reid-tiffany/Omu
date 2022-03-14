@@ -40,7 +40,7 @@
 #'@export
 
 
-omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = TRUE,method)
+omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = TRUE,method="anova")
 {
 
   #extract variables from model object

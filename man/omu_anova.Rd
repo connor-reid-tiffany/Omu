@@ -9,7 +9,8 @@ omu_anova(
   metadata,
   response_variable = "Metabolite",
   model,
-  log_transform = TRUE
+  log_transform = TRUE,
+  method
 )
 }
 \arguments{
@@ -25,6 +26,10 @@ an interaction between independent variables. Optional parameter}
 
 \item{log_transform}{Boolean of TRUE or FALSE for whether or not you wish to log transform
 your metabolite counts}
+
+\item{method}{A string of 'anova', 'kruskal', or 'welch'. anova performs an anova with a post hoc
+tukeys test, kruskal performs a kruskal wallis with a post hoc dunn test, welch performs a
+welch's anova with a post hoc games howell test}
 }
 \description{
 Performs an anova across all response variables, followed by a Tukeys test on every possible
