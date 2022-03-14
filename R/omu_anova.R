@@ -10,6 +10,9 @@
 #'an interaction between independent variables. Optional parameter
 #'@param log_transform Boolean of TRUE or FALSE for whether or not you wish to log transform
 #'your metabolite counts
+#'@param method A string of 'anova', 'kruskal', or 'welch'. anova performs an anova with a post hoc
+#' tukeys test, kruskal performs a kruskal wallis with a post hoc dunn test, welch performs a
+#' welch's anova with a post hoc games howell test
 #'@importFrom plyr llply
 #'@importFrom broom tidy
 #'@importFrom stats p.adjust
@@ -19,6 +22,8 @@
 #'@importFrom stats aggregate
 #'@importFrom stats as.formula
 #'@importFrom stats terms
+#'@importFrom FSA dunnTest
+#'@importFrom rstatix games_howell_test
 #'@examples
 #'\dontshow{c57_nos2KO_mouse_countDF <- c57_nos2KO_mouse_countDF[1:12,];
 #'c57_nos2KO_mouse_metadata <- c57_nos2KO_mouse_metadata;}
@@ -35,7 +40,7 @@
 #'@export
 
 
-omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = TRUE)
+omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = TRUE,method)
 {
 
   #extract variables from model object
@@ -98,12 +103,12 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
 
   if (any(length(check_zeros_anova(count_data = count_data, metadata = metadata, variable_vector = variable_vector))) < 1) {
 
-      warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
+    warning("There are zero values in at least 25 percent of your samples within at least one of your Factor
             levels for these metabolites. Consider using check_zeros to subset your data.")
 
-      print(unique(check_zeros_anova()[,1]))
+    print(unique(check_zeros_anova()[,1]))
 
-    }
+  }
 
   #add backtick quotes to metabolites so that non-syntatic names can be converted into model formulae later
   count_data$Metabolite <- paste0("`", count_data$Metabolite)
@@ -138,12 +143,30 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
 
   }
 
+  if(method=="kruskal"& length(model_factors) > 1){
+
+    stop("Method kruskal can only take a model with one term.")
+
+  }
+
+  if(method=="welch"& length(model_factors) > 1){
+
+    stop("Method welch can only take a model with one term.")
+
+  }
+
+  if(method=="kruskal"&length(levels(as.factor(model_factors[[1]]))) < 3){
+
+    stop("Method kruskal needs at least 3 levels in the model term.")
+
+  }
+
   Vect_list <- as.list(Vect)
 
   #create list of models
   model_list <- lapply(Vect_list, function(x) {
 
-     new_formula <- paste(paste(x, "~"), model)
+    new_formula <- paste(paste(x, "~"), model)
 
     return(new_formula[2])
 
@@ -156,34 +179,70 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
   Vect <- gsub(pattern = "`", replacement = "", x = Vect)
   count_data_character$Metabolite <- gsub(pattern = "`", replacement = "", x = count_data_character$Metabolite)
 
-  #run the anova
   #add metadata variables
   data_mod <- cbind(data_mod, metadata)
   #run anova
-  results_aov <- llply(model_list, function(x) { aov(x, data_mod)})
+  if(method=="anova"){
 
+    results_aov <- llply(model_list, function(x) { aov(x, data_mod)})
+
+  }else if(method=="kruskal"){
+
+    results_aov <- llply(model_list, function(x) { dunnTest(x,  data_mod)})
+
+  }else if(method=="welch"){
+
+    results_aov <- llply(model_list, function(x){games_howell_test(formula = x,data = data_mod)})
+
+    }
   #combine information from anova model with info from tukeys post hoc test
   names(results_aov) <- Vect
+
+  if(method=="anova"){
+
   results_tukey <- lapply(results_aov, TukeyHSD)
   results_aov <- lapply(results_aov, tidy)
   results_tukey <- lapply(results_tukey, tidy)
+  results_tukey <- lapply(results_tukey, function(x){colnames(x)[length(x)] <- "padj"; return(x)})
+
+  }else if(method=="kruskal"){
+
+  #reduce to results dfs
+  results <- lapply(results_aov, function(x) x$res)
+  names(results) <- Vect
+  results <- lapply(results, function(x){colnames(x)[1]<- "contrast"; return(x)})
+  results <- lapply(results, function(x){colnames(x)[4]<- "padj";return(x)})
+  results <- lapply(results, function(x){x$contrast <- gsub(pattern = " ", replacement = "", x = x$contrast); return(x)})
+  results <- lapply(results, function(x){x$term <- names(model_factors)[1];return(x)})
+
+  }else if(method=="welch"){
+
+    results <- results_aov
+    results <- lapply(results_aov, function(x){colnames(x)[7] <- "padj"; return(x)})
+    results <- lapply(results_aov, function(x){x$contrast <- paste0(x$group1,"-",x$group2); return(x)})
+    results <- lapply(results, function(x){x$term <- names(model_factors)[1];return(x)})
+
+  }
+
 
   add_residuals_placeholder <- function(x){
 
     resid_empty_df <- data.frame(term = "Residuals", contrast = NA, null.value = NA,
-                                 estimate = NA, conf.low = NA, conf.high = NA, adj.p.value = NA)
+                                 estimate = NA, conf.low = NA, conf.high = NA, padj = NA)
     x <- rbind(x, resid_empty_df)
 
     return(x)
 
   }
 
+  if(method=="anova"){
   #change this part to add a residuals column by matching via metabolite
   results_tukey <- lapply(results_tukey, add_residuals_placeholder)
 
+  #anova specific code
   results <- Map(merge, results_tukey, results_aov, by = "term")
   results <- lapply(results, as.data.frame)
-
+  }
   #add metabolite column and then rbind all response variable dataframes into one tidy dataframe
   names_list <- as.list(names(results))
   names_list <- lapply(names_list, function(x) data.frame("Metabolite" = x))
@@ -193,7 +252,7 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
 
   combined_data_frame <- do.call("rbind", combined_list)
   combined_data_frame_merge <- merge(combined_data_frame, count_data_character, response_variable)
-  colnames(combined_data_frame_merge)[8] <- "padj"
+  #colnames(combined_data_frame_merge)[8] <- "padj"
 
   #calculate fold change for terms
   #for two way anova
@@ -312,14 +371,22 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
   metabo_list_means_t <- lapply(metabo_list_means_t, function(x){x$Metabolite <- rownames(x) ; return(x)})
   #split combined_data_frame_merge into a list by contrasts, then merge those data frames
   #with metabo list means by metabolite
+  if(method=="anova"){
+
   residuals_df <- combined_data_frame_merge[combined_data_frame_merge$term=="Residuals", c("Metabolite","df","sumsq","meansq","KEGG")]
   combined_data_frame_merge <- combined_data_frame_merge[!combined_data_frame_merge$term=="Residuals",]
+
+  }
 
   combined_data_list <- split(combined_data_frame_merge, f = as.factor(combined_data_frame_merge$contrast))
   data_final <- Map(merge, combined_data_list, metabo_list_means_t, by='Metabolite', all=TRUE)
 
   #add residuals dataframe to the list, its done!
+  if(method=="anova"){
+
   data_final$Residuals <- residuals_df
+
+  }
 
   return(data_final)
 
