@@ -10,7 +10,7 @@ omu_anova(
   response_variable = "Metabolite",
   model,
   log_transform = TRUE,
-  method
+  method = "anova"
 )
 }
 \arguments{
