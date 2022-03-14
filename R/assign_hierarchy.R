@@ -21,7 +21,7 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
 
   if (identifier == "KEGG"){
 
-    if (any(names(count_data) %in% "KEGG"!=FALSE)){
+    if (any(names(count_data) %in% "KEGG"!=FALSE)==FALSE){
 
       stop("dataframe is missing KEGG compound number column")
 
@@ -61,7 +61,7 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
     }
   } else if (identifier == "KO"){
 
-    if (any(names(count_data) %in% "KO"!=FALSE)){
+    if (any(names(count_data) %in% "KO"!=FALSE)==FALSE){
 
       stop("dataframe is missing KO number column")
 
@@ -79,7 +79,7 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
     return(count_data)
   } else if (identifier == "Prokaryote"){
 
-    if (any(names(count_data) %in% "Org"!=FALSE)){
+    if (any(names(count_data) %in% "Org"!=FALSE)==FALSE){
 
       stop("dataframe is missing Org column")
 
@@ -98,7 +98,7 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
     return(count_data)
   } else if (identifier == "Eukaryote"){
 
-    if (any(names(count_data) %in% "Org"!=FALSE)){
+    if (any(names(count_data) %in% "Org"!=FALSE)==FALSE){
 
       stop("dataframe is missing Org column")
 
