@@ -218,8 +218,8 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
   }else if(method=="welch"){
 
     results <- results_aov
-    results <- lapply(results_aov, function(x){colnames(x)[7] <- "padj"; return(x)})
-    results <- lapply(results_aov, function(x){x$contrast <- paste0(x$group1,"-",x$group2); return(x)})
+    results <- lapply(results, function(x){colnames(x)[7] <- "padj"; return(x)})
+    results <- lapply(results, function(x){x$contrast <- paste0(x$group1,"-",x$group2); return(x)})
     results <- lapply(results, function(x){x$term <- names(model_factors)[1];return(x)})
 
   }
