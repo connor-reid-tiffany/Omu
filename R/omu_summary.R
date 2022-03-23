@@ -195,7 +195,7 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
     }
   }
   else if (test_type == "mwu") {
-    Run_Tests <- function(data_Log, Vect, model) {
+    Run_Tests <- function(data_mod, Vect, model) {
       results <- ldply(Vect, function(Metabolite) {
         t_val = wilcox.test(data_mod[[Metabolite]] ~
                               model)$statistic
@@ -207,7 +207,7 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
     }
   }
   else if (test_type == "welch") {
-    Run_Tests <- function(data_Log, Vect, model) {
+    Run_Tests <- function(data_mod, Vect, model) {
       results <- ldply(Vect, function(Metabolite) {
         t_val = t.test(data_mod[[Metabolite]] ~ model,
                        var.equal = FALSE)$statistic
@@ -219,7 +219,7 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
     }
   }
 
-  results <- Run_Tests(data_Log = data_Log, Vect = Vect, model = model)
+  results <- Run_Tests(data_mod = data_mod, Vect = Vect, model = model)
 
   }
   #Compute raw count means

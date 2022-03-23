@@ -11,11 +11,12 @@ omu_summary(
   metadata,
   numerator,
   denominator,
-  response_variable,
+  response_variable = "Metabolite",
   Factor,
-  log_transform,
-  p_adjust,
-  test_type
+  log_transform = FALSE,
+  p_adjust = "BH",
+  test_type = "welch",
+  paired = FALSE
 )
 }
 \arguments{
@@ -36,7 +37,10 @@ before the t test}
 
 \item{p_adjust}{Method for adjusting the p value, i.e. "BH"}
 
-\item{test_type}{One of "mwu", "students", or "welch" to determine which means comparison model to use}
+\item{test_type}{One of "mwu", "students", or "welch" to determine which model to use}
+
+\item{paired}{A boolean of TRUE or FALSE. If TRUE, performs a paired sample test. To perform a paired sample test,
+metadata must have a column named 'ID' containing the subject IDs.}
 }
 \description{
 omu_summary
