@@ -9,7 +9,7 @@
 #' test the models accuracy
 #' @param n_tree number of decision trees to create
 #' @importFrom randomForest randomForest
-#' @importFrom caret predict
+#' @importFrom stats predict
 #' @importFrom caret confusionMatrix
 #' @examples
 #' rf_list <- random_forest(c57_nos2KO_mouse_countDF,c57_nos2KO_mouse_metadata, Treatment ~.,c(60,40),500,TRUE)
