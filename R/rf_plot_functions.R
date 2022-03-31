@@ -1,6 +1,6 @@
 #' plot_variable_importance
 #' @description Plot the variable importance from a random forest model. Mean Decrease Gini for Classification and
-#' %incMSE for regression
+#' %IncMSE for regression
 #' @param rf_list The output from the random_forest function
 #' @param color Metabolite metadata to color by
 #' @param n_metabolites The number of metabolites to include. Metabolites are sorted by decreasing importance.
@@ -24,8 +24,8 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
   Metabolite <- NULL
   MeanDecreaseGini <- NULL
   MeanDecreaseAccuracy <- NULL
-  `%incMSE` <- NULL
-  
+  `%IncMSE` <- NULL
+
   #sort the importance data frame based off the appropriate variable
   importance <- as.data.frame(rf_list$rf$importance)
   if(rf_list$rf$type=="classification"){
@@ -56,13 +56,13 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
 
   }else if(rf_list$rf$type=="regression"){
 
-    ggplot(data = importance, aes(x = reorder(Metabolite, `%IncMSE`), y = `%incMSE`, color = importance[,color])) +
-      geom_segment( aes(xend=Metabolite, y=0, yend=`%incMSE`), size = 1) +
+    ggplot(data = importance, aes(x = reorder(Metabolite, `%IncMSE`), y = `%IncMSE`, color = importance[,color])) +
+      geom_segment( aes(xend=Metabolite, y=0, yend=`%IncMSE`), size = 1) +
       coord_flip() +
       geom_point(aes(size = MeanDecreaseAccuracy), alpha=0.6) +
       theme(axis.title.y = element_blank(), axis.text = element_text(size = 14), axis.title.x = element_text(size = 16), legend.text = element_text(size = 14),
             legend.title = element_text(size = 16))  +
-      labs(y="%incMSE",
+      labs(y="%IncMSE",
            col=color, size="IncNodePurity")
 
   }

@@ -19,8 +19,6 @@
 #' @export
 
 random_forest <- function(count_data, metadata, model, training_proportion = c(80,20), n_tree = 500){
-  #address silly CRAN note
-  rf_fit <- NULL
   #set RNG so model output is reproducible
   set.seed(123)
   #parse data to handle non syntatic metabolite names so they don't throw an error in the model
@@ -53,7 +51,7 @@ random_forest <- function(count_data, metadata, model, training_proportion = c(8
 
   test_conf_mat <- confusionMatrix(pred_test, test[,length(test)])
 
-  pred_train <- predict(rf_fit, train)
+  pred_train <- predict(rfFit, train)
 
   train_conf_mat <- confusionMatrix(pred_train, train[,length(train)])
 

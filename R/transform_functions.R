@@ -18,7 +18,8 @@ transform_samples <- function(count_data, func){
 #' @param count_data Metabolomics data
 #' @param func a function to transform metabolites by. can be an anonymous function
 #' @examples
-#' data_pareto_scaled <- transform_samples(count_data = c57_nos2KO_mouse_countDF, function(x) x/sqrt(sd(x)))
+#' data_pareto_scaled <- transform_samples(count_data = c57_nos2KO_mouse_countDF,
+#' function(x) x/sqrt(sd(x)))
 #' @export
 transform_metabolites <- function(count_data,func){
   #set metabolite to rownames
