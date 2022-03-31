@@ -8,8 +8,8 @@
 
 transform_samples <- function(count_data, func){
 
-  metabo[,sapply(metabo, is.numeric)] <- apply(metabo[,sapply(metabo, is.numeric)], 2, func)
-  return(metabo)
+  count_data[,sapply(count_data, is.numeric)] <- apply(count_data[,sapply(count_data, is.numeric)], 2, func)
+  return(count_data)
 
 }
 
@@ -23,12 +23,12 @@ transform_samples <- function(count_data, func){
 #' @export
 transform_metabolites <- function(count_data,func){
   #set metabolite to rownames
-  rownames(metabo) <- metabo$Metabolite
+  rownames(count_data) <- count_data$Metabolite
   #store non-numeric data in dataframe to remerge later
-  char_data_cols <- sapply(metabo, function(x) !is.numeric(x))
-  char_data <- metabo[,char_data_cols]
+  char_data_cols <- sapply(count_data, function(x) !is.numeric(x))
+  char_data <- count_data[,char_data_cols]
   #remove character data and transpose
-  metabo_num <- metabo[,which(char_data_cols==FALSE)]
+  metabo_num <- count_data[,which(char_data_cols==FALSE)]
   metabo_num <- t(metabo_num)
   metabo_num <- apply(metabo_num, 2, func)
   #transpose, rejoin with character data by metabolite values
