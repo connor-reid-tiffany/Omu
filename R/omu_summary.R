@@ -136,7 +136,7 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
 
     if(test_type == "students"){
 
-    Run_Tests <- function(data_mod_list) {
+    Run_Tests_paired <- function(data_mod_list) {
       results <- ldply(data_mod_list, function(x) {
         t_val = t.test(Pair(x[,2], x[,3]) ~ 1, var.equal = TRUE)$statistic
         p_val = t.test(Pair(x[,2], x[,3]) ~ 1, var.equal = TRUE)$p.value
@@ -148,7 +148,7 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
     }else if(test_type == "welch"){
 
 
-      Run_Tests <- function(data_mod_list) {
+      Run_Tests_paired <- function(data_mod_list) {
         results <- ldply(data_mod_list, function(x) {
           t_val = t.test(Pair(x[,2], x[,3]) ~ 1, var.equal = FALSE)$statistic
           p_val = t.test(Pair(x[,2], x[,3]) ~ 1, var.equal = FALSE)$p.value
@@ -162,7 +162,7 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
     }else if(test_type=="mwu"){
 
 
-      Run_Tests <- function(data_mod_list) {
+      Run_Tests_paired <- function(data_mod_list) {
         results <- ldply(data_mod_list, function(x) {
           t_val = wilcox.test(Pair(x[,2], x[,3]) ~ 1)$statistic
           p_val = wilcox.test(Pair(x[,2], x[,3]) ~ 1)$p.value
@@ -175,7 +175,7 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
     }
 
 
-    results <- Run_Tests(data_mod_list)
+    results <- Run_Tests_paired(data_mod_list)
 
     colnames(results)[1] <- "Metabolite"
 

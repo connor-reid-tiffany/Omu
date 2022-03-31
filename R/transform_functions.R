@@ -1,5 +1,5 @@
 #' transform_samples
-#' A functional to transform metabolomics data by samples
+#' @description A functional to transform metabolomics data by samples
 #' @param count_data Metabolomics data
 #' @param func a function to transform samples by. can be an anonymous function
 #' @examples
@@ -14,7 +14,7 @@ transform_samples <- function(count_data, func){
 }
 
 #' transform_metabolites
-#' A functional to transform metabolomics data by metabolites
+#' @description A functional to transform metabolomics data by metabolites
 #' @param count_data Metabolomics data
 #' @param func a function to transform metabolites by. can be an anonymous function
 #' @examples

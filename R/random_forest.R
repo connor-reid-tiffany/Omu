@@ -1,6 +1,8 @@
 #' random_forest
 #' Perform a classification or regression random forest model
-#' @description a wrapper built around the randomForest function from package randomForest
+#' @description a wrapper built around the randomForest function from package randomForest.
+#' Returns a list with a randomForest object list, training data set, testing data set,
+#' and prediction matrices for training and testing data (if type was classification).
 #' @param count_data Metabolomics data
 #' @param metadata sample data
 #' @param model a model of format variable ~.
@@ -12,10 +14,13 @@
 #' @importFrom stats predict
 #' @importFrom caret confusionMatrix
 #' @examples
-#' rf_list <- random_forest(c57_nos2KO_mouse_countDF,c57_nos2KO_mouse_metadata, Treatment ~.,c(60,40),500,TRUE)
+#' rf_list <- random_forest(count_data = c57_nos2KO_mouse_countDF,metadata = c57_nos2KO_mouse_metadata,
+#' model = Treatment ~.,training_proportion = c(60,40),n_tree = 500)
 #' @export
 
 random_forest <- function(count_data, metadata, model, training_proportion = c(80,20), n_tree = 500){
+  #address silly CRAN note
+  rf_fit <- NULL
   #set RNG so model output is reproducible
   set.seed(123)
   #parse data to handle non syntatic metabolite names so they don't throw an error in the model

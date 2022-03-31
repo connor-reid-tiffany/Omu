@@ -1,5 +1,5 @@
 #' plot_variable_importance
-#' Plot the variable importance from a random forest model. Mean Decrease Gini for Classification and
+#' @description Plot the variable importance from a random forest model. Mean Decrease Gini for Classification and
 #' %incMSE for regression
 #' @param rf_list The output from the random_forest function
 #' @param color Metabolite metadata to color by
@@ -14,11 +14,18 @@
 #' @importFrom ggplot2 element_text
 #' @importFrom ggplot2 labs
 #' @examples
-#' rf_list <- random_forest(c57_nos2KO_mouse_countDF,c57_nos2KO_mouse_metadata, Treatment ~.,c(60,40),500,TRUE)
+#' rf_list <- random_forest(c57_nos2KO_mouse_countDF,c57_nos2KO_mouse_metadata,
+#' Treatment ~.,c(60,40),500)
 #' plot_variable_importance(rf_list = rf_list, color = "Class", n_metabolites = 10)
 #' @export
 
 plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
+  #address silly CRAN note
+  Metabolite <- NULL
+  MeanDecreaseGini <- NULL
+  MeanDecreaseAccuracy <- NULL
+  `%incMSE` <- NULL
+  
   #sort the importance data frame based off the appropriate variable
   importance <- as.data.frame(rf_list$rf$importance)
   if(rf_list$rf$type=="classification"){
@@ -62,7 +69,7 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
 }
 
 #' plot_rf_PCA
-#' PCA plot of the proximity matrix from a random forest classification model
+#' @description PCA plot of the proximity matrix from a random forest classification model
 #' @param rf_list The output from the random_forest function. This only works on classification models.
 #' @param color A grouping factor. Use the one that was the LHS of your model parameter in the random_forest funciton
 #' @param size The number for point size in the plot
@@ -72,7 +79,8 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
 #' @importFrom ggplot2 element_text
 #' @importFrom stats prcomp
 #' @examples
-#' rf_list <- random_forest(c57_nos2KO_mouse_countDF,c57_nos2KO_mouse_metadata, Treatment ~.,c(60,40),500,TRUE)
+#' rf_list <- random_forest(c57_nos2KO_mouse_countDF,c57_nos2KO_mouse_metadata,
+#' Treatment ~.,c(60,40),500)
 #' plot_rf_PCA(rf_list = rf_list, color = "Treatment", size = 1.5)
 #' @export
 
