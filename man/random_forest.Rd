@@ -29,7 +29,8 @@ test the models accuracy}
 \description{
 a wrapper built around the randomForest function from package randomForest.
 Returns a list with a randomForest object list, training data set, testing data set,
-and prediction matrices for training and testing data (if type was classification).
+metabolite metadata, and prediction matrices for training and testing data
+(if type was classification).
 }
 \examples{
 rf_list <- random_forest(count_data = c57_nos2KO_mouse_countDF,metadata = c57_nos2KO_mouse_metadata,
