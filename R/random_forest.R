@@ -2,7 +2,8 @@
 #' Perform a classification or regression random forest model
 #' @description a wrapper built around the randomForest function from package randomForest.
 #' Returns a list with a randomForest object list, training data set, testing data set,
-#' and prediction matrices for training and testing data (if type was classification).
+#' metabolite metadata, and prediction matrices for training and testing data
+#' (if type was classification).
 #' @param count_data Metabolomics data
 #' @param metadata sample data
 #' @param model a model of format variable ~.

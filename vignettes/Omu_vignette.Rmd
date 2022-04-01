@@ -76,11 +76,40 @@ c57_nos2KO_mouse_countDF = c57_nos2KO_mouse_countDF[,1:2]
 DF <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF, keep_unknowns = TRUE, identifier = "KEGG")
 kable(DF[1:4,])
 ```
+### Machine Learning
 
+#### PCA Plots
+
+Omu supports multivariate statistical analysis and visualization in the form of principle component analysis. To do this one only needs to have their metabolomics count data and meta data in the proper format. It is recommended to deal with overdispersion of data prior to using `PCA_plot`, by transformation via natural log, sqrt, etc.
+
+A PCA plot can be made showing the relationship between Treatment groups in the package dataset:
+
+```
+c57_nos2KO_mouse_countDF_log <- c57_nos2KO_mouse_countDF
+c57_nos2KO_mouse_countDF_log <- log(c57_nos2KO_mouse_countDF_log[,3:31])
+c57_nos2KO_mouse_countDF_log <- cbind(c57_nos2KO_mouse_countDF[,1:2], c57_nos2KO_mouse_countDF_log)
+PCA <- PCA_plot(count_data = c57_nos2KO_mouse_countDF_log, metadata = c57_nos2KO_mouse_metadata, variable = "Treatment", color = "Treatment", response_variable = "Metabolite")+ theme_bw() + theme(panel.grid = element_blank())
+```
+
+This should make the following figure:
+
+```{r echo=FALSE, warning=FALSE}
+library(ggfortify)
+load("../data/c57_nos2KO_mouse_countDF.rda")
+c57_nos2KO_mouse_countDF_log <- c57_nos2KO_mouse_countDF
+c57_nos2KO_mouse_countDF_log <- log(c57_nos2KO_mouse_countDF_log[,3:31])
+c57_nos2KO_mouse_countDF_log <- cbind(c57_nos2KO_mouse_countDF[,1:2], c57_nos2KO_mouse_countDF_log)
+PCA <- PCA_plot(count_data = c57_nos2KO_mouse_countDF_log, metadata = c57_nos2KO_mouse_metadata, variable = "Grouped", color = "Grouped", response_variable = "Metabolite") + theme_bw() + theme(panel.grid = element_blank())
+plot(PCA)
+```
+
+#### Random Forest
+
+Omu has a function, ```random_forest```, which is a wrapper built around the function ```randomForest``` from the R package randomForest. The function returns a list which has the following components: rf list from randomForest, training data, testing data, metabolite metadata, and if a classificaton confusion matrices for the training data and testing data. Variable importance plots and PCA plots of the proximity matrix can be performed using ```plot_variable_importance``` and ```plot_rf_PCA``` respectively, which will produce ggplot2 objects. plot_rf_PCA is only compatible with classification models. If you wish to tune hyperparameters you will need to take the code and edit the function to do so, and would only involve editing the line where randomForest is called. Otherwise keep in mind that outside of the number of decision trees to make, this funciton is running on default model parameters which may not be sufficient for your data depending on your sample sizes and ratio of observations to variables.
 
 ### Modeling with Univariate Statistics
 
-Omu supports two univariate statistical models, t test and anova, using the functions ```omu_summary``` and ```anova_function``` respectively. Both functions will output p values and adjusted p values, while ```omu_summary``` will also output group means, standard error, standard deviation, fold change, and log2foldchange. Both of these models are useful for observing relationships between independent variables in an experiment. The dataframe created using the assign_hierarchy function can be used in the ```count_data``` argument of ```omu_summary``` to run statistics on it. The output of ```omu_summary``` will be needed in order to use the plotting functions in Omu. The metadata that comes with the package, ```c57_nos2KO_mouse_metadata```, must be used for the ```metadata``` argument. A comparison between the "Strep" group within the "Treatment" factor against the "Mock" group can be done to observe if antibiotic treatment of the mice had an effect on the metabolome. The ```response_variable``` is the Metabolite column of the data frame. The data can be log transformed using ```log_transform = TRUE```, and a p value adjustment method of Benjamini & Hochberg with the argument ```p_adjust = "BH"```. Alternatively, any adjustment method for the ```p.adjust``` function that comes with R stats can be used. The ```test_type``` argument is one of "students", "welch", or "mwu" for a students t test, welch's t test, or man whitney u test respectively.
+Prior to modeling the data, users can use the transform functions to make their data more appropriate for the models. ```transform_samples``` will perform column-wise transformations across the datausing the supplied function. This is useful for operations such as log transformation, or transforming by the square root. ```transform metabolites``` transforms the data using the supplied function across rows. This is useful for operations like mean-centering and pareto scaling. Omu supports two univariate statistical models, t test and anova, using the functions ```omu_summary``` and ```anova_function``` respectively. Both functions will output p values and adjusted p values, while ```omu_summary``` will also output group means, standard error, standard deviation, fold change, and log2foldchange. Both of these models are useful for observing relationships between independent variables in an experiment. The dataframe created using the assign_hierarchy function can be used in the ```count_data``` argument of ```omu_summary``` to run statistics on it. The output of ```omu_summary``` will be needed in order to use the plotting functions in Omu. The metadata that comes with the package, ```c57_nos2KO_mouse_metadata```, must be used for the ```metadata``` argument. A comparison between the "Strep" group within the "Treatment" factor against the "Mock" group can be done to observe if antibiotic treatment of the mice had an effect on the metabolome. The ```response_variable``` is the Metabolite column of the data frame. The data can be log transformed using ```log_transform = TRUE```, and a p value adjustment method of Benjamini & Hochberg with the argument ```p_adjust = "BH"```. Alternatively, any adjustment method for the ```p.adjust``` function that comes with R stats can be used. The ```test_type``` argument is one of "students", "welch", or "mwu" for a students t test, welch's t test, or man whitney u test respectively. Paired tests for each test type can be performed by setting the parameter ```paired = TRUE```. This parameter is set to FALSE by default.
 
 ```
 DF_stats <- omu_summary(count_data = DF, metadata = c57_nos2KO_mouse_metadata, numerator = "Strep", denominator = "Mock", response_variable = "Metabolite", Factor = "Treatment", log_transform = TRUE, p_adjust = "BH", test_type = "welch")
