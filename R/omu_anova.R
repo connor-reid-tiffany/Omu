@@ -43,6 +43,19 @@
 omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = TRUE,method="anova")
 {
 
+  if(any(names(count_data) %in% response_variable)==FALSE){
+
+    stop("metabolomics data are missing the response variable column. Did you make a typo?")
+
+  }
+
+ model_characters <- strsplit(gsub("[^[:alnum:] ]", "", as.character(model)[-1]), " +")[[1]]
+
+ if(all(model_characters %in% names(metadata))==FALSE){
+
+   stop("One or more model terms do not match column names in metadata. Did you make a typo?")
+
+ }
   #extract variables from model object
   model_terms <- terms(model)
 
@@ -109,7 +122,8 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
     print(unique(check_zeros_anova()[,1]))
 
   }
-
+  #set aside original count_data
+  count_data_o <- count_data[,!names(count_data) %in% "KEGG"]
   #add backtick quotes to metabolites so that non-syntatic names can be converted into model formulae later
   count_data$Metabolite <- paste0("`", count_data$Metabolite)
   count_data$Metabolite <- paste0(count_data$Metabolite, "`")
@@ -387,6 +401,9 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
   data_final$Residuals <- residuals_df
 
   }
+
+  data_final <- lapply(data_final, function(x){x <- merge(x, count_data_o, by = "Metabolite"); return(x)})
+  data_final <- lapply(data_final, function(x){class(x) <- append(class(x), "cpd"); return(x)})
 
   return(data_final)
 

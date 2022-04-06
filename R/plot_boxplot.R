@@ -62,6 +62,12 @@ plot_boxplot <- function(count_data, metadata, aggregate_by, log_transform,
   if (missing(aggregate_by)){
     count_data = count_data
   }else if (!missing(aggregate_by)){
+
+    if(any(names(count_data) %in% aggregate_by)==FALSE){
+
+      stop("Metabolomics data are missing metadata columns. Did you forget to use assign_hierarchy?")
+
+    }
     count_data$Class <- hm_df$Class[match(count_data[,response_variable], hm_df[,response_variable])]
     count_data$Subclass_1 <- hm_df$Subclass_1[match(count_data[,response_variable], hm_df[,response_variable])]
     count_data$Subclass_2 <- hm_df$Subclass_2[match(count_data[,response_variable], hm_df[,response_variable])]

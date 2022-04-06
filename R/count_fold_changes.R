@@ -2,8 +2,8 @@
 #'
 #' @description Takes an input data frame from the output of omu_summary and creates a
 #' data frame of counts for significantly changed metabolites by class hierarchy data.
-#' @param count_data Output dataframe from the omu_summary function
-#' @param ... Either a Class or Subclass column as a string, i.e. "Class
+#' @param count_data Output dataframe from the omu_summary function or omu_anova.
+#' @param ... Either a Class or Subclass column as a string, i.e. "Class"
 #' @param column The same value entered for the ... argument, i.e. column = "Class
 #' @param sig_threshold Significance threshold for compounds that go towars the count,
 #' sig_threshold = 0.05
@@ -27,12 +27,26 @@
 
 count_fold_changes <- function(count_data, ..., column, sig_threshold, keep_unknowns){
 
+  if(is.null(count_data$padj)==TRUE){
+
+    stop("count_data must be the output of omu_summary or omu_anova and have a padj column
+    and a log2FoldChange column")
+
+  }
+
+  if(any(names(count_data) %in% column)==FALSE){
+
+    stop("count_data is missing metabolite metadata. Did you forget to use assign_hierarchy?")
+
+  }
+
+
 class(count_data) <- "data.frame"
 
    log2FoldChange <- neg <- NULL
 
   count_data <- count_data[which(count_data[,"padj"] <= sig_threshold),]
-  count_data <- count_data %>% group_by_(...) %>%
+  count_data <- count_data %>% group_by(...) %>%
     mutate(Significant_Changes = sum(log2FoldChange>0),
            neg = sum(log2FoldChange<0))
   count_data <- count_data[,c(column, "Significant_Changes", "neg")]
@@ -42,7 +56,7 @@ class(count_data) <- "data.frame"
   count_data <- rbind(count_data, output)
   count_data <- subset(count_data, select = -neg)
 
-  count_data$colour <- ifelse(count_data$Significant_Changes < 0, "Decrease","Increase")
+  count_data$color <- ifelse(count_data$Significant_Changes < 0, "Decrease","Increase")
 
   count_data <- count_data[apply(count_data[2],1,function(z) !any(z==0)),]
 

@@ -1,5 +1,5 @@
 #' transform_samples
-#' @description A functional to transform metabolomics data by samples
+#' @description A functional to transform metabolomics data across samples.
 #' @param count_data Metabolomics data
 #' @param func a function to transform samples by. can be an anonymous function
 #' @examples
@@ -8,13 +8,25 @@
 
 transform_samples <- function(count_data, func){
 
+  if(is.function(func)==FALSE){
+
+    stop("func must be a function.")
+
+  }
+
+  if(is.data.frame(count_data)==FALSE){
+
+    stop("count_data must be a data.frame")
+
+  }
+
   count_data[,sapply(count_data, is.numeric)] <- apply(count_data[,sapply(count_data, is.numeric)], 2, func)
   return(count_data)
 
 }
 
 #' transform_metabolites
-#' @description A functional to transform metabolomics data by metabolites
+#' @description A functional to transform metabolomics data across metabolites.
 #' @param count_data Metabolomics data
 #' @param func a function to transform metabolites by. can be an anonymous function
 #' @examples
@@ -22,6 +34,19 @@ transform_samples <- function(count_data, func){
 #' function(x) x/sqrt(sd(x)))
 #' @export
 transform_metabolites <- function(count_data,func){
+
+  if(is.function(func)==FALSE){
+
+    stop("func must be a function.")
+
+  }
+
+  if(is.data.frame(count_data)==FALSE){
+
+    stop("count_data must be a data.frame")
+
+  }
+
   #set metabolite to rownames
   rownames(count_data) <- count_data$Metabolite
   #store non-numeric data in dataframe to remerge later
@@ -36,6 +61,7 @@ transform_metabolites <- function(count_data,func){
   metabo_num$Metabolite <- rownames(metabo_num)
   metabo_merge <- merge(char_data, metabo_num, by = "Metabolite")
 
+  class(metabo_merge) <- append(class(metabo_merge), "cpd")
   return(metabo_merge)
 
 }

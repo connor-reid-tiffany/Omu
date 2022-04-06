@@ -33,11 +33,17 @@
 #' @export
 
 plot_bar <- function(fc_data, fill, size, color){
- Class <- Significant_Changes <- colour <- NULL
+ Class <- Significant_Changes <- color <- NULL
+
+if(any(names(fc_data) %in% "Significant_Changes")==FALSE){
+
+  stop("fc_changes needs to be a dataframe from the count_fold_changes function")
+
+}
 
 colnames(fc_data)[1] <- "Class"
     ggplot(data = fc_data, aes(x=reorder(Class, -Significant_Changes), y = Significant_Changes)) +
-           geom_bar(stat = "identity", aes(fill = colour, color = colour, size = colour)) +
+           geom_bar(stat = "identity", aes(fill = color, color = color, size = color)) +
            theme_bw() +
            theme(axis.text.x = element_text(angle = 30, hjust=1, vjust=1, size = 10),
            axis.text.y = element_text(size = 10)) +

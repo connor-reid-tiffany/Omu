@@ -18,6 +18,12 @@ KEGG_gather <- function(count_data) UseMethod("KEGG_gather", count_data)
 #' @export
 KEGG_gather.cpd <- function(count_data){
 
+  #stop conditions
+  if(any(names(count_data) %in% "KEGG")==FALSE){
+
+    stop("dataframe is missing a KEGG compound number column")
+
+  }
   #Set variables
   first_char <- "C"
   column <- "KEGG"

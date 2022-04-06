@@ -1,6 +1,6 @@
 #' plot_variable_importance
 #' @description Plot the variable importance from a random forest model. Mean Decrease Gini for Classification and
-#' %IncMSE for regression
+#' %IncMSE for regression.
 #' @param rf_list The output from the random_forest function
 #' @param color Metabolite metadata to color by
 #' @param n_metabolites The number of metabolites to include. Metabolites are sorted by decreasing importance.
@@ -20,6 +20,13 @@
 #' @export
 
 plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
+
+  if(is.null(rf_list$rf)==TRUE){
+
+    stop("rf_list is mising randomForest output")
+
+  }
+
   #address silly CRAN note
   Metabolite <- NULL
   MeanDecreaseGini <- NULL
@@ -85,6 +92,13 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
 #' @export
 
 plot_rf_PCA <- function(rf_list, color, size){
+
+  if(is.null(rf_list$rf)==TRUE){
+
+    stop("rf_list is mising randomForest output")
+
+  }
+
   #PCA is computed on the proximity matrix and regression models do not produce a proximity matrix
   if(rf_list$rf$type=="regression"){
 

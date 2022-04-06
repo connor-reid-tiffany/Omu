@@ -52,6 +52,14 @@
 
 plot_volcano <- function(count_data, column, size, strpattern, fill, sig_threshold, alpha, shape,
   color){
+
+ if(is.null(count_data$padj)==TRUE){
+
+   stop("count_data must be the output of omu_summary or omu_anova and have a padj column
+   and a log2FoldChange column")
+
+ }
+
  log2FoldChange <- padj <- Metabolite <- NULL
 
   if (missing(sig_threshold)){
@@ -71,6 +79,12 @@ plot_volcano <- function(count_data, column, size, strpattern, fill, sig_thresho
         geom_hline(aes(yintercept = -log10(sig_threshold)), linetype = "dashed")
 
   }else{
+
+    if(any(names(count_data) %in% column)==FALSE){
+
+      stop("count_data is missing metabolite metadata. Did you forget to use assign_hierarchy?")
+
+    }
     data2 = count_data
     data2[,column] <- sapply(data2[,column], function(x) replace(x, x %in% strpattern, NA))
     data2[,column] <- factor(data2[,column])

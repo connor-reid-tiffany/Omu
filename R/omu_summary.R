@@ -34,6 +34,12 @@
 omu_summary <- function(count_data, metadata, numerator, denominator, response_variable = "Metabolite",
                         Factor, log_transform = FALSE, p_adjust = "BH", test_type = "welch", paired = FALSE){
 
+if(any(names(count_data) %in% response_variable)==FALSE){
+
+  stop("metabolomics data are missing the response variable column. Did you make a typo?")
+
+}
+
 if(paired==TRUE && any(names(metadata) %in% "ID")==FALSE){
 
   stop("metadata needs an ID column to run paired tests")

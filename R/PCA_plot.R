@@ -15,7 +15,39 @@
 #' variable = "Treatment", color = "Treatment", response_variable = "Metabolite")
 #' @export
 
-PCA_plot <- function(count_data, metadata, variable, color, response_variable){
+PCA_plot <- function(count_data, metadata, variable, color, response_variable="Metabolite"){
+
+  if(any(names(metadata) %in% variable)==FALSE){
+
+    "variable not found in metadata. did you make a typo?"
+
+  }
+
+  if(any(names(metadata) %in% color)==FALSE){
+
+    "color variable not found in metadata. did you make a typo?"
+
+  }
+
+  if(any(names(count_data) %in% response_variable)==FALSE){
+
+    stop("metabolomics data are missing the response variable column. Did you make a typo?")
+
+  }
+
+  if(identical(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))]), as.character(metadata$Sample))==FALSE){
+
+    stop("Sample names in count_data and metadata do not match.")
+
+  }
+
+  if(any(colnames(metadata)=="Sample")==FALSE){
+
+    stop("metadata is missing Sample column")
+
+  }
+
+
 
   rownames(count_data) <- count_data[,response_variable]
   count_data[,response_variable] <- NULL

@@ -2,7 +2,7 @@
 #' Perform a classification or regression random forest model
 #' @description a wrapper built around the randomForest function from package randomForest.
 #' Returns a list with a randomForest object list, training data set, testing data set,
-#' metabolite metadata, and prediction matrices for training and testing data
+#' metabolite metadata, and confusion matrices for training and testing data
 #' (if type was classification).
 #' @param count_data Metabolomics data
 #' @param metadata sample data
@@ -20,6 +20,18 @@
 #' @export
 
 random_forest <- function(count_data, metadata, model, training_proportion = c(80,20), n_tree = 500){
+
+  if(identical(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))]), as.character(metadata$Sample))==FALSE){
+
+    stop("Sample names in count_data and metadata do not match.")
+
+  }
+
+  if(any(colnames(metadata)=="Sample")==FALSE){
+
+    stop("metadata is missing Sample column")
+
+  }
   #set RNG so model output is reproducible
   set.seed(123)
   #parse data to handle non syntatic metabolite names so they don't throw an error in the model
