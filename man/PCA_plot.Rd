@@ -4,7 +4,13 @@
 \alias{PCA_plot}
 \title{Create a PCA plot}
 \usage{
-PCA_plot(count_data, metadata, variable, color, response_variable)
+PCA_plot(
+  count_data,
+  metadata,
+  variable,
+  color,
+  response_variable = "Metabolite"
+)
 }
 \arguments{
 \item{count_data}{Metabolomics count data}

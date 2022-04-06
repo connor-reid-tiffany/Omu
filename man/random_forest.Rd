@@ -29,7 +29,7 @@ test the models accuracy}
 \description{
 a wrapper built around the randomForest function from package randomForest.
 Returns a list with a randomForest object list, training data set, testing data set,
-metabolite metadata, and prediction matrices for training and testing data
+metabolite metadata, and confusion matrices for training and testing data
 (if type was classification).
 }
 \examples{

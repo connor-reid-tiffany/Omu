@@ -7,9 +7,9 @@
 count_fold_changes(count_data, ..., column, sig_threshold, keep_unknowns)
 }
 \arguments{
-\item{count_data}{Output dataframe from the omu_summary function}
+\item{count_data}{Output dataframe from the omu_summary function or omu_anova.}
 
-\item{...}{Either a Class or Subclass column as a string, i.e. "Class}
+\item{...}{Either a Class or Subclass column as a string, i.e. "Class"}
 
 \item{column}{The same value entered for the ... argument, i.e. column = "Class}
 

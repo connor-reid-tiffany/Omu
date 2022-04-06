@@ -15,7 +15,7 @@ plot_variable_importance(rf_list, color = "Class", n_metabolites = 10)
 }
 \description{
 Plot the variable importance from a random forest model. Mean Decrease Gini for Classification and
-%IncMSE for regression
+%IncMSE for regression.
 }
 \examples{
 rf_list <- random_forest(c57_nos2KO_mouse_countDF,c57_nos2KO_mouse_metadata,

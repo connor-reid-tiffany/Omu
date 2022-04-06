@@ -12,7 +12,7 @@ transform_metabolites(count_data, func)
 \item{func}{a function to transform metabolites by. can be an anonymous function}
 }
 \description{
-A functional to transform metabolomics data by metabolites
+A functional to transform metabolomics data across metabolites.
 }
 \examples{
 data_pareto_scaled <- transform_samples(count_data = c57_nos2KO_mouse_countDF,

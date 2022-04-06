@@ -12,7 +12,7 @@ transform_samples(count_data, func)
 \item{func}{a function to transform samples by. can be an anonymous function}
 }
 \description{
-A functional to transform metabolomics data by samples
+A functional to transform metabolomics data across samples.
 }
 \examples{
 data_ln <- transform_samples(count_data = c57_nos2KO_mouse_countDF, log)
