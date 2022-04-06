@@ -202,15 +202,15 @@ From here, the user can gather orthology metadata and gene metadata from the KEG
 ## Data Visualization
 
 ### Bar Plots
-The ```plot_bar``` function can be used to make bar plots of metabolite counts by their class meta data (from ```assign_hierarchy```). To make a bar plot, a data frame of the number of significantly changed compounds by a hierarchy class must be created. This can be done using the output from ```omu_summary``` as an input for the function ```count_fold_changes```, to make a data frame with the number of compounds that significantly increased or decreased per a hierarchy group. For this data frame, the arguments ```Class``` and ```column = "Class"``` can be used to generate counts for the Class level of compound hierarchy.
+The ```plot_bar``` function can be used to make bar plots of metabolite counts by their class meta data (from ```assign_hierarchy```). To make a bar plot, a data frame of the number of significantly changed compounds by a hierarchy class must be created. This can be done using the output from ```omu_summary``` as an input for the function ```count_fold_changes```, to make a data frame with the number of compounds that significantly increased or decreased per a hierarchy group. For this data frame, the argument ```column = "Class"``` can be used to generate counts for the Class level of compound hierarchy.
 
 ```
-DF_stats_counts <- count_fold_changes(count_data = DF_stats, "Class", column = "Class", sig_threshold = 0.05)
+DF_stats_counts <- count_fold_changes(count_data = DF_stats, column = "Class", sig_threshold = 0.05)
 ```
 This should generate a data frame with 3 columns that show Class, number of compounds within that class that changed, and whether they increased or decreased.
 
 ```{r echo=FALSE, warning=FALSE}
-DF_stats_counts <- count_fold_changes(count_data = DF_stats, "Class", column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
+DF_stats_counts <- count_fold_changes(count_data = DF_stats, column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
 kable(DF_stats_counts)
 ```
 

@@ -27,12 +27,26 @@
 
 count_fold_changes <- function(count_data, ..., column, sig_threshold, keep_unknowns){
 
+  if(is.null(count_data$padj)==TRUE){
+
+    stop("count_data must be the output of omu_summary or omu_anova and have a padj column
+    and a log2FoldChange column")
+
+  }
+
+  if(any(names(count_data) %in% column)==FALSE){
+
+    stop("count_data is missing metabolite metadata. Did you forget to use assign_hierarchy?")
+
+  }
+
+
 class(count_data) <- "data.frame"
 
    log2FoldChange <- neg <- NULL
 
   count_data <- count_data[which(count_data[,"padj"] <= sig_threshold),]
-  count_data <- count_data %>% group_by(...) %>%
+  count_data <- count_data %>% group_by_(...) %>%
     mutate(Significant_Changes = sum(log2FoldChange>0),
            neg = sum(log2FoldChange<0))
   count_data <- count_data[,c(column, "Significant_Changes", "neg")]
