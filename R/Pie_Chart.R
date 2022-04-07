@@ -22,7 +22,7 @@
 #' Factor = "Treatment",
 #' log_transform = TRUE, p_adjust = "BH", test_type = "welch")
 #'
-#' fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
+#' fold_change_counts <- count_fold_changes(count_data = t_test_df,
 #' column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
 #'
 #' ra_table <- ra_table(fc_data = fold_change_counts, variable = "Class")
