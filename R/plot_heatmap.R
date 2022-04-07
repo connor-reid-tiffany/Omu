@@ -72,7 +72,7 @@ plot_heatmap <- function(count_data, metadata, Factor, response_variable,
     count_data = count_data
   }else if (!missing(aggregate_by)){
 
-    if(any(names(count_data) %in% aggregate_by)==FALSE){
+    if(any(names(hm_df) %in% aggregate_by)==FALSE){
 
       stop("Metabolomics data are missing metadata columns. Did you forget to use assign_hierarchy?")
 
