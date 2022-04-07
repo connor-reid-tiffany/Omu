@@ -4,7 +4,7 @@
 \alias{plot_bar}
 \title{Create a bar plot}
 \usage{
-plot_bar(fc_data, fill, size, color)
+plot_bar(fc_data, fill, size = c(1, 1), outline_color = c("black", "black"))
 }
 \arguments{
 \item{fc_data}{The output file from Count_Fold_Changes}
@@ -15,7 +15,7 @@ is for "Increase"}
 
 \item{size}{A character vector of 2 numbers for the size of the bar outlines.}
 
-\item{color}{A character vector of length 2 containing colors for the bar outlines}
+\item{outline_color}{A character vector of length 2 containing colors for the bar outlines}
 }
 \description{
 Creates a ggplot2 object using the output file from the count_fold_changes function

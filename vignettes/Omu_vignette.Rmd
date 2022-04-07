@@ -218,18 +218,18 @@ This count data frame can be used as an input for the ```plot_bar``` function:
 
 ```
 library(ggplot2)
-Class_Bar_Plot <- plot_bar(fc_data = DF_stats_counts, fill = c("dodgerblue2", "firebrick2"), color = c("black", "black"), size = c(1,1)) + labs(x = "Class") + theme(panel.grid = element_blank())
+Class_Bar_Plot <- plot_bar(fc_data = DF_stats_counts, fill = c("dodgerblue2", "firebrick2"), outline_color = c("black", "black"), size = c(1,1)) + labs(x = "Class") + theme(panel.grid = element_blank())
 ```
 
 This should generate a plot that looks like this:
 
 ```{r echo=FALSE, fig.keep='all', results='hide'}
 library(ggplot2)
-Class_Bar_Plot <- plot_bar(fc_data = DF_stats_counts, fill = c("dodgerblue2", "firebrick2"), color = c("black", "black"), size = c(1,1)) + labs(x = "Class") + theme(panel.grid = element_blank())
+Class_Bar_Plot <- plot_bar(fc_data = DF_stats_counts, fill = c("dodgerblue2", "firebrick2"), outline_color = c("black", "black"), size = c(1,1)) + labs(x = "Class") + theme(panel.grid = element_blank())
 plot(Class_Bar_Plot)
 ```
 
-The argument ```fill``` is the color of the bars, ```color``` is the outline, and ```size``` is the width of the bar outline.  Colors are picked in alphanumeric order, so the first item in each character vector corresponds to the "Decrease" column and the second corresponds to the "Increase" column. The figure is a ggplot2 object, so it is compatible with any ggplot2 themes you wish to use to edit the appearance. An example of this is in the code above: ```labs(x = "Class") + theme(panel.grid = element_blank())```, and was used to clean up the figures appearance by giving it a descriptive x axis label, and removing the grid lines from the background.
+The argument ```fill``` is the color of the bars, ```outline_color``` is the outline, and ```size``` is the width of the bar outline.  Colors are picked in alphanumeric order, so the first item in each character vector corresponds to the "Decrease" column and the second corresponds to the "Increase" column. The figure is a ggplot2 object, so it is compatible with any ggplot2 themes you wish to use to edit the appearance. An example of this is in the code above: ```labs(x = "Class") + theme(panel.grid = element_blank())```, and was used to clean up the figures appearance by giving it a descriptive x axis label, and removing the grid lines from the background.
 
 ### Pie Charts
 
