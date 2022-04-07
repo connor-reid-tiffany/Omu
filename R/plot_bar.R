@@ -4,7 +4,7 @@
 #' @param fill A character vector of length 2 containing colors for filling the bars,
 #' the first color is for the "Decrease" bar while the second
 #' is for "Increase"
-#' @param color A character vector of length 2 containing colors for the bar outlines
+#' @param outline_color A character vector of length 2 containing colors for the bar outlines
 #' @param size A character vector of 2 numbers for the size of the bar outlines.
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
@@ -32,7 +32,7 @@
 #' color = c("black", "black"), size = c(1,1))
 #' @export
 
-plot_bar <- function(fc_data, fill, size, color){
+plot_bar <- function(fc_data, fill, size = c(1,1), outline_color = c("black", "black")){
  Class <- Significant_Changes <- color <- NULL
 
 if(any(names(fc_data) %in% "Significant_Changes")==FALSE){
@@ -52,5 +52,5 @@ colnames(fc_data)[1] <- "Class"
            theme(plot.title = element_text(hjust = 0.5)) +
            scale_size_manual(values = size) +
            scale_fill_manual(values = fill) +
-           scale_color_manual(values = color)
+           scale_color_manual(values = outline_color)
 }
