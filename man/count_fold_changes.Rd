@@ -4,14 +4,12 @@
 \alias{count_fold_changes}
 \title{Get counts for significant fold changes by metabolite class.}
 \usage{
-count_fold_changes(count_data, ..., column, sig_threshold, keep_unknowns)
+count_fold_changes(count_data, column, sig_threshold, keep_unknowns)
 }
 \arguments{
 \item{count_data}{Output dataframe from the omu_summary function or omu_anova.}
 
-\item{...}{Either a Class or Subclass column as a string, i.e. "Class"}
-
-\item{column}{The same value entered for the ... argument, i.e. column = "Class}
+\item{column}{Metabolite metadata you want to group by, i.e. "Class", "Subclass_1".}
 
 \item{sig_threshold}{Significance threshold for compounds that go towars the count,
 sig_threshold = 0.05}
@@ -31,6 +29,6 @@ metadata = c57_nos2KO_mouse_metadata,
 numerator = "Strep", denominator = "Mock", response_variable = "Metabolite",
 Factor = "Treatment", log_transform = TRUE, p_adjust = "BH", test_type = "welch")
 
-fold_change_counts <- count_fold_changes(count_data = t_test_df, "Class",
+fold_change_counts <- count_fold_changes(count_data = t_test_df,
 column = "Class", sig_threshold = 0.05, keep_unknowns = "FALSE")
 }

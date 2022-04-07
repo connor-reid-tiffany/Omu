@@ -3,12 +3,12 @@
 #' @description Takes an input data frame from the output of omu_summary and creates a
 #' data frame of counts for significantly changed metabolites by class hierarchy data.
 #' @param count_data Output dataframe from the omu_summary function or omu_anova.
-#' @param column The same value entered for the ... argument, i.e. column = "Class
+#' @param column Metabolite metadata you want to group by, i.e. "Class", "Subclass_1".
 #' @param sig_threshold Significance threshold for compounds that go towars the count,
 #' sig_threshold = 0.05
 #' @param keep_unknowns TRUE or FALSE for whether to drop compounds that weren't assigned
 #' hierarchy metadata
-#' @importFrom dplyr group_by_
+#' @importFrom dplyr group_by
 #' @importFrom dplyr mutate
 #' @importFrom tidyr drop_na
 #' @importFrom magrittr %>%
