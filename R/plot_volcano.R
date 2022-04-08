@@ -99,25 +99,25 @@ plot_volcano <- function(count_data, column, size, strpattern, fill, sig_thresho
 
     }
 
-    if(isTRUE(length(fill)!=1 + length(strpattern))==FALSE){
+    if(isTRUE(length(fill) ==1 + length(strpattern))==FALSE){
 
       stop("the length of the fill argument must be 1 greater than the strpattern argument")
 
     }
 
-    if(isTRUE(length(alpha)!=1 + length(strpattern))==FALSE){
+    if(isTRUE(length(alpha) ==1 + length(strpattern))==FALSE){
 
       stop("the length of the alpha argument must be 1 greater than the strpattern argument")
 
     }
 
-    if(isTRUE(length(shape)!=1 + length(strpattern))==FALSE){
+    if(isTRUE(length(shape) ==1 + length(strpattern))==FALSE){
 
       stop("the length of the shape argument must be 1 greater than the strpattern argument")
 
     }
 
-    if(isTRUE(length(color)!=1 + length(strpattern))==FALSE){
+    if(isTRUE(length(color) ==1 + length(strpattern))==FALSE){
 
       stop("the length of the color argument must be 1 greater than the strpattern argument")
 
