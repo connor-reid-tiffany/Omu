@@ -93,7 +93,7 @@ plot_volcano <- function(count_data, column, size, strpattern, fill, sig_thresho
 
     }
 
-    if(all(str_pattern %in% count_data[,column])==FALSE){
+    if(all(strpattern %in% count_data[,column])==FALSE){
 
       stop("One or more elements in strpattern are missing from column. Did you make a typo?")
 
