@@ -26,8 +26,40 @@
 
 #' @export
 
-plot_boxplot <- function(count_data, metadata, aggregate_by, log_transform,
-                         Factor, response_variable, fill_list){
+plot_boxplot <- function(count_data, metadata, aggregate_by, log_transform=FALSE,
+                         Factor, response_variable="Metabolite", fill_list){
+
+  if(any(colnames(metadata)=="Sample")==FALSE){
+
+      stop("metadata is missing Sample column")
+
+                           }
+  if(any(colnames(metadata)==Factor)==FALSE){
+
+      stop("metadata is missing Factor column. Did you make a typo?")
+
+                           }
+  if(isTRUE(length(fill_list)==length(levels(as.factor(metadata[,Factor]))))==FALSE){
+
+    stop("fill_list must have one color for each level in Factor")
+
+  }
+
+  count_data_sample <- count_data[,names(count_data) %in% metadata$Sample]
+
+  if(identical(colnames(count_data_sample), as.character(metadata$Sample))==FALSE){
+
+    stop("Sample names in count_data and metadata do not match.")
+
+  }
+
+  if(any(names(count_data) %in% response_variable)==FALSE){
+
+    stop("metabolomics data are missing the response variable column. Did you make a typo?")
+
+  }
+
+
   Abundance = NULL
   Sample = NULL
   hm_df <- count_data

@@ -1,9 +1,9 @@
 #' Create a heatmap
 #' @description Takes a metabolomics count data frame and creates a heatmap. It is recommended to
-#' either subset, truncate, or agglomerate by hierarchical metadata to reduce noise.
+#' either subset, truncate, or agglomerate by metabolite metadata to improve legibility.
 #' @param count_data A metabolomics count data frame.
 #' @param metadata The descriptive meta data for the samples.
-#' @param Factor The column name for the experimental variable.
+#' @param Factor The column name for the independent variable in your metadata.
 #' @param log_transform TRUE or FALSE. Recommended for visualization purposes. If true data is
 #' transformed by the natural log.
 #' @param high_color Color for high abundance values
@@ -30,7 +30,26 @@
 #' @export
 
 plot_heatmap <- function(count_data, metadata, Factor, response_variable,
-                         log_transform, high_color, low_color, aggregate_by){
+                         log_transform=FALSE, high_color, low_color, aggregate_by){
+
+  if(any(colnames(metadata)=="Sample")==FALSE){
+
+          stop("metadata is missing Sample column")
+
+                                                    }
+  if(any(colnames(metadata)==Factor)==FALSE){
+
+        stop("metadata is missing Factor column. Did you make a typo?")
+
+      }
+
+  count_data_sample <- count_data[,names(count_data) %in% metadata$Sample]
+
+  if(identical(colnames(count_data_sample), as.character(metadata$Sample))==FALSE){
+
+        stop("Sample names in count_data and metadata do not match.")
+
+      }
   Abundance = NULL
   Sample = NULL
   #create dataframe to match hierarchical metadata to the new dataframe

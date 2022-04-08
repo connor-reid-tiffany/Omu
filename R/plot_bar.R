@@ -5,7 +5,7 @@
 #' the first color is for the "Decrease" bar while the second
 #' is for "Increase"
 #' @param outline_color A character vector of length 2 containing colors for the bar outlines
-#' @param size A character vector of 2 numbers for the size of the bar outlines.
+#' @param size A numeric vector of 2 numbers for the size of the bar outlines.
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 geom_bar
@@ -38,6 +38,12 @@ plot_bar <- function(fc_data, fill, size = c(1,1), outline_color = c("black", "b
 if(any(names(fc_data) %in% "Significant_Changes")==FALSE){
 
   stop("fc_changes needs to be a dataframe from the count_fold_changes function")
+
+}
+
+if(isTRUE(length(fill) > 2)==FALSE | is.character(fill)==FALSE){
+
+  stop("fill must be a character vector of length 2 containing two valid color names")
 
 }
 

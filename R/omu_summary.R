@@ -40,6 +40,31 @@ if(any(names(count_data) %in% response_variable)==FALSE){
 
 }
 
+if(any(names(metadata) %in% Factor)==FALSE){
+
+  stop("metadata is missing Factor column. Did you make a typo?")
+
+}
+
+if(any(metadata[,Factor]==numerator)==FALSE | any(metadata[,Factor]==denominator)==FALSE){
+
+  stop("Factor column in metadata is missing either numerator or denominator values. Did you make a typo?")
+
+}
+
+if(isTRUE(test_type %in% c("welch", "students", "mwu"))==FALSE){
+
+  stop("test_type must be either mwu, students, or welch. Did you make a typo?")
+
+}
+
+if(isTRUE(p_adjust %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY","fdr")==FALSE){
+
+  stop("incorrect p_adjust method selected. see ?p.adjust for correct options")
+
+}
+
+
 if(paired==TRUE && any(names(metadata) %in% "ID")==FALSE){
 
   stop("metadata needs an ID column to run paired tests")

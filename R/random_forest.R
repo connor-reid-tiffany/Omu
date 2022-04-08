@@ -32,6 +32,14 @@ random_forest <- function(count_data, metadata, model, training_proportion = c(8
     stop("metadata is missing Sample column")
 
   }
+
+  model_characters <- strsplit(gsub("[^[:alnum:] ]", "", as.character(model)[-1]), " +")[[1]]
+
+  if(all(model_characters %in% names(metadata))==FALSE){
+
+    stop("One or more model terms do not match column names in metadata. Did you make a typo?")
+
+  }
   #set RNG so model output is reproducible
   set.seed(123)
   #parse data to handle non syntatic metabolite names so they don't throw an error in the model

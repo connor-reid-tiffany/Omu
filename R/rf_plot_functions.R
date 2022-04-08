@@ -27,6 +27,13 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
 
   }
 
+  if(any(names(rf_list$metabolite_meta) %in% color)==FALSE){
+
+    stop("color must be a metabolite metadata level, i.e. Class, Subclass_1, etc. did
+    you make a typo?")
+
+  }
+
   #address silly CRAN note
   Metabolite <- NULL
   MeanDecreaseGini <- NULL
@@ -96,6 +103,12 @@ plot_rf_PCA <- function(rf_list, color, size){
   if(is.null(rf_list$rf)==TRUE){
 
     stop("rf_list is mising randomForest output")
+
+  }
+
+  if(any(names(rf_list$train) %in% color)==FALSE){
+
+    stop("color variable not found in data. did you make a typo?")
 
   }
 

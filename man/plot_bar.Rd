@@ -32,5 +32,5 @@ fold_change_counts <- count_fold_changes(count_data = t_test_df,
 column = "Class", sig_threshold = 0.05, keep_unknowns = FALSE)
 
 plot_bar(fc_data = fold_change_counts, fill = c("firebrick2", "dodgerblue2"),
-color = c("black", "black"), size = c(1,1))
+outline_color = c("black", "black"), size = c(1,1))
 }

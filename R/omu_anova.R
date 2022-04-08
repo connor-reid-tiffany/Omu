@@ -40,7 +40,7 @@
 #'@export
 
 
-omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = TRUE,method="anova")
+omu_anova <- function (count_data, metadata, response_variable = "Metabolite", model, log_transform = FALSE,method="anova")
 {
 
   if(any(names(count_data) %in% response_variable)==FALSE){
@@ -54,6 +54,12 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
  if(all(model_characters %in% names(metadata))==FALSE){
 
    stop("One or more model terms do not match column names in metadata. Did you make a typo?")
+
+ }
+
+ if(isTRUE(method %in% c("anova", "kruskal", "welch"))==FALSE){
+
+   stop("method must be anova, kruskal, or welch. Did you make a typo?")
 
  }
   #extract variables from model object
