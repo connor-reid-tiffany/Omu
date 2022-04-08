@@ -9,7 +9,7 @@ plot_heatmap(
   metadata,
   Factor,
   response_variable,
-  log_transform,
+  log_transform = FALSE,
   high_color,
   low_color,
   aggregate_by
@@ -20,7 +20,7 @@ plot_heatmap(
 
 \item{metadata}{The descriptive meta data for the samples.}
 
-\item{Factor}{The column name for the experimental variable.}
+\item{Factor}{The column name for the independent variable in your metadata.}
 
 \item{response_variable}{The response variable for the data, i.e. "Metabolite"}
 
@@ -35,7 +35,7 @@ transformed by the natural log.}
 }
 \description{
 Takes a metabolomics count data frame and creates a heatmap. It is recommended to
-either subset, truncate, or agglomerate by hierarchical metadata to reduce noise.
+either subset, truncate, or agglomerate by metabolite metadata to improve legibility.
 }
 \examples{
 c57_nos2KO_mouse_countDF <- assign_hierarchy(c57_nos2KO_mouse_countDF, TRUE, "KEGG")

@@ -41,7 +41,7 @@ if(any(names(fc_data) %in% "Significant_Changes")==FALSE){
 
 }
 
-if(isTRUE(length(fill) > 2)==FALSE | is.character(fill)==FALSE){
+if(isTRUE(length(fill) == 2)==FALSE | isTRUE(is.character(fill))==FALSE){
 
   stop("fill must be a character vector of length 2 containing two valid color names")
 

@@ -9,7 +9,7 @@ omu_anova(
   metadata,
   response_variable = "Metabolite",
   model,
-  log_transform = TRUE,
+  log_transform = FALSE,
   method = "anova"
 )
 }

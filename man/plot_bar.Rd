@@ -13,7 +13,7 @@ plot_bar(fc_data, fill, size = c(1, 1), outline_color = c("black", "black"))
 the first color is for the "Decrease" bar while the second
 is for "Increase"}
 
-\item{size}{A character vector of 2 numbers for the size of the bar outlines.}
+\item{size}{A numeric vector of 2 numbers for the size of the bar outlines.}
 
 \item{outline_color}{A character vector of length 2 containing colors for the bar outlines}
 }

@@ -27,19 +27,24 @@ i.e. "Class"}
 \item{strpattern}{A character vector of levels of the column you want the plot to focus on,
 i.e. strpattern = c("Carbohydrates", "Organicacids")}
 
-\item{fill}{A character vector of colors you want your points to be.
+\item{fill}{A character vector of colors you want your points to be. Must be of length
+1 + length(strpattern) to account for points not in strpattern.
 Levels of a factor are organzed alphabetically. All levels not in the
 strpattern argument will be set to NA.}
 
 \item{sig_threshold}{An integer. Creates a horizontal dashed line for a significance threshold.
 i.e. sig_threshold = 0.05. Defaut value is 0.05}
 
-\item{alpha}{A character vector for setting transparency of factor levels.}
+\item{alpha}{A character vector for setting transparency of factor levels.Must be of length
+1 + length(strpattern) to account for points not in strpattern.}
 
 \item{shape}{A character vector for setting the shapes for your column levels.
+Must be of length 1 + length(strpattern) to account for points not in strpattern.
 See ggplot2 for an index of shape values.}
 
-\item{color}{A character vector of colors for the column levels. If you choose to use shapes
+\item{color}{A character vector of colors for the column levels.
+Must be of length 1 + length(strpattern) to account for points not in strpattern.
+If you choose to use shapes
 with outlines, this list will set the outline colors.}
 }
 \description{

@@ -8,9 +8,9 @@ plot_boxplot(
   count_data,
   metadata,
   aggregate_by,
-  log_transform,
+  log_transform = FALSE,
   Factor,
-  response_variable,
+  response_variable = "Metabolite",
   fill_list
 )
 }
