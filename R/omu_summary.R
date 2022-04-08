@@ -58,7 +58,7 @@ if(isTRUE(test_type %in% c("welch", "students", "mwu"))==FALSE){
 
 }
 
-if(isTRUE(p_adjust %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY","fdr")==FALSE){
+if(isTRUE(p_adjust %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY","fdr")==FALSE)){
 
   stop("incorrect p_adjust method selected. see ?p.adjust for correct options")
 
