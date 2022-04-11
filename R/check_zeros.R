@@ -8,7 +8,6 @@
 #'@param numerator String of the first independent variable you wish to test. Defualt is NULL
 #'@param denominator String of the second independent variable you wish to test. Default is NULL.
 #'@param threshold Integer. A percentage threshold for the number of zeros in a Metabolite. Default is 25.
-#'an interaction between independent variables. Optional parameter
 #'@param Factor A factor with levels to test for zeros.
 #'@importFrom dplyr filter
 #'@examples

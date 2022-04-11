@@ -9,7 +9,9 @@ PCA_plot(
   metadata,
   variable,
   color,
-  response_variable = "Metabolite"
+  response_variable = "Metabolite",
+  label = FALSE,
+  size = 2
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ PCA_plot(
 \item{color}{String of what you want to color by. Usually should be the same as variable.}
 
 \item{response_variable}{String of the response_variable, usually should be "Metabolite"}
+
+\item{label}{True or FALSE, whether to add point labels or not}
+
+\item{size}{An integer for point size.}
 }
 \description{
 Performs an ordination and outputs a PCA plot using a metabolomics

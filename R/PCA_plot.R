@@ -7,6 +7,8 @@
 #' @param variable The independent variable you wish to compare and contrast
 #' @param color String of what you want to color by. Usually should be the same as variable.
 #' @param response_variable String of the response_variable, usually should be "Metabolite"
+#' @param label True or FALSE, whether to add point labels or not
+#' @param size An integer for point size.
 #' @import ggfortify
 #' @importFrom ggplot2 autoplot
 #' @importFrom stats prcomp
@@ -15,7 +17,7 @@
 #' variable = "Treatment", color = "Treatment", response_variable = "Metabolite")
 #' @export
 
-PCA_plot <- function(count_data, metadata, variable, color, response_variable="Metabolite"){
+PCA_plot <- function(count_data, metadata, variable, color, response_variable="Metabolite", label = FALSE, size = 2){
 
   if(any(names(metadata) %in% variable)==FALSE){
 
@@ -61,9 +63,15 @@ PCA_plot <- function(count_data, metadata, variable, color, response_variable="M
   data_Transpose[, variable] = metadata[, variable][match(metadata$Sample, data_Transpose$Sample)]
   data_Numeric <- data_Transpose[, !names(data_Transpose) %in% c(variable, 'Sample')]
   data_Numeric <- data.frame(lapply(data_Numeric, function(x) as.numeric(as.character(x))),check.names=F, row.names = rownames(data_Numeric))
+  if(label==FALSE){
 
-  Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, frame = TRUE, frame.type = 'norm')
+  Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, frame = TRUE, frame.type = 'norm', size = size)
 
+  }else if(label==TRUE){
+
+    Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, frame = TRUE,label = TRUE, label.size = 3.5, label.repel = T, frame.type = 'norm', size = size)
+
+  }
 
   return(Plot)
 }
