@@ -25,8 +25,7 @@ check_zeros(
 
 \item{denominator}{String of the second independent variable you wish to test. Default is NULL.}
 
-\item{threshold}{Integer. A percentage threshold for the number of zeros in a Metabolite. Default is 25.
-an interaction between independent variables. Optional parameter}
+\item{threshold}{Integer. A percentage threshold for the number of zeros in a Metabolite. Default is 25.}
 
 \item{response_variable}{String of the column header for the response variables,
 usually "Metabolite"}
