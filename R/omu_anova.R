@@ -129,7 +129,7 @@ omu_anova <- function (count_data, metadata, response_variable = "Metabolite", m
 
   }
   #set aside original count_data
-  count_data_o <- count_data[,!names(count_data) %in% "KEGG"]
+  count_data_o <- count_data[,!names(count_data) %in% c("KEGG", "Class", "Subclass_1", "Subclass_2", "Subclass_3", "Subclass_4")]
   #add backtick quotes to metabolites so that non-syntatic names can be converted into model formulae later
   count_data$Metabolite <- paste0("`", count_data$Metabolite)
   count_data$Metabolite <- paste0(count_data$Metabolite, "`")
