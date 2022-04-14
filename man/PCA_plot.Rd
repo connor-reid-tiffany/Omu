@@ -11,7 +11,8 @@ PCA_plot(
   color,
   response_variable = "Metabolite",
   label = FALSE,
-  size = 2
+  size = 2,
+  ellipse = FALSE
 )
 }
 \arguments{
@@ -25,9 +26,11 @@ PCA_plot(
 
 \item{response_variable}{String of the response_variable, usually should be "Metabolite"}
 
-\item{label}{True or FALSE, whether to add point labels or not}
+\item{label}{TRUE or FALSE, whether to add point labels or not}
 
 \item{size}{An integer for point size.}
+
+\item{ellipse}{TRUE or FALSE, whether to add confidence interval ellipses or not.}
 }
 \description{
 Performs an ordination and outputs a PCA plot using a metabolomics

@@ -87,6 +87,8 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
 #' @param rf_list The output from the random_forest function. This only works on classification models.
 #' @param color A grouping factor. Use the one that was the LHS of your model parameter in the random_forest funciton
 #' @param size The number for point size in the plot
+#' @param ellipse TRUE or FALSE. Whether to plot with confidence interval ellipses or not.
+#' @param label TRUE or FALSE. Whether to include point labels or not.
 #' @importFrom ggplot2 autoplot
 #' @importFrom ggplot2 theme
 #' @importFrom ggplot2 element_blank
@@ -98,7 +100,7 @@ plot_variable_importance <- function(rf_list, color="Class", n_metabolites=10){
 #' plot_rf_PCA(rf_list = rf_list, color = "Treatment", size = 1.5)
 #' @export
 
-plot_rf_PCA <- function(rf_list, color, size){
+plot_rf_PCA <- function(rf_list, color, size, ellipse=FALSE, label=FALSE){
 
   if(is.null(rf_list$rf)==TRUE){
 
@@ -120,9 +122,25 @@ plot_rf_PCA <- function(rf_list, color, size){
 
   PCA <- prcomp(rf_list$rf$proximity)
 
+  if(ellipse==FALSE && label==FALSE){
   autoplot(PCA, data = rf_list$train, colour = color, size = size) + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 16),
                                                                            legend.title = element_blank(), legend.text = element_text(size = 14))
+}else if (ellipse==TRUE && label==TRUE){
 
+  autoplot(PCA, data = rf_list$train, colour = color, size = size, label = label, label.size = 3.5, label.repel = T, frame = TRUE, frame.type = 'norm') + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 16),
+                                                                           legend.title = element_blank(), legend.text = element_text(size = 14))
+
+}else if (ellipse==TRUE && label==FALSE){
+
+  autoplot(PCA, data = rf_list$train, colour = color, size = size, frame = TRUE, frame.type = 'norm') + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 16),
+                                                                           legend.title = element_blank(), legend.text = element_text(size = 14))
+
+  }else if (ellipse==FALSE && label==TRUE){
+
+    autoplot(PCA, data = rf_list$train, colour = color, size = size, label = label, label.size = 3.5, label.repel = T) + theme(axis.text = element_text(size = 14), axis.title = element_text(size = 16),
+                                                                             legend.title = element_blank(), legend.text = element_text(size = 14))
+
+  }
 
 
 

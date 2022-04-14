@@ -7,8 +7,9 @@
 #' @param variable The independent variable you wish to compare and contrast
 #' @param color String of what you want to color by. Usually should be the same as variable.
 #' @param response_variable String of the response_variable, usually should be "Metabolite"
-#' @param label True or FALSE, whether to add point labels or not
+#' @param label TRUE or FALSE, whether to add point labels or not
 #' @param size An integer for point size.
+#' @param ellipse TRUE or FALSE, whether to add confidence interval ellipses or not.
 #' @import ggfortify
 #' @importFrom ggplot2 autoplot
 #' @importFrom stats prcomp
@@ -17,7 +18,7 @@
 #' variable = "Treatment", color = "Treatment", response_variable = "Metabolite")
 #' @export
 
-PCA_plot <- function(count_data, metadata, variable, color, response_variable="Metabolite", label = FALSE, size = 2){
+PCA_plot <- function(count_data, metadata, variable, color, response_variable="Metabolite", label = FALSE, size = 2, ellipse = FALSE){
 
   if(any(names(metadata) %in% variable)==FALSE){
 
@@ -63,15 +64,23 @@ PCA_plot <- function(count_data, metadata, variable, color, response_variable="M
   data_Transpose[, variable] = metadata[, variable][match(metadata$Sample, data_Transpose$Sample)]
   data_Numeric <- data_Transpose[, !names(data_Transpose) %in% c(variable, 'Sample')]
   data_Numeric <- data.frame(lapply(data_Numeric, function(x) as.numeric(as.character(x))),check.names=F, row.names = rownames(data_Numeric))
-  if(label==FALSE){
+  if(ellipse==FALSE && label==FALSE){
 
-  Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, frame = TRUE, frame.type = 'norm', size = size)
+  Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, size = size)
 
-  }else if(label==TRUE){
+}else if(ellipse==TRUE && label==TRUE){
 
-    Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, frame = TRUE,label = TRUE, label.size = 3.5, label.repel = T, frame.type = 'norm', size = size)
+    Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, frame = TRUE,label = label, label.size = 3.5, label.repel = T, frame.type = 'norm', size = size)
 
-  }
+  }else if(ellipse==TRUE && label==FALSE){
+
+      Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color, frame = TRUE, frame.type = 'norm', size = size)
+
+    }else if(ellipse==FALSE && label==TRUE){
+
+        Plot <- autoplot(prcomp(data_Numeric), data = data_Transpose, colour = color,label = label, label.size = 3.5, label.repel = T, size = size)
+
+      }
 
   return(Plot)
 }
