@@ -4,7 +4,7 @@
 \alias{plot_rf_PCA}
 \title{plot_rf_PCA}
 \usage{
-plot_rf_PCA(rf_list, color, size, ellipse = FALSE, labels = FALSE)
+plot_rf_PCA(rf_list, color, size, ellipse = FALSE, label = FALSE)
 }
 \arguments{
 \item{rf_list}{The output from the random_forest function. This only works on classification models.}
@@ -15,7 +15,7 @@ plot_rf_PCA(rf_list, color, size, ellipse = FALSE, labels = FALSE)
 
 \item{ellipse}{TRUE or FALSE. Whether to plot with confidence interval ellipses or not.}
 
-\item{labels}{TRUE or FALSE. Whether to include point labels or not.}
+\item{label}{TRUE or FALSE. Whether to include point labels or not.}
 }
 \description{
 PCA plot of the proximity matrix from a random forest classification model
