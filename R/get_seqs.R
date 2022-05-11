@@ -12,6 +12,7 @@
 #' gene_data <- KEGG_gather(gene_data)
 #'
 #' gene_data <- KEGG_gather(gene_data)
+#' gene_data <- gene_data[1:2,]
 #'
 #' gene_data <- get_seqs(gene_data)
 #' @export
