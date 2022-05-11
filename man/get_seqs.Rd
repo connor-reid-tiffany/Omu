@@ -16,7 +16,7 @@ Function that gets nt and aa seqs for gene data from KEGG_gather
 
 gene_data <- c57_nos2KO_mouse_countDF[(1:2),]
 
-gene_data <- KEGG_gather(gene_data = gene_data)
+gene_data <- KEGG_gather(gene_data)
 
 gene_data <- KEGG_gather(gene_data)
 

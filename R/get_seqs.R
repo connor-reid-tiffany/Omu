@@ -119,7 +119,7 @@ get_seqs <- function(gene_data){
   make_seq_dfs <- function(x){
 
     df <- data.frame(Gene_code = regmatches(x, regexpr(pattern = "(ENTRY).+?(?=CDS)", text = x, perl = TRUE)),
-                     NAME = regmatches(x, regexpr(pattern = "(NAME).+?(?=ORTHOLOGY)", text = x, perl = TRUE)),
+                     NAME = regmatches(x, regexpr(pattern = "(NAME).+?(?=ORTHOLOGY|ORGANISM)", text = x, perl = TRUE)),
                      NTSEQ = regmatches(x, regexpr(pattern = "NTSEQ.*", text = x, perl = TRUE)),
                      AASEQ = regmatches(x, regexpr(pattern = "(AASEQ).+?(?=NTSEQ)", text = x, perl = TRUE)))
 
