@@ -19,6 +19,11 @@
 
 get_seqs <- function(gene_data){
 
+if(any(class(gene_data)=="seqs")==FALSE){
+
+stop("get seqs needs a data frame from KEGG Gather with gene and org columns")
+
+}
 
   .strip <- function(str)
   {

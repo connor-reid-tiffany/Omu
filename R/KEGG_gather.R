@@ -107,7 +107,7 @@ df <- plate_omelette(df)
 #Append acquired data
 count_data <- merge(df, count_data, "KO")
 
-class(df) <- append(class(df), "seqs")
+class(count_data) <- append(class(count_data), "seqs")
 
 return(count_data)
 }
