@@ -65,13 +65,13 @@ if(isTRUE(p_adjust %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY"
 }
 
 
-if(paired==TRUE && any(names(metadata) %in% "ID")==FALSE){
+if(paired==TRUE & any(names(metadata) %in% "ID")==FALSE){
 
   stop("metadata needs an ID column to run paired tests")
 
 }
 
-if(paired==TRUE && nrow(metadata[metadata[,Factor]==numerator,])!=nrow(metadata[metadata[,Factor]==denominator,])){
+if(paired==TRUE & nrow(metadata[metadata[,Factor]==numerator,])!=nrow(metadata[metadata[,Factor]==denominator,])){
 
   stop("group sample sizes must be equal to run paired tests")
 
