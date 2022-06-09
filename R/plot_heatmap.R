@@ -45,7 +45,7 @@ plot_heatmap <- function(count_data, metadata, Factor, response_variable,
 
   count_data_sample <- count_data[,names(count_data) %in% metadata$Sample]
 
-  if(identical(colnames(count_data_sample), as.character(metadata$Sample))==FALSE){
+  if(identical(sort(colnames(count_data_sample)), sort(as.character(metadata$Sample)))==FALSE){
 
         stop("Sample names in count_data and metadata do not match.")
 

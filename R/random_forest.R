@@ -21,7 +21,7 @@
 
 random_forest <- function(count_data, metadata, model, training_proportion = c(80,20), n_tree = 500){
 
-  if(identical(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))]), as.character(metadata$Sample))==FALSE){
+if(identical(sort(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))])), sort(as.character(metadata$Sample))==FALSE)){
 
     stop("Sample names in count_data and metadata do not match.")
 

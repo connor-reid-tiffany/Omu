@@ -79,7 +79,7 @@ if(paired==TRUE & nrow(metadata[metadata[,Factor]==numerator,])!=nrow(metadata[m
 
 metadata <- as.data.frame(sapply(metadata, function(x) x <- as.character(x)))
 
-if(identical(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))]), as.character(metadata$Sample))==FALSE){
+if(identical(sort(as.character(colnames(count_data)[unlist(lapply(count_data, is.numeric))])), sort(as.character(metadata$Sample))==FALSE)){
 
   stop("Sample names in count_data and metadata do not match.")
 

@@ -45,7 +45,7 @@ stop("get seqs needs a data frame from KEGG Gather with gene and org columns")
   kegg_get <- function(x){
 
     x <- paste(x, collapse="+")
-    url <- sprintf("%s/get/%s", getOption("KEGG_REST_URL", "http://rest.kegg.jp"), x)
+    url <- sprintf("%s/get/%s", getOption("KEGG_REST_URL", "https://rest.kegg.jp"), x)
     response <- GET(url)
     status_report <- tryCatch(message_for_status(GET(url)),
                               http_404 = function(c) "That url doesn't exist",

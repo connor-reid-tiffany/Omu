@@ -39,7 +39,7 @@ make_omelette <- function(count_data, column, first_char){
  kegg_get <- function(x){
 
   x <- paste(x, collapse="+")
-  url <- sprintf("%s/get/%s", getOption("KEGG_REST_URL", "http://rest.kegg.jp"), x)
+  url <- sprintf("%s/get/%s", getOption("KEGG_REST_URL", "https://rest.kegg.jp"), x)
   response <- GET(url)
   status_report <- tryCatch(message_for_status(GET(url)),
            http_404 = function(c) "That url doesn't exist",
