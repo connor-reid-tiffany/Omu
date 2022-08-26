@@ -67,14 +67,11 @@ assign_hierarchy <- function(count_data, keep_unknowns, identifier){
 
     }
 
-    count_data$KO_Class <- Orthology_Hierarchy_Table$KO_Class[match(count_data$KO,
-                                                                    Orthology_Hierarchy_Table$KO_Number)]
-    count_data$KO_Subclass_1 <- Orthology_Hierarchy_Table$KO_Subclass_1[match(count_data$KO,
-                                                                              Orthology_Hierarchy_Table$KO_Number)]
-    count_data$KO_Subclass_2 <- Orthology_Hierarchy_Table$KO_Subclass_2[match(count_data$KO,
-                                                                              Orthology_Hierarchy_Table$KO_Number)]
-    count_data$KO_Subclass_3_Enzyme <- Orthology_Hierarchy_Table$KO_Subclass_3_Enzyme[match(count_data$KO,
-                                                                                            Orthology_Hierarchy_Table$KO_Number)]
+    colnames(Orthology_Hierarchy_Table)[4] <- "KO"
+    count_data <- merge(Orthology_Hierarchy_Table, count_data, "KO")
+    count_data <- count_data[!duplicated(count_data), ]
+    class(count_data) <- append(class(count_data), "KO")
+
 
     return(count_data)
   } else if (identifier == "Prokaryote"){
