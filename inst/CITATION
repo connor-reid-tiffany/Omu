@@ -1,6 +1,4 @@
-citHeader("To cite omu in publications use:")
-
-bibentry(bibtype = "Article",
+bibentry(bibtype = "Article", header = "To cite omu in publications use:",
          title = "omu, a Metabolomics Count Data Analysis Tool for Intuitive Figures and Convenient Metadata Collection",
          author = c(as.person("Connor R. Tiffany"),
                     as.person("Andreas J. Bäumler")),
