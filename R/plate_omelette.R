@@ -97,7 +97,7 @@ content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "EN
   }
   content <- lapply(content, change_names)
   content <- lapply(content, function(x) as.list(as.data.frame(x)))
-
+  
   #remove everything but REACTION identifiers (again this will need control flow for each class)
   content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*GENES\\s*|\\s*JOURNAL.*$|DOI.*$|SEQUENCE.*$|REFERENCE.*$|AUTHORS.*$|TITLE.*$|JOURNAL.*$', '', x)))
   #split the strings into vectors of length n again

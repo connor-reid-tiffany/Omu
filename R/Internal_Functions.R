@@ -33,7 +33,7 @@ make_omelette <- function(count_data, column, first_char){
  #convert to character vector and split into a list of length 10 character vectors to feed to KEGG API
  input <- as.vector(input$i)
  input_split  <- split(input,  ceiling(seq_along(input)/10))
-
+ httr::set_config(httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
  #function to pull flat text files from KEGG API. will encapsulate errors that are due to
  #bad requests, lost connection, or server issues and return a NULL instead of throwing an error
  kegg_get <- function(x){
