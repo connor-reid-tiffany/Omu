@@ -28,7 +28,8 @@ count_data[,response_variable] <- NULL
 data_Int <- count_data[sapply(count_data, function(x) is.numeric(x))]
 data_t <- as.data.frame(t(data_Int))
 data_t <- as.data.frame(cbind(Sample = rownames(data_t), data_t))
-
+data_t <- data_t[order(data_t$Sample),]
+metadata <- metadata[order(metadata$Sample),]
 Factor = metadata[, Factor]
 data_t$Factor = Factor[match(metadata$Sample, data_t$Sample)]
 

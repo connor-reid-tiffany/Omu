@@ -61,7 +61,10 @@ PCA_plot <- function(count_data, metadata, variable, color, response_variable="M
   #Transform for 'normalization' and T test
   data_Transpose <- as.data.frame(t(data_Int))
   data_Transpose <- as.data.frame(cbind(Sample = rownames(data_Transpose), data_Transpose))
-  data_Transpose[, variable] = metadata[, variable][match(metadata$Sample, data_Transpose$Sample)]
+  data_Transpose <- data_Transpose[order(data_Transpose$Sample),]
+  metadata <- metadata[order(metadata$Sample),]
+  data_Transpose[, variable] = metadata[, variable][match(metadata$Sample,
+                                                          data_Transpose$Sample)]
   data_Numeric <- data_Transpose[, !names(data_Transpose) %in% c(variable, 'Sample')]
   data_Numeric <- data.frame(lapply(data_Numeric, function(x) as.numeric(as.character(x))),check.names=F, row.names = rownames(data_Numeric))
   if(ellipse==FALSE && label==FALSE){

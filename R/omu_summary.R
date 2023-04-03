@@ -130,6 +130,8 @@ if (is.null(nrow(check_zeros(count_data = count_data, metadata = metadata, Facto
   #Transform for 'normalization' and T test
   data_Transpose <- as.data.frame(t(data_Int))
   data_Transpose <- as.data.frame(cbind(Sample = rownames(data_Transpose), data_Transpose))
+  data_Transpose <- data_Transpose[order(data_Transpose$Sample),]
+  metadata <- metadata[order(metadata$Sample),]
   Factor = metadata[, Factor]
   data_Transpose$Factor = Factor[match(metadata$Sample, data_Transpose$Sample)]
   data_Subset <- filter(data_Transpose, Factor==numerator|Factor==denominator)
