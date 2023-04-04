@@ -49,7 +49,7 @@ plate_omelette.rxn <- function(output){
     content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*REACTION\\s*|\\s*PATHWAY.*$|MODULE.*$|ENZYME.*$|BRITE.*$|DBLINKS.*$|ATOM.*$|BOND.*$', '', x)))
     #split the strings into vectors of length n again
     content <- lapply(content, function(x) sapply(x, function(x) str_split(x, " ")))
-    content <- lapply(content, function(x) sapply(x, function(x) x[x!=""]))
+    content <- lapply(content, function(x) lapply(x, function(x) x[x!=""]))
     content <- lapply(content, as.list)
 
     content_cpd <- lapply(content, names)
@@ -97,7 +97,8 @@ content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "EN
   }
   content <- lapply(content, change_names)
   content <- lapply(content, function(x) as.list(as.data.frame(x)))
-  
+  content_names <- lapply(content, function(x) lapply(x, function(x) gsub("^.*NAME|PATHWAY.*|BRITE.*|DBLINKS.*|GENES.*", "", x)))
+  content_names <- lapply(content_names, function(x) lapply(x, function(x) trimws(x)))
   #remove everything but REACTION identifiers (again this will need control flow for each class)
   content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*GENES\\s*|\\s*JOURNAL.*$|DOI.*$|SEQUENCE.*$|REFERENCE.*$|AUTHORS.*$|TITLE.*$|JOURNAL.*$', '', x)))
   #split the strings into vectors of length n again
@@ -107,11 +108,13 @@ content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "EN
   content <- lapply(content, as.list)
 
   content_KO <- lapply(content, names)
+  content_names_KO <- lapply(content_names, names)
   content_KO <- lapply(content_KO, as.list)
 
   content<- lapply(rapply(content, enquote, how="unlist"), eval)
+  content_names <- lapply(rapply(content_names, enquote, how="unlist"), eval)
   content_KO<- lapply(rapply(content_KO, enquote, how="unlist"), eval)
-
+  content_names_KO <- lapply(rapply(content_names_KO, enquote, how="unlist"), eval)
   #content <- lapply(content, as.data.frame)
   #content <- lapply(content, function(x){ x$first_char <- substring(x[,1], 1,1); return(x)})
   #content <- lapply(content, function(x) {x <- x[x$first_char=="K",]; return(x)})
