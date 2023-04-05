@@ -74,7 +74,7 @@ plate_omelette.rxn <- function(output){
 plate_omelette.genes <- function(output){
 
 #Clean up using regex
-content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))
+  content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "END_OF_ENTRY"))
   #convert to a string
   #content <- paste(content, sep = "", collapse = "")
   content <- lapply(content, function(x) paste(x, sep = "", collapse = ""))
@@ -99,6 +99,8 @@ content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "EN
   content <- lapply(content, function(x) as.list(as.data.frame(x)))
   content_names <- lapply(content, function(x) lapply(x, function(x) gsub("^.*NAME|PATHWAY.*|BRITE.*|DBLINKS.*|GENES.*", "", x)))
   content_names <- lapply(content_names, function(x) lapply(x, function(x) trimws(x)))
+  content_names <- data.frame(KO = unlist(lapply(content_names,names)), enzyme_name = unlist(content_names))
+  content_names <- content_names[!duplicated(content_names$KO),]
   #remove everything but REACTION identifiers (again this will need control flow for each class)
   content <- lapply(content, function(x) lapply(x, function(x) gsub('^.*GENES\\s*|\\s*JOURNAL.*$|DOI.*$|SEQUENCE.*$|REFERENCE.*$|AUTHORS.*$|TITLE.*$|JOURNAL.*$', '', x)))
   #split the strings into vectors of length n again
@@ -108,13 +110,10 @@ content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "EN
   content <- lapply(content, as.list)
 
   content_KO <- lapply(content, names)
-  content_names_KO <- lapply(content_names, names)
   content_KO <- lapply(content_KO, as.list)
 
   content<- lapply(rapply(content, enquote, how="unlist"), eval)
-  content_names <- lapply(rapply(content_names, enquote, how="unlist"), eval)
   content_KO<- lapply(rapply(content_KO, enquote, how="unlist"), eval)
-  content_names_KO <- lapply(rapply(content_names_KO, enquote, how="unlist"), eval)
   #content <- lapply(content, as.data.frame)
   #content <- lapply(content, function(x){ x$first_char <- substring(x[,1], 1,1); return(x)})
   #content <- lapply(content, function(x) {x <- x[x$first_char=="K",]; return(x)})
@@ -137,6 +136,8 @@ content <- lapply(output, function(x) gsub(x, pattern = "///", replacement = "EN
   content$Org <- str_trim(content$Org)
 
   content$Org <- tolower(content$Org)
+  
+  content <- merge(content, content_names, "KO")
 
   return(content)
 }
