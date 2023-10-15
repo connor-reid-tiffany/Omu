@@ -1,15 +1,17 @@
 #' Gather metadata from KEGG for metabolites
 #'
 #' @description Method for gathering metadata from the KEGG API.
-#' @param count_data A metabolmics count dataframe with a KEGG identifier columns
+#' @param count_data A metabolomics count dataframe with a KEGG identifier columns
 #' @importFrom dplyr if_else
 #' @examples
+#' \dontrun{
 #' count_data <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF,
 #' keep_unknowns = TRUE, identifier = "KEGG")
 #'
 #' count_data <- subset(count_data, Subclass_2=="Aldoses")
 #'
 #' count_data <- KEGG_gather(count_data = count_data)
+#' }
 #' @export
 
 KEGG_gather <- function(count_data) UseMethod("KEGG_gather", count_data)
@@ -17,7 +19,24 @@ KEGG_gather <- function(count_data) UseMethod("KEGG_gather", count_data)
 #' @rdname KEGG_gather
 #' @export
 KEGG_gather.cpd <- function(count_data){
-
+  
+  test_KEGGREST <- function(url = "https://rest.kegg.jp/get/C00006"){
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    x <- try(GET(url))
+    
+    return(x)
+  }
+  
+  server_status <- test_KEGGREST()
+  
+  if(grepl(pattern = "Error in curl::curl_fetch_memory", x = server_status)==TRUE){
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    message("KEGG server unavailable please try again later")
+    
+    return(server_status)
+  }
   #stop conditions
   if(any(names(count_data) %in% "KEGG")==FALSE){
 
@@ -56,6 +75,23 @@ KEGG_gather.cpd <- function(count_data){
 #' @export
 KEGG_gather.rxn <- function(count_data){
 
+  test_KEGGREST <- function(url = "https://rest.kegg.jp/get/C00006"){
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    x <- try(GET(url))
+    
+    return(x)
+  }
+  
+  server_status <- test_KEGGREST()
+  
+  if(grepl(pattern = "Error in curl::curl_fetch_memory", x = server_status)==TRUE){
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    message("KEGG server unavailable please try again later")
+    
+    return(server_status)
+  }
 #Set variables
 first_char <- "R"
 column <- "Rxn"
@@ -87,6 +123,23 @@ return(count_data)
 #' @export
 KEGG_gather.KO <- function(count_data){
 
+  test_KEGGREST <- function(url = "https://rest.kegg.jp/get/C00006"){
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    x <- try(GET(url))
+    
+    return(x)
+  }
+  
+  server_status <- test_KEGGREST()
+  
+  if(grepl(pattern = "Error in curl::curl_fetch_memory", x = server_status)==TRUE){
+    opt <- options(show.error.messages = FALSE)
+    on.exit(options(opt))
+    message("KEGG server unavailable please try again later")
+    
+    return(server_status)
+  }
 #Set variables
 column <- "KO"
 first_char <- "K"
