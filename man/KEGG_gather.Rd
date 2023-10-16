@@ -16,16 +16,18 @@ KEGG_gather(count_data)
 \method{KEGG_gather}{KO}(count_data)
 }
 \arguments{
-\item{count_data}{A metabolmics count dataframe with a KEGG identifier columns}
+\item{count_data}{A metabolomics count dataframe with a KEGG identifier columns}
 }
 \description{
 Method for gathering metadata from the KEGG API.
 }
 \examples{
+\dontrun{
 count_data <- assign_hierarchy(count_data = c57_nos2KO_mouse_countDF,
 keep_unknowns = TRUE, identifier = "KEGG")
 
 count_data <- subset(count_data, Subclass_2=="Aldoses")
 
 count_data <- KEGG_gather(count_data = count_data)
+}
 }
